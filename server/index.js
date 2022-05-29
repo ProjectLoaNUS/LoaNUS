@@ -79,5 +79,5 @@ app.post("/item-upload", upload.single("image"), (request, response, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log("SERVER RUNNING");
+  console.log(`SERVER RUNNING ON PORT ${PORT}`);
 });
