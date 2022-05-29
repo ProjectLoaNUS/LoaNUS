@@ -8,6 +8,8 @@ const UserModel = require("./models/Users");
 const ItemModel = require("./models/Items");
 const cors = require("cors");
 const { request } = require("http");
+const PORT = process.env.PORT || 3001;
+
 app.use(express.json());
 app.use(cors());
 mongoose.connect(
@@ -76,6 +78,6 @@ app.post("/item-upload", upload.single("image"), (request, response, next) => {
   response.send("Upload success");
 });
 
-app.listen(3001, () => {
-  console.log("SERVER RUNNING");
+app.listen(PORT, () => {
+  console.log(`SERVER RUNNING ON PORT ${PORT}`);
 });
