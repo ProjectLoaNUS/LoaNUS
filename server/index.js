@@ -32,14 +32,16 @@ app.post("/createUser", async (req, res) => {
   res.json(user);
 });
 
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "--" + file.originalname);
   },
-});
+});*/
+
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage: storage,
@@ -61,9 +63,10 @@ app.post("/item-upload", upload.single("image"), (request, response, next) => {
     name: request.body.name,
     desc: request.body.description,
     image: {
-      data: fs.readFileSync(
+      /*data: fs.readFileSync(
         path.join(__dirname + "/uploads/" + request.file.filename)
-      ),
+      ),*/
+      data: request.files[0].buffer,
       contentType: "image/png",
     },
   };
