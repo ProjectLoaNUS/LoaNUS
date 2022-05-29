@@ -66,7 +66,7 @@ app.post("/item-upload", upload.single("image"), (request, response, next) => {
       /*data: fs.readFileSync(
         path.join(__dirname + "/uploads/" + request.file.filename)
       ),*/
-      data: request.files[0].buffer,
+      data: request.file.buffer,
       contentType: "image/png",
     },
   };
