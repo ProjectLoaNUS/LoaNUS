@@ -2,6 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../database/const";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -11,7 +12,7 @@ function HomePage() {
   const [images, setImages] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3001/item-upload")
+      .get(`${BACKEND_URL}/item-upload`)
       .then((res) => setImages(res.data))
       .catch((err) => console.log(err, "error occured"));
   }, []);
