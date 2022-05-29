@@ -67,7 +67,7 @@ app.post("/item-upload", upload.single("image"), (request, response, next) => {
         path.join(__dirname + "/uploads/" + request.file.filename)
       ),*/
       data: request.file.buffer,
-      contentType: "image/png",
+      contentType: request.file.mimetype,
     },
   };
   ItemModel.create(obj, (err, item) => {
