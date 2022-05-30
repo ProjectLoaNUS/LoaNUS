@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { GrowDiv } from "./FlexDiv";
+import SearchBox from "./SearchBox";
 
 const SearchCompDiv = styled(GrowDiv)`
     display: flex;
@@ -16,10 +17,7 @@ const GrowTextField = styled(TextField)`
 export default function SearchComp() {
     return (
         <SearchCompDiv>
-            <GrowTextField
-                id="search-bar"
-                label="Search"
-                variant="filled" />
+            <SearchBox />
             <IconButton>
                 <SearchIcon />
             </IconButton>
