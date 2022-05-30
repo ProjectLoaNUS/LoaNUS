@@ -2,6 +2,7 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from './setup';
 import Axios from "axios";
+import { BACKEND_URL } from './const';
 
 const authCtx = createContext({
     signInWithGoogle: null,
@@ -16,7 +17,7 @@ function useAuthProvider() {
 
     const [ listOfUsers, setListOfUsers ] = useState([]);
     useEffect(() => {
-        Axios.get("http://localhost:3001/getUsers").then((response) => {
+        Axios.get(`${BACKEND_URL}/getUsers`).then((response) => {
             setListOfUsers(response.data);
         }).catch((err) => {
             console.log(err);

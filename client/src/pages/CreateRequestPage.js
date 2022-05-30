@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../database/const";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -10,6 +11,7 @@ function CreateRequestPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState();
+
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -20,7 +22,7 @@ function CreateRequestPage() {
     formData.append("name", name);
     formData.append("description", description);
     formData.append("image", selectedFile);
-    fetch("http://localhost:3001/item-upload", {
+    fetch(`${BACKEND_URL}/item-upload`, {
       method: "POST",
       body: formData,
     })

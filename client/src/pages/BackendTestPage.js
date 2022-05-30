@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Axios from "axios";
+import { BACKEND_URL } from "../database/const";
 
 function BackendTestPage() {
   const [listofUsers, setlistofUsers] = useState([]);
@@ -9,12 +10,12 @@ function BackendTestPage() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/getUsers").then((response) => {
+    Axios.get(`${BACKEND_URL}/getUsers`).then((response) => {
       setlistofUsers(response.data);
     });
   }, []);
   const handlecreate = function () {
-    Axios.post("http://localhost:3001/createUser", {
+    Axios.post(`${BACKEND_URL}/createUser`, {
       name: name,
       age: age,
       username: username,
