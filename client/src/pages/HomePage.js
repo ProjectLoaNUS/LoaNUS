@@ -2,6 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import ItemCard from "../components/DisplayCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
