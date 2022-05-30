@@ -10,10 +10,6 @@ const SearchCompDiv = styled(GrowDiv)`
     justify-content: center;
 `;
 
-const GrowTextField = styled(TextField)`
-    flex: 1 0 auto;
-`;
-
 export default function SearchComp() {
     return (
         <SearchCompDiv>
