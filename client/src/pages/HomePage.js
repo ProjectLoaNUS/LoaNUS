@@ -16,6 +16,7 @@ function HomePage() {
       .get("http://localhost:3001/item-upload")
       .then((res) => {
         setImages(res.data);
+        setIsLoading(false);
         console.log(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
