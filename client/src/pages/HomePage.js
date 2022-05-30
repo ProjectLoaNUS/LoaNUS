@@ -9,6 +9,7 @@ const MainContainer = styled.div`
 `;
 
 function HomePage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState([]);
   useEffect(() => {
     axios
@@ -16,6 +17,15 @@ function HomePage() {
       .then((res) => setImages(res.data))
       .catch((err) => console.log(err, "error occured"));
   }, []);
+
+  if (isLoading) {
+    return (
+      <section>
+        <p>Loading...</p>
+      </section>
+    );
+  }
+  
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
