@@ -15,6 +15,10 @@ export const theme = createTheme({
             light: '#ffffff',
             main: '#ffffff',
             contrastText: '#212121'
+        },
+        contrastText: {
+            light: '#212121',
+            main: '#212121'
         }
     },
     contrastThreshold: 3,
