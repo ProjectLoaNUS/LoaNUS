@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ItemCard from "../components/DisplayCard";
 import { Buffer } from 'buffer';
+import { BACKEND_URL } from "../database/const";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -14,7 +15,7 @@ function HomePage() {
   const [images, setImages] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3001/getItems")
+      .get(`${BACKEND_URL}/getItems`)
       .then((res) => {
         setImages(res.data);
         setIsLoading(false);
