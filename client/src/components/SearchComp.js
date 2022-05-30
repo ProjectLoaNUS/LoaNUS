@@ -14,7 +14,7 @@ export default function SearchComp() {
     return (
         <SearchCompDiv>
             <SearchBox />
-            <IconButton>
+            <IconButton color="contrast">
                 <SearchIcon />
             </IconButton>
         </SearchCompDiv>
