@@ -14,7 +14,10 @@ function HomePage() {
   useEffect(() => {
     axios
       .get("http://localhost:3001/item-upload")
-      .then((res) => setImages(res.data))
+      .then((res) => {
+        setImages(res.data);
+        console.log(res.data);
+      })
       .catch((err) => console.log(err, "error occured"));
   }, []);
 
@@ -25,7 +28,7 @@ function HomePage() {
       </section>
     );
   }
-  
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
