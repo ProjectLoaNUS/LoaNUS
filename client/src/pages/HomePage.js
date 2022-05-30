@@ -3,6 +3,7 @@ import NavigationBar from "../components/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ItemCard from "../components/DisplayCard";
+import { Buffer } from 'buffer';
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -17,7 +18,6 @@ function HomePage() {
       .then((res) => {
         setImages(res.data);
         setIsLoading(false);
-        console.log(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
@@ -35,7 +35,12 @@ function HomePage() {
       <NavigationBar></NavigationBar>
       <div>Image upload</div>
       <div>
-        
+        {images.map((singleimage) => {
+          const binary = Buffer.from(singleimage.image.data.data);
+          const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
+          const url = URL.createObjectURL(blob);
+          return <img src={url} alt="" />;
+        })}
       </div>
     </MainContainer>
   );
