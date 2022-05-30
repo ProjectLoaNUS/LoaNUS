@@ -39,7 +39,7 @@ function HomePage() {
           const binary = Buffer.from(singleimage.image.data.data);
           const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
           const url = URL.createObjectURL(blob);
-          return <img src={url} style={{height: "40vh"}} alt="" />;
+          return <ItemCard title={singleimage.name} image={url} description={singleimage.desc} />
         })}
       </div>
     </MainContainer>
