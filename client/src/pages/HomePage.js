@@ -13,7 +13,7 @@ function HomePage() {
   const [images, setImages] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3001/item-upload")
+      .get("http://localhost:3001/getItems")
       .then((res) => {
         setImages(res.data);
         setIsLoading(false);
@@ -35,12 +35,7 @@ function HomePage() {
       <NavigationBar></NavigationBar>
       <div>Image upload</div>
       <div>
-        {images.map((singleimage) => {
-          const base64string = btoa(
-            String.fromCharCode(...new Uint8Array(singleimage.image.data.data))
-          );
-          return <img src={`data:image/png;base64,${base64string}`} alt="" />;
-        })}
+        
       </div>
     </MainContainer>
   );
