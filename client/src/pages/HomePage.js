@@ -2,6 +2,8 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import ItemCard from "../components/DisplayCard";
+import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 
 const MainContainer = styled.div`
@@ -9,23 +11,36 @@ const MainContainer = styled.div`
 `;
 
 function HomePage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState([]);
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/item-upload`)
-      .then((res) => setImages(res.data))
+      .get(`${BACKEND_URL}/getItems`)
+      .then((res) => {
+        setImages(res.data);
+        setIsLoading(false);
+      })
       .catch((err) => console.log(err, "error occured"));
   }, []);
+
+  if (isLoading) {
+    return (
+      <section>
+        <p>Loading...</p>
+      </section>
+    );
+  }
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
       <div>Image upload</div>
       <div>
         {images.map((singleimage) => {
-          const base64string = btoa(
-            String.fromCharCode(...new Uint8Array(singleimage.image.data.data))
-          );
-          return <img src={`data:image/png;base64,${base64string}`} alt="" />;
+          const binary = Buffer.from(singleimage.image.data.data);
+          const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
+          const url = URL.createObjectURL(blob);
+          return <ItemCard title={singleimage.name} image={url} description={singleimage.desc} />
         })}
       </div>
     </MainContainer>
