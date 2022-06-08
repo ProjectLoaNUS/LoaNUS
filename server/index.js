@@ -38,8 +38,18 @@ const upload = multer({
   storage: storage,
   limits: { fieldsize: 1024 * 1024 * 3 },
 });
-app.get("/getItems", (req, res) => {
-  ItemModel.find({}, (err, items) => {
+app.get("/getItemTexts", (req, res) => {
+  ItemModel.find({}, ['name', 'desc'], null, (err, items) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("An error occurred", err);
+    } else {
+      res.json(items);
+    }
+  });
+});
+app.get("/getItemImages", (req, res) => {
+  ItemModel.find({}, ['image'], null, (err, items) => {
     if (err) {
       console.log(err);
       res.status(500).send("An error occurred", err);
