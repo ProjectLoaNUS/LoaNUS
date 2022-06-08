@@ -11,7 +11,7 @@ const CardContainer = styled(Card)(({ theme }) => ({
   alignItems: "center",
   alignSelf: "center",
   '& .MuiCardMedia-root': {
-    width: "25vw"
+    height: "35vh"
   }
 }));
 
