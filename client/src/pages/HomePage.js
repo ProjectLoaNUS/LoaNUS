@@ -2,7 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ItemCard from "../components/ItemCard";
+import ItemCard from "../components/ItemList/ItemCard";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 import { Box } from "@mui/material";
