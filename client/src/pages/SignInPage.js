@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import styled from "styled-components";
 import AppIcon from "../components/AppBtn/AppIcon";
-import SignInCard from "../components/SignInCard";
+import SignInCard from "../components/SignInComps/SignInCard";
 
 const ContainerStyle = styled.div`
   display: flex;

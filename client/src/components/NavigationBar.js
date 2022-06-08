@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useAuth } from "../database/auth";
-import SignInBtn from "./SignInBtn";
+import SignInBtn from "./SignInComps/SignInBtn";
 import ProfileBtn from "./ProfileBtn";
 import CreateBtn from "./CreateBtn";
 import SearchBar from "./SearchBar/SearchBar";
