@@ -1,12 +1,13 @@
-import { TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import styled from "styled-components";
+import SearchIcon from "@mui/icons-material/Search";
 
 const GrowTextField = styled(TextField)`
     flex: 1 0 auto;
 `;
 
 const StyledTextField = styled((props) => (
-        <GrowTextField InputProps={{ disableUnderline: true }} {...props} />
+        <GrowTextField {...props} />
     ))(({ theme }) => ({
     '& .MuiFilledInput-root': {
         border: `1px solid ${theme.palette.contrast.light}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
@@ -26,6 +27,17 @@ const StyledTextField = styled((props) => (
 
 export default function SearchTextField() {
     return (
-        <StyledTextField variant="filled" label="Search" />
+        <StyledTextField
+            variant="filled" 
+            label="Search" 
+            InputProps={{
+                endAdornment: 
+                    <InputAdornment position="end">
+                        <IconButton color="contrast">
+                            <SearchIcon />
+                        </IconButton>
+                    </InputAdornment>,
+                disableUnderline: true
+            }} />
     );
 }
