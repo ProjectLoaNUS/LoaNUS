@@ -7,6 +7,7 @@ import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 import { Box } from "@mui/material";
 import { CentredDiv } from "../components/FlexDiv";
+import Loading from "../assets/loading.svg";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -56,7 +57,7 @@ function HomePage() {
       <ImagesBox>
         { texts ? 
           (texts.map((text, index) => {
-            return <ItemCard key={ index } title={text.name} image={ imgUrls[index] } description={text.desc} />
+            return <ItemCard key={ index } title={text.name} image={ imgUrls[index] || Loading } description={text.desc} />
           })) : 
           "Loading..." 
         }
