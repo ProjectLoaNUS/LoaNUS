@@ -11,14 +11,17 @@ const StyledTextField = styled((props) => (
     '& .MuiFilledInput-root': {
         border: `1px solid ${theme.palette.contrast.light}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
         borderRadius: 4,
-        color: theme.palette.contrast.light // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        color: theme.palette.contrast.light, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        '&:focus': {
+            borderColor: theme.palette.accent.main // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        },
+        '&:hover': {
+            borderColor: theme.palette.accent.main
+        }
     },
     '& .MuiInputLabel-root': {
         color: theme.palette.contrast.light // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
     },
-    '&:focus': {
-        borderColor: theme.palette.contrast.light // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-    }
 }));
 
 export default function SearchTextField() {
