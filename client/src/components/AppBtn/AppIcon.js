@@ -1,5 +1,5 @@
-import { ReactComponent as DarkAppIcon } from "../assets/loanus-icon-dark.svg";
-import { ReactComponent as LightAppIcon } from "../assets/loanus-icon-light.svg";
+import { ReactComponent as DarkAppIcon } from "../../assets/loanus-icon-dark.svg";
+import { ReactComponent as LightAppIcon } from "../../assets/loanus-icon-light.svg";
 import styled from "styled-components";
 
 const DarkTallAppIcon = styled(DarkAppIcon)`
