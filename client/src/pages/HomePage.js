@@ -2,23 +2,13 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ItemCard from "../components/ItemList/ItemCard";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
-import { Box } from "@mui/material";
 import { CentredDiv } from "../components/FlexDiv";
-import Loading from "../assets/loading.svg";
 import ItemList from "../components/ItemList/ItemList";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
-`;
-
-const ImagesBox = styled(Box)`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
 `;
 
 function HomePage() {
