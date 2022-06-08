@@ -11,37 +11,30 @@ const MainContainer = styled.div`
 `;
 
 function HomePage() {
-  const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState([]);
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/getItems`)
       .then((res) => {
         setImages(res.data);
-        setIsLoading(false);
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
-
-  if (isLoading) {
-    return (
-      <section>
-        <p>Loading...</p>
-      </section>
-    );
-  }
 
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
       <div>Image upload</div>
       <div>
-        {images.map((singleimage) => {
-          const binary = Buffer.from(singleimage.image.data.data);
-          const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
-          const url = URL.createObjectURL(blob);
-          return <ItemCard title={singleimage.name} image={url} description={singleimage.desc} />
-        })}
+        { images ? 
+          (images.map((singleimage) => {
+            const binary = Buffer.from(singleimage.image.data.data);
+            const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
+            const url = URL.createObjectURL(blob);
+            return <ItemCard title={singleimage.name} image={url} description={singleimage.desc} />
+          })) : 
+          "Loading..." 
+        }
       </div>
     </MainContainer>
   );
