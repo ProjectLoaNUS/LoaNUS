@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchTextField from "./SearchTextField";
-import { CentredGrowDiv } from "./FlexDiv";
+import { CentredGrowDiv } from "../FlexDiv";
 
 export default function SearchBar() {
     return (

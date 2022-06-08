@@ -4,7 +4,7 @@ import { useAuth } from "../database/auth";
 import SignInBtn from "./SignInBtn";
 import ProfileBtn from "./ProfileBtn";
 import CreateBtn from "./CreateBtn";
-import SearchBar from "./SearchBar";
+import SearchBar from "./SearchBar/SearchBar";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./Theme";
 import AppBtn from "./AppBtn/AppBtn";
