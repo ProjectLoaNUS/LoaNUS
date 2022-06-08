@@ -8,6 +8,7 @@ import { BACKEND_URL } from "../database/const";
 import { Box } from "@mui/material";
 import { CentredDiv } from "../components/FlexDiv";
 import Loading from "../assets/loading.svg";
+import ItemList from "../components/ItemList/ItemList";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -54,14 +55,7 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <CentredDiv>Image upload</CentredDiv>
-      <ImagesBox>
-        { texts ? 
-          (texts.map((text, index) => {
-            return <ItemCard key={ index } title={text.name} image={ imgUrls[index] || Loading } description={text.desc} />
-          })) : 
-          "Loading..." 
-        }
-      </ImagesBox>
+      <ItemList texts={texts} setTexts={setTexts} imgUrls={imgUrls} setImgUrls={setImgUrls} />
     </MainContainer>
   );
 }

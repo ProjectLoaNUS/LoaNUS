@@ -19,7 +19,7 @@ export default function ItemCard(props) {
   return (
     <CardContainer>
       <CardHeader title={props.title}></CardHeader>
-      <CardMedia component="img" image={props.image} height="auto"></CardMedia>
+      <CardMedia component={props.component} height="auto"></CardMedia>
       <CardContent>{props.description}</CardContent>
     </CardContainer>
   );
