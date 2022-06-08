@@ -20,15 +20,20 @@ const ImagesBox = styled(Box)`
 `;
 
 function HomePage() {
-  const [images, setImages] = useState([]);
-  const [ urlImgs, setUrlImgs ] = useState([]);
+  const [ texts, setTexts ] = useState([]);
+  const [ imgUrls, setImgUrls ] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/getItems`)
+      .get(`${BACKEND_URL}/getItemImages`)
       .then((res) => {
-        setImages(res.data);
         binsToImgs(res.data);
+      })
+      .catch((err) => console.log(err, "error occured"));
+    axios
+      .get(`${BACKEND_URL}/getItemTexts`)
+      .then((res) => {
+        setTexts(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
@@ -40,7 +45,7 @@ function HomePage() {
       const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
       const url = URL.createObjectURL(blob);
       imgs[index] = url;
-      setUrlImgs(imgs);
+      setImgUrls(imgs);
     });
   }
 
@@ -49,9 +54,9 @@ function HomePage() {
       <NavigationBar></NavigationBar>
       <CentredDiv>Image upload</CentredDiv>
       <ImagesBox>
-        { images ? 
-          (images.map((singleimage, index) => {
-            return <ItemCard key={ index } title={singleimage.name} image={ urlImgs[index] } description={singleimage.desc} />
+        { texts ? 
+          (texts.map((text, index) => {
+            return <ItemCard key={ index } title={text.name} image={ imgUrls[index] } description={text.desc} />
           })) : 
           "Loading..." 
         }
