@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../database/const";
+import InformationContainer from "../components/DesriptionCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -49,6 +50,7 @@ function CreateRequestPage() {
         <input type="file" onChange={changeHandler}></input>
         <button type="submit">Upload</button>
       </form>
+      <InformationContainer></InformationContainer>
     </MainContainer>
   );
 }
