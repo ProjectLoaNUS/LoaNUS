@@ -42,7 +42,7 @@ function HomePage() {
       <div>
         { images ? 
           (images.map((singleimage, index) => {
-            return <ItemCard title={singleimage.name} image={ urlImgs[index] } description={singleimage.desc} />
+            return <ItemCard key={ index } title={singleimage.name} image={ urlImgs[index] } description={singleimage.desc} />
           })) : 
           "Loading..." 
         }
