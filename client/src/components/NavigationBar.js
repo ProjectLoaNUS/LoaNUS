@@ -4,7 +4,7 @@ import { useAuth } from "../database/auth";
 import SignInBtn from "./SignInBtn";
 import ProfileBtn from "./ProfileBtn";
 import CreateBtn from "./CreateBtn";
-import SearchComp from "./SearchComp";
+import SearchBar from "./SearchBar";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./Theme";
 import AppBtn from "./AppBtn/AppBtn";
@@ -29,7 +29,7 @@ function NavigationBar() {
     <ThemeProvider theme={ theme }>
       <MainContainer>
         <AppBtn component={ Link } to="/home" color="secondary" dark={true} iconStyles={iconStyles} />
-        <SearchComp />
+        <SearchBar />
         <CreateBtn />
         { user ? <ProfileBtn /> : <SignInBtn url='/signin' /> }
       </MainContainer>

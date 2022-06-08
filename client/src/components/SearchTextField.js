@@ -6,7 +6,7 @@ const GrowTextField = styled(TextField)`
     flex: 1 0 auto;
 `;
 
-const SearchField = styled((props) => (
+const StyledTextField = styled((props) => (
         <GrowTextField InputProps={{ disableUnderline: true }} {...props} />
     ))(({ theme }) => ({
     '& .MuiFilledInput-root': {
@@ -22,8 +22,8 @@ const SearchField = styled((props) => (
     }
 }));
 
-export default function SearchBox() {
+export default function SearchTextField() {
     return (
-        <SearchField variant="filled" label="Search" />
+        <StyledTextField variant="filled" label="Search" />
     );
 }
