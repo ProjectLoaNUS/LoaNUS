@@ -6,6 +6,7 @@ import ItemCard from "../components/DisplayCard";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 import { Box } from "@mui/material";
+import { CentredDiv } from "../components/FlexDiv";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -46,7 +47,7 @@ function HomePage() {
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
-      <div>Image upload</div>
+      <CentredDiv>Image upload</CentredDiv>
       <ImagesBox>
         { images ? 
           (images.map((singleimage, index) => {

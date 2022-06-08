@@ -7,3 +7,9 @@ export const GrowDiv = styled.div`
 export const ShrinkDiv = styled.div`
     flex: 0 1 auto;
 `;
+
+export const CentredDiv = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
