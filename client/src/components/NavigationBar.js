@@ -7,7 +7,7 @@ import CreateBtn from "./CreateBtn";
 import SearchComp from "./SearchComp";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./Theme";
-import AppBtn from "./AppBtn";
+import AppBtn from "./AppBtn/AppBtn";
 
 const MainContainer = styled.nav`
   background-color: ${theme.palette.secondary.main};
