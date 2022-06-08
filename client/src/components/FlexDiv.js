@@ -13,3 +13,9 @@ export const CentredDiv = styled.div`
     align-items: center;
     justify-content: center;
 `;
+
+export const CentredGrowDiv = styled(GrowDiv)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
