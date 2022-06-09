@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ButtonComponent from "./Button";
 import Bubbletea from "../assets/BubbleTea.png";
 import Coffee from "../assets/Coffee.jpg";
+import { Stack } from "@mui/material";
 
 const MainContainer = styled.div`
   width: 80vw;
@@ -25,26 +26,37 @@ const DescriptionContainer = styled.div`
 const Title = styled.h1`
   text-align: center;
   font-size: 1.5em;
+  overflow-wrap: break-word;
 `;
 const Description = styled.p`
   text-align: center;
+  overflow-wrap: break-word;
 `;
-const ButtonContainer = styled.div`
+const ButtonContainer = styled(Stack)`
   display: flex;
   flex-direction: row;
 `;
 const RewardContainer = styled.div`
   display: flex;
   flex: 1 1 60%;
+  flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
   height: 80%;
 `;
-const RewardImage = styled.img`
-  flex: 1 1 auto;
-  max-height: 100%;
+const HtmlImage = styled.img`
+  width: 100%;
   object-fit: contain;
 `;
+const ImageDiv = styled.div`
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+`;
+const RewardImage = styled((props) => (
+    <ImageDiv><HtmlImage {...props} /></ImageDiv>
+))``;
 
 function InformationContainer() {
   const navigate = useNavigate();
@@ -56,7 +68,7 @@ function InformationContainer() {
           Do you own items which you seldom use? Loan it to your peers to earn
           attractive rewards and make a potential friend!
         </Description>
-        <ButtonContainer>
+        <ButtonContainer direction="row">
           <ButtonComponent
             state={"primary"}
             onClick={() => {
