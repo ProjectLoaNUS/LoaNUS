@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import { useState } from "react";
-import axios from "axios";
 import { BACKEND_URL } from "../database/const";
 import InformationContainer from "../components/DesriptionCard";
+import Bubbletea from "../assets/BubbleTea.png";
+import Coffee from "../assets/Coffee.jpg";
+import { useNavigate } from "react-router-dom";
+import { Stack } from "@mui/material";
+import ButtonComponent from "../components/Button";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -13,6 +17,7 @@ function CreateRequestPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState();
+  const navigate = useNavigate();
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -51,7 +56,22 @@ function CreateRequestPage() {
         <input type="file" onChange={changeHandler}></input>
         <button type="submit">Upload</button>
       </form>
-      <InformationContainer></InformationContainer>
+      <InformationContainer title="Earn rewards and make a friend" desc="Do you own items which you seldom use? Loan it to your peers to earn
+          attractive rewards and make a potential friend!" imgs={[Bubbletea, Coffee]}>
+          <Stack direction="row">
+            <ButtonComponent
+              state={"primary"}
+              onClick={() => {
+                navigate("/view-rewards");
+              }}
+              text={"View Rewards"} />
+            <ButtonComponent
+              onClick={() => {
+                navigate("/create-request");
+              }}
+              text={"Create Request"} />
+          </Stack>
+      </InformationContainer>
     </MainContainer>
   );
 }

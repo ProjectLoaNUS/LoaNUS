@@ -1,9 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import ButtonComponent from "./Button";
-import Bubbletea from "../assets/BubbleTea.png";
-import Coffee from "../assets/Coffee.jpg";
-import { Stack } from "@mui/material";
 
 const MainContainer = styled.div`
   width: 80vw;
@@ -32,10 +28,6 @@ const Description = styled.p`
   text-align: center;
   overflow-wrap: break-word;
 `;
-const ButtonContainer = styled(Stack)`
-  display: flex;
-  flex-direction: row;
-`;
 const RewardContainer = styled.div`
   display: flex;
   flex: 1 1 60%;
@@ -58,35 +50,21 @@ const RewardImage = styled((props) => (
     <ImageDiv><HtmlImage {...props} /></ImageDiv>
 ))``;
 
-function InformationContainer() {
+function InformationContainer(props) {
   const navigate = useNavigate();
   return (
     <MainContainer>
       <DescriptionContainer>
-        <Title>Earn rewards and make a friend</Title>
+        <Title>{props.title}</Title>
         <Description>
-          Do you own items which you seldom use? Loan it to your peers to earn
-          attractive rewards and make a potential friend!
+          {props.desc}
         </Description>
-        <ButtonContainer direction="row">
-          <ButtonComponent
-            state={"primary"}
-            onClick={() => {
-              navigate("/view-rewards");
-            }}
-            text={"View Rewards"}
-          ></ButtonComponent>
-          <ButtonComponent
-            onClick={() => {
-              navigate("/create-request");
-            }}
-            text={"Create Request"}
-          ></ButtonComponent>
-        </ButtonContainer>
+        {props.children}
       </DescriptionContainer>
       <RewardContainer>
-        <RewardImage src={Bubbletea}></RewardImage>
-        <RewardImage src={Coffee}></RewardImage>
+        {props.imgs.map((img, index) => {
+          return <RewardImage key={index} src={img} />
+        })}
       </RewardContainer>
     </MainContainer>
   );
