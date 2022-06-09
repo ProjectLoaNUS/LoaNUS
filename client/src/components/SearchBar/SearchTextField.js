@@ -1,5 +1,6 @@
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import styled from "styled-components";
+import { alpha } from '@mui/material/styles';
 import SearchIcon from "@mui/icons-material/Search";
 
 const GrowTextField = styled(TextField)`
@@ -13,11 +14,19 @@ const StyledTextField = styled((props) => (
         border: `1px solid ${theme.palette.contrast.light}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
         borderRadius: 4,
         color: theme.palette.contrast.light, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-        '&:focus': {
-            borderColor: theme.palette.accent.main // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        transition: theme.transitions.create([
+            'border-color',
+            'background-color',
+            'box-shadow',
+        ]),
+        '&.Mui-focused': {
+            borderColor: theme.palette.accent.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+            boxShadow: `${alpha(theme.palette.accent.main, 0.25)} 0 0 0 2px`,
+            backgroundColor: '#1F2933'
         },
         '&:hover': {
-            borderColor: theme.palette.accent.main
+            borderColor: theme.palette.accent.main,
+            backgroundColor: '#30404F'
         }
     },
     '& .MuiInputLabel-root': {
