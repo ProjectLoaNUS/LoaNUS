@@ -16,13 +16,10 @@ const MainContainer = styled.div`
   align-items: center;
   margin-left: 100px;
 `;
-const ImageContainer = styled.div`
-  width: 60%;
-`;
 const DescriptionContainer = styled.div`
-  width: 40%;
   display: flex;
   flex-direction: column;
+  flex: 1 0 40%;
   align-items: center;
 `;
 const Title = styled.h1`
@@ -38,11 +35,15 @@ const ButtonContainer = styled.div`
 `;
 const RewardContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex: 1 1 60%;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
 `;
 const RewardImage = styled.img`
-  width: 50%;
-  height: 100px;
+  flex: 1 1 auto;
+  max-height: 100%;
+  object-fit: contain;
 `;
 
 function InformationContainer() {
@@ -71,12 +72,10 @@ function InformationContainer() {
           ></ButtonComponent>
         </ButtonContainer>
       </DescriptionContainer>
-      <ImageContainer>
-        <RewardContainer>
-          <RewardImage src={Bubbletea}></RewardImage>
-          <RewardImage src={Coffee}></RewardImage>
-        </RewardContainer>
-      </ImageContainer>
+      <RewardContainer>
+        <RewardImage src={Bubbletea}></RewardImage>
+        <RewardImage src={Coffee}></RewardImage>
+      </RewardContainer>
     </MainContainer>
   );
 }
