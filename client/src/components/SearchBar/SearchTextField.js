@@ -22,7 +22,7 @@ const StyledTextField = styled((props) => (
         '&.Mui-focused': {
             borderColor: theme.palette.accent.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
             boxShadow: `${alpha(theme.palette.accent.main, 0.25)} 0 0 0 2px`,
-            backgroundColor: '#1F2933'
+            backgroundColor: '#051622'
         },
         '&:hover': {
             borderColor: theme.palette.accent.main,
