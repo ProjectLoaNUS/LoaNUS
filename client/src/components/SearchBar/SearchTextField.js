@@ -11,9 +11,9 @@ const StyledTextField = styled((props) => (
         <GrowTextField {...props} />
     ))(({ theme }) => ({
     '& .MuiFilledInput-root': {
-        border: `1px solid ${theme.palette.contrast.light}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        border: `1px solid ${theme.palette.primary.main}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
         borderRadius: 4,
-        color: theme.palette.contrast.light, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        color: theme.palette.primary.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
         transition: theme.transitions.create([
             'border-color',
             'background-color',
@@ -30,7 +30,7 @@ const StyledTextField = styled((props) => (
         }
     },
     '& .MuiInputLabel-root': {
-        color: theme.palette.contrast.light // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        color: theme.palette.primary.main // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
     },
 }));
 
@@ -42,7 +42,7 @@ export default function SearchTextField() {
             InputProps={{
                 endAdornment: 
                     <InputAdornment position="end">
-                        <IconButton color="contrast">
+                        <IconButton color="primary">
                             <SearchIcon />
                         </IconButton>
                     </InputAdornment>,

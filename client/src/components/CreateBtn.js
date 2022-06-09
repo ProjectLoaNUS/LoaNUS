@@ -23,7 +23,7 @@ export default function CreateBtn() {
               aria-controls={'create-menu'}
               aria-haspopup="true"
               onClick={handleClick}
-              color="contrast">
+              color="primary">
                   <AddCircleOutline />
               </IconButton>
             <Menu
