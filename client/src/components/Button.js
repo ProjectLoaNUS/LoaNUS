@@ -1,6 +1,7 @@
+import { Button } from "@mui/material";
 import styled from "styled-components";
 
-const Button = styled.button`
+const MyButton = styled(Button)`
   min-height: 35px;
   height: auto;
   width: ${(props) => props.width ?? `max-content`};
@@ -19,13 +20,6 @@ const Button = styled.button`
   line-height: 1px;
   white-space: nowrap;
 
-  &:active {
-    background: ${(props) =>
-      props.state === "primary" ? "#D8E6DF" : "#8B8B8B"};
-    color: #8b8b8b;
-    transform: scale(0.95);
-  }
-
   &:disabled {
     color: #bfbfbf;
     border-color: #bfbfbf;
@@ -34,16 +28,16 @@ const Button = styled.button`
 `;
 function ButtonComponent(props) {
   return (
-    <Button
+    <MyButton
       onClick={props.onClick}
       state={props.state}
       disabled={props.disabled}
       type={props.type ?? "button"}
       width={props.setWidth}
-      size={props.size ?? "regular"}
+      size={props.size ?? "medium"}
     >
       {props.text}
-    </Button>
+    </MyButton>
   );
 }
 
