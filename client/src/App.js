@@ -6,6 +6,7 @@ import ProfilePage from "./pages/ProfilePage";
 import CreateRequestPage from "./pages/CreateRequestPage";
 import SignInPage from "./pages/SignInPage";
 import BackendTestPage from "./pages/BackendTestPage";
+import RewardsPage from "./pages/RewardsPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/create-request" element={<CreateRequestPage />} />
         <Route path="/backend-test" element={<BackendTestPage />} />
+        <Route path="/view-rewards" element={<RewardsPage />} />
       </Routes>
     </div>
   );

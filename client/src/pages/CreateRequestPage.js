@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
-import axios from "axios";
 import { BACKEND_URL } from "../database/const";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
+  min-height: 100vh;
 `;
 
 function CreateRequestPage() {
