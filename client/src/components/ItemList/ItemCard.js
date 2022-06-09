@@ -5,18 +5,21 @@ import { CardMedia } from "@mui/material";
 import { CardContent } from "@mui/material";
 import { CardHeader } from "@mui/material";
 
-const CardContainer = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-self: center;
-`;
+const CardContainer = styled(Card)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  alignSelf: "center",
+  '& .MuiCardMedia-root': {
+    height: "35vh"
+  }
+}));
 
 export default function ItemCard(props) {
   return (
     <CardContainer>
       <CardHeader title={props.title}></CardHeader>
-      <CardMedia component="img" image={props.image} height="auto"></CardMedia>
+      <CardMedia component={props.component} height="auto"></CardMedia>
       <CardContent>{props.description}</CardContent>
     </CardContainer>
   );

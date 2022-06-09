@@ -1,7 +1,7 @@
 import { Box, Button, Card, FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Typography } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import styled from "styled-components";
-import { useAuth } from "../database/auth";
+import { useAuth } from "../../database/auth";
 import { VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
