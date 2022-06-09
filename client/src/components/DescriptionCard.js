@@ -49,7 +49,7 @@ const RewardImage = styled((props) => (
     <ImageDiv><HtmlImage {...props} /></ImageDiv>
 ))``;
 
-function InformationContainer(props) {
+function DescriptionCard(props) {
   return (
     <MainContainer>
       <DescriptionContainer>
@@ -68,4 +68,4 @@ function InformationContainer(props) {
   );
 }
 
-export default InformationContainer;
+export default DescriptionCard;
