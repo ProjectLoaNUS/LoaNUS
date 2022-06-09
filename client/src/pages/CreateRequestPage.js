@@ -6,6 +6,7 @@ import InformationContainer from "../components/DesriptionCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
+  min-height: 100vh;
 `;
 
 function CreateRequestPage() {
