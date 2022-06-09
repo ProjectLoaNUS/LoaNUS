@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const MainContainer = styled.div`
@@ -51,7 +50,6 @@ const RewardImage = styled((props) => (
 ))``;
 
 function InformationContainer(props) {
-  const navigate = useNavigate();
   return (
     <MainContainer>
       <DescriptionContainer>
