@@ -1,8 +1,9 @@
 import { IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { WideFormControl } from "./AuthCard";
+import { SignInFormControl } from "./AuthCard";
 import { useState } from "react";
+import styled, {keyframes} from "styled-components";
 
 export const signInTitle = "Sign in to your account";
 export const signInBtnText = "Sign In";
@@ -20,7 +21,7 @@ export default function SignInComp(props) {
     };
 
     return (
-        <WideFormControl required variant="outlined" style={style}>
+        <SignInFormControl required variant="outlined" style={style}>
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
                 id="password"
@@ -37,6 +38,6 @@ export default function SignInComp(props) {
                 }
                 label="Password"
                 onChange={(event) => setPassword(event.target.value)} />
-        </WideFormControl>
+        </SignInFormControl>
     );
 }
