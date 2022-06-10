@@ -22,7 +22,7 @@ function CreateRequestPage() {
     formData.append("name", name);
     formData.append("description", description);
     formData.append("image", selectedFile);
-    fetch(`${BACKEND_URL}/item-upload`, {
+    fetch(`${BACKEND_URL}/api/item-upload`, {
       method: "POST",
       body: formData,
     })

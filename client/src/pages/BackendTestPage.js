@@ -10,12 +10,12 @@ function BackendTestPage() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    Axios.get(`${BACKEND_URL}/getUsers`).then((response) => {
+    Axios.get(`${BACKEND_URL}/api/getUsers`).then((response) => {
       setlistofUsers(response.data);
     });
   }, []);
   const handlecreate = function () {
-    Axios.post(`${BACKEND_URL}/createUser`, {
+    Axios.post(`${BACKEND_URL}/api/signUp`, {
       name: name,
       age: age,
       username: username,

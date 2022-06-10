@@ -17,7 +17,7 @@ mongoose.connect(
   "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
 );
 
-app.post("/hasUser", async (req, res) => {
+app.post("/api/hasUser", async (req, res) => {
   const givenUsername = req.body.username;
   const user = await UserModel.findOne({
     username: givenUsername
@@ -34,7 +34,7 @@ app.post("/hasUser", async (req, res) => {
   });
 });
 
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const givenUser = await UserModel.findOne({
     username: req.body.username
   });
@@ -52,7 +52,7 @@ app.post("/login", async (req, res) => {
   });
 });
 
-app.post("/signUpUser", async (req, res) => {
+app.post("/api/signUpUser", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   await UserModel.create({
     name: req.body.name,
@@ -73,7 +73,7 @@ const upload = multer({
   storage: storage,
   limits: { fieldsize: 1024 * 1024 * 3 },
 });
-app.get("/getItemTexts", (req, res) => {
+app.get("/api/getItemTexts", (req, res) => {
   ItemModel.find({}, ['name', 'desc'], null, (err, items) => {
     if (err) {
       console.log(err);
@@ -83,7 +83,7 @@ app.get("/getItemTexts", (req, res) => {
     }
   });
 });
-app.get("/getItemImages", (req, res) => {
+app.get("/api/getItemImages", (req, res) => {
   ItemModel.find({}, ['image'], null, (err, items) => {
     if (err) {
       console.log(err);
@@ -93,7 +93,7 @@ app.get("/getItemImages", (req, res) => {
     }
   });
 });
-app.post("/item-upload", upload.single("image"), (request, response, next) => {
+app.post("/api/item-upload", upload.single("image"), (request, response, next) => {
   console.log(request.file);
   const obj = {
     name: request.body.name,

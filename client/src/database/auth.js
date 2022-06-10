@@ -32,7 +32,7 @@ function useAuthProvider() {
     };
 
     const signInUserPass = async (givenUsername, givenPassword) => {
-        const res = await fetch(`${BACKEND_URL}/login`, {
+        const res = await fetch(`${BACKEND_URL}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ function useAuthProvider() {
     const signUpUser = async (givenName, givenAge, givenUsername, givenPassword) => {
         const isRegistered = await hasUser(givenUsername);
         if (!isRegistered) {
-            const req = await fetch(`${BACKEND_URL}/signUpUser`, {
+            const req = await fetch(`${BACKEND_URL}/api/signUpUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ function useAuthProvider() {
     }
 
     const hasUser = async (givenUsername) => {
-        const req = await fetch(`${BACKEND_URL}/hasUser`, {
+        const req = await fetch(`${BACKEND_URL}/api/hasUser`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

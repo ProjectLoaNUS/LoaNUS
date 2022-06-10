@@ -17,13 +17,13 @@ function HomePage() {
 
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/getItemImages`)
+      .get(`${BACKEND_URL}/api/getItemImages`)
       .then((res) => {
         binsToImgs(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
     axios
-      .get(`${BACKEND_URL}/getItemTexts`)
+      .get(`${BACKEND_URL}/api/getItemTexts`)
       .then((res) => {
         setTexts(res.data);
       })
