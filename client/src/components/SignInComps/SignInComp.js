@@ -8,15 +8,11 @@ export const signInTitle = "Sign in to your account";
 export const signInBtnText = "Sign In";
 
 export default function SignInComp(props) {
-    const { setPassword } = props;
-    const [ values, setValues ] = useState({
-        showPassword: false,
-    });
+    const { setPassword, style } = props;
+    const [ showPassword, setShowPassword ] = useState(false);
     
     const handleClickShowPassword = () => {
-        setValues({
-            showPassword: !values.showPassword,
-        });
+        setShowPassword(!showPassword);
     };
     
     const handleMouseDownPassword = (event) => {
@@ -24,18 +20,18 @@ export default function SignInComp(props) {
     };
 
     return (
-        <WideFormControl required variant="outlined">
+        <WideFormControl required variant="outlined" style={style}>
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
                 id="password"
-                type={values.showPassword ? "text" : "password"}
+                type={showPassword ? "text" : "password"}
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           edge="end">
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
                     </InputAdornment>
                 }
