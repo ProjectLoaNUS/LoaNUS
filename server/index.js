@@ -25,11 +25,37 @@ app.get("/getUsers", (req, res) => {
   });
 });
 
+app.post("/hasUser", async (req, res) => {
+  const givenUsername = req.body.username;
+  const user = await UserModel.findOne({
+    username: givenUsername
+  });
+  if (!user) {
+    return res.json({
+      status: 'ok',
+      hasUser: false
+    });
+  }
+  return res.json({
+    status: 'ok',
+    hasUser: true
+  });
+});
+
 app.post("/signUpUser", async (req, res) => {
-  const user = req.body;
-  const newUser = new UserModel(user);
-  await newUser.save();
-  res.json(user);
+  var isSuccessful = true;
+  UserModel.create({
+    name: req.body.name,
+    age: req.body.age,
+    username: req.body.username,
+    password: req.body.password
+  }, (err) => {
+    isSuccessful = false;
+    res.json({status: 'error'});
+  })
+  if (isSuccessful) {
+    res.json({status: 'ok'});
+  }
 });
 
 const storage = multer.memoryStorage();
