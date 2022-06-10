@@ -43,6 +43,8 @@ function useAuthProvider() {
         });
         const data = await res.json();
         if (data.status === 'ok') {
+            setUser(data.user);
+            setIsGoogleSignIn(false);
             return true;
         }
         console.log(data.error);
