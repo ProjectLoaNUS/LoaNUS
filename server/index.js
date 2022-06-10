@@ -16,15 +16,6 @@ app.use(cors());
 mongoose.connect(
   "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
 );
-app.get("/getUsers", (req, res) => {
-  UserModel.find({}, (err, result) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
-});
 
 app.post("/hasUser", async (req, res) => {
   const givenUsername = req.body.username;
