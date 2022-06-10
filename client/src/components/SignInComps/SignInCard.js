@@ -68,10 +68,8 @@ export default function SignInCard() {
         });
     };
 
-    const asyncSignInUserPass = (username, password) => async () => signInUserPass(username, password);
-
     const completeSignInUserPass = (username, password) => {
-        asyncSignInUserPass(username, password)().then((isSignedIn) => {
+        signInUserPass(username, password).then((isSignedIn) => {
             if(isSignedIn) {
                 prevPage();
             }

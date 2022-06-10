@@ -15,15 +15,6 @@ function useAuthProvider() {
     const [ isGoogleSignIn, setIsGoogleSignIn ] = useState(false);
     const googleAuthProvider = new GoogleAuthProvider();
 
-    const [ listOfUsers, setListOfUsers ] = useState([]);
-    useEffect(() => {
-        Axios.get(`${BACKEND_URL}/getUsers`).then((response) => {
-            setListOfUsers(response.data);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }, []);
-
     const signInWithGoogle = () => {
         return signInWithPopup(auth, googleAuthProvider).then((result) => {
             setUser(result.user);
@@ -40,15 +31,23 @@ function useAuthProvider() {
         setUser(false);
     };
 
-    const signInUserPass = (username, password) => {
-        return listOfUsers.some((knownUser) => {
-            if(knownUser.username === username && knownUser.password === password) {
-                setUser(knownUser);
-                setIsGoogleSignIn(false);
-                return true;
-            }
-            return false;
+    const signInUserPass = async (givenUsername, givenPassword) => {
+        const res = await fetch(`${BACKEND_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: givenUsername,
+                password: givenPassword
+            })
         });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            return true;
+        }
+        console.log(data.error);
+        return false;
     };
 
     const signUpUser = async (givenName, givenAge, givenUsername, givenPassword) => {
