@@ -28,7 +28,7 @@ export default function SignUpCard() {
     const { hasUser, signInWithGoogle, signUpUser } = useAuth();
     const [ givenName, setGivenName ] = useState("");
     const [ givenAge, setGivenAge ] = useState(-1);
-    const [ givenUsername, setGivenUsername ]  = useState("");
+    const [ givenEmail, setGivenEmail ]  = useState("");
     const [ givenPassword, setGivenPassword ] = useState("");
     const [values, setValues] = useState({
         showPassword: false,
@@ -37,7 +37,7 @@ export default function SignUpCard() {
 
     const handleSignUp = (event) => {
         event.preventDefault();
-        const isSuccessful = signUpUser(givenName, givenAge, givenUsername, givenPassword);
+        const isSuccessful = signUpUser(givenName, givenAge, givenEmail, givenPassword);
         if (!isSuccessful) {
             console.log('Error while creating user account');
         }
@@ -69,7 +69,7 @@ export default function SignUpCard() {
         <FlexCard component="form" color="secondary" onSubmit={handleSignUp}>
             <Typography variant="body1">Log in to your account</Typography>
             <WideFormControl required variant="outlined">
-                <InputLabel htmlFor="name">Your name</InputLabel>
+                <InputLabel htmlFor="name">Your full name</InputLabel>
                 <OutlinedInput
                   required
                   id="name"
@@ -87,13 +87,13 @@ export default function SignUpCard() {
                   onChange={(event) => setGivenAge(event.target.value)} />
             </WideFormControl>
             <WideFormControl required variant="outlined">
-                <InputLabel htmlFor="username">Username</InputLabel>
+                <InputLabel htmlFor="email">Email</InputLabel>
                 <OutlinedInput
                   required
-                  id="username"
+                  id="email"
                   variant="outlined"
-                  label="Username"
-                  onChange={(event) => setGivenUsername(event.target.value)} />
+                  label="Email"
+                  onChange={(event) => setGivenEmail(event.target.value)} />
             </WideFormControl>
             <WideFormControl required variant="outlined">
                 <InputLabel htmlFor="password">Password</InputLabel>

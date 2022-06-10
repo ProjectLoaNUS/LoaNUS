@@ -30,14 +30,14 @@ function useAuthProvider() {
         setUser(false);
     };
 
-    const signInUserPass = async (givenUsername, givenPassword) => {
+    const signInUserPass = async (givenEmail, givenPassword) => {
         const res = await fetch(`${BACKEND_URL}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: givenUsername,
+                email: givenEmail,
                 password: givenPassword
             })
         });
@@ -51,8 +51,8 @@ function useAuthProvider() {
         return false;
     };
 
-    const signUpUser = async (givenName, givenAge, givenUsername, givenPassword) => {
-        const isRegistered = await hasUser(givenUsername);
+    const signUpUser = async (givenName, givenAge, givenEmail, givenPassword) => {
+        const isRegistered = await hasUser(givenEmail);
         if (!isRegistered) {
             const req = await fetch(`${BACKEND_URL}/api/signUpUser`, {
                 method: 'POST',
@@ -62,7 +62,7 @@ function useAuthProvider() {
                 body: JSON.stringify({
                     name: givenName,
                     age: givenAge,
-                    username: givenUsername,
+                    email: givenEmail,
                     password: givenPassword
                 })
             });
@@ -74,14 +74,14 @@ function useAuthProvider() {
         return false;
     }
 
-    const hasUser = async (givenUsername) => {
+    const hasUser = async (givenEmail) => {
         const req = await fetch(`${BACKEND_URL}/api/hasUser`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: givenUsername
+                email: givenEmail
             })
         });
 

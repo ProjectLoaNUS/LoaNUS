@@ -18,9 +18,9 @@ mongoose.connect(
 );
 
 app.post("/api/hasUser", async (req, res) => {
-  const givenUsername = req.body.username;
+  const givenEmail = req.body.email;
   const user = await UserModel.findOne({
-    username: givenUsername
+    email: givenEmail
   });
   if (!user) {
     return res.json({
@@ -36,7 +36,7 @@ app.post("/api/hasUser", async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
   const givenUser = await UserModel.findOne({
-    username: req.body.username
+    email: req.body.email
   });
   if (!givenUser) {
     return res.json({status: 'error', error: 'No such user'});
@@ -48,7 +48,7 @@ app.post("/api/login", async (req, res) => {
     if (result) {
       return res.json({status: 'ok', user: givenUser});
     }
-    return res.json({status: 'error', error: `Invalid password for {givenUser.username}`});
+    return res.json({status: 'error', error: `Invalid password for {givenUser.name}`});
   });
 });
 
@@ -57,7 +57,7 @@ app.post("/api/signUpUser", async (req, res) => {
   await UserModel.create({
     name: req.body.name,
     age: req.body.age,
-    username: req.body.username,
+    email: req.body.email,
     password: hashedPassword
   }, (err) => {
     if (err) {

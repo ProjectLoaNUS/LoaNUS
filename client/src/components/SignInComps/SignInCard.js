@@ -34,7 +34,7 @@ const WideFormControl = styled(FormControl)`
 
 export default function SignInCard() {
     const { signInWithGoogle, signInUserPass } = useAuth();
-    const [ givenUsername, setGivenUsername ]  = useState("");
+    const [ givenEmail, setGivenEmail ]  = useState("");
     const [ givenPassword, setGivenPassword ] = useState("");
     const [values, setValues] = useState({
         showPassword: false,
@@ -43,7 +43,7 @@ export default function SignInCard() {
 
     const handleSignIn = (event) => {
         event.preventDefault();
-        completeSignInUserPass(givenUsername, givenPassword);
+        completeSignInUserPass(givenEmail, givenPassword);
     };
     
     const handleClickShowPassword = () => {
@@ -68,8 +68,8 @@ export default function SignInCard() {
         });
     };
 
-    const completeSignInUserPass = (username, password) => {
-        signInUserPass(username, password).then((isSignedIn) => {
+    const completeSignInUserPass = (email, password) => {
+        signInUserPass(email, password).then((isSignedIn) => {
             if(isSignedIn) {
                 prevPage();
             }
@@ -80,13 +80,13 @@ export default function SignInCard() {
       <FlexCard component="form" color="secondary" onSubmit={handleSignIn}>
           <Typography variant="body1">Log in to your account</Typography>
           <WideFormControl required variant="outlined">
-              <InputLabel htmlFor="username">Email/Username</InputLabel>
+              <InputLabel htmlFor="email">Email</InputLabel>
               <OutlinedInput
                 required
-                id="username"
+                id="email"
                 variant="outlined"
-                label="Email/Username"
-                onChange={(event) => setGivenUsername(event.target.value)} />
+                label="Email"
+                onChange={(event) => setGivenEmail(event.target.value)} />
           </WideFormControl>
           <WideFormControl required variant="outlined">
               <InputLabel htmlFor="password">Password</InputLabel>
