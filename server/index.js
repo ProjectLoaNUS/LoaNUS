@@ -43,6 +43,25 @@ app.post("/hasUser", async (req, res) => {
   });
 });
 
+app.post("/login", async (req, res) => {
+  const givenUser = await UserModel.findOne({
+    username: req.body.username
+  });
+  if (!givenUser) {
+    return res.json({status: 'error', error: 'No such user'});
+  }
+  await bcrypt.compare(req.body.password, givenUser.password, (err, result) => {
+    if (err) {
+      return res.json({status: 'error', error: err});
+    }
+    if (result) {
+      console.log('success');
+      return res.json({status: 'ok', user: givenUser});
+    }
+    return res.json({status: 'error', error: `Invalid password for {givenUser.username}`});
+  });
+});
+
 app.post("/signUpUser", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   await UserModel.create({
