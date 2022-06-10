@@ -8,6 +8,7 @@ const UserModel = require("./models/Users");
 const ItemModel = require("./models/Items");
 const cors = require("cors");
 const { request } = require("http");
+const bcrypt = require('bcryptjs');
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
@@ -43,19 +44,18 @@ app.post("/hasUser", async (req, res) => {
 });
 
 app.post("/signUpUser", async (req, res) => {
-  var isSuccessful = true;
-  UserModel.create({
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  await UserModel.create({
     name: req.body.name,
     age: req.body.age,
     username: req.body.username,
-    password: req.body.password
+    password: hashedPassword
   }, (err) => {
-    isSuccessful = false;
-    res.json({status: 'error'});
+    if (err) {
+      return res.json({status: 'error', error: err});
+    }
   })
-  if (isSuccessful) {
-    res.json({status: 'ok'});
-  }
+  return res.json({status: 'ok'});
 });
 
 const storage = multer.memoryStorage();
