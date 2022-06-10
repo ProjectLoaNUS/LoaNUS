@@ -25,7 +25,7 @@ const WideBtn = styled(Button)`
 `;
 
 export default function SignUpCard() {
-    const { hasUser, signInWithGoogle, signInUserPass, signUpUser } = useAuth();
+    const { hasUser, signInWithGoogle, signUpUser } = useAuth();
     const [ givenName, setGivenName ] = useState("");
     const [ givenAge, setGivenAge ] = useState(-1);
     const [ givenUsername, setGivenUsername ]  = useState("");

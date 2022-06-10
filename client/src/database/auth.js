@@ -1,7 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { auth } from './setup';
-import Axios from "axios";
 import { BACKEND_URL } from './const';
 
 const authCtx = createContext({
