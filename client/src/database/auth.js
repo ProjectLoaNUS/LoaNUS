@@ -65,7 +65,8 @@ function useAuthProvider() {
                     password: givenPassword
                 })
             });
-            if (req.body.status === 'ok') {
+            const data = await req.json();
+            if (data.status === 'ok') {
                 return true;
             }
             return false;
