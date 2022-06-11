@@ -25,6 +25,7 @@ export default function SignUpComp(props) {
                   id="age"
                   variant="outlined"
                   label="Your age"
+                  type="number"
                   onChange={(event) => setAge(event.target.value)} />
             </SignUpFormControl>
         </>
