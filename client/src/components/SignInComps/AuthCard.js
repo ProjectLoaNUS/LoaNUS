@@ -148,7 +148,9 @@ export default function AuthCard() {
             <Typography variant="body1">{ emailTitle }</Typography>
             { showSignUp && (<SignUpComp 
                 setName={setGivenName} setAge={setGivenAge} />) }
-            <EmailComp setEmail={ setGivenEmail } />
+            <EmailComp
+                setEmail={ setGivenEmail }
+                setIsPwError={setIsPwError} />
             { (showSignIn) && (<SignInComp 
                 setPassword={ setGivenPassword1 }/>) }
             { (showSignUp ) && (
@@ -174,7 +176,7 @@ export default function AuthCard() {
                         ( showSignUp ? signUpBtnText : 
                                 emailBtnText ) }
             </WideBtn>
-            {isSubmitErr && 
+            {!!submitErrHelperText && 
                 (<FormHelperText id="errorHelper" error>{submitErrHelperText}</FormHelperText>)}
             <AltSignInComp />
         </FlexCard>
