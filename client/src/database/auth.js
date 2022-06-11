@@ -45,10 +45,9 @@ function useAuthProvider() {
         if (data.status === 'ok') {
             setUser(data.user);
             setIsGoogleSignIn(false);
-            return true;
+            return signInResultCodes.SUCCESS;
         }
-        console.log(data.error);
-        return false;
+        return data.errorCode;
     };
 
     const signUpUser = async (givenName, givenAge, givenEmail, givenPassword) => {

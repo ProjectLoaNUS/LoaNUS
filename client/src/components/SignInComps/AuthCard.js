@@ -2,7 +2,7 @@ import { Box, Button, Card, FormControl, FormHelperText, Typography } from "@mui
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, {keyframes} from "styled-components";
-import { useAuth } from "../../database/auth";
+import { signInResultCodes, signInResultTexts, useAuth } from "../../database/auth";
 import AltSignInComp from "./AltSignInComp";
 import EmailComp, { emailBtnText, emailTitle } from "./EmailComp";
 import SignInComp, { signInBtnText } from "./SignInComp";
@@ -104,12 +104,17 @@ export default function AuthCard() {
     };
 
     const completeSignInUserPass = (email, password) => {
-        signInUserPass(email, password).then((isSignedIn) => {
-            if(isSignedIn) {
-                prevPage();
-            } else {
-                setSubmitErrHelperText("Sign in failed");
-                setIsSubmitErr(true);
+        signInUserPass(email, password).then((resultCode) => {
+            switch(resultCode) {
+                case signInResultCodes.SUCCESS:
+                    prevPage();
+                    break;
+                case signInResultCodes.INVALID_PASSWORD:
+                case signInResultCodes.NO_SUCH_USER:
+                case signInResultCodes.UNKNOWN:
+                    setSubmitErrHelperText(signInResultTexts[resultCode]);
+                    setIsSubmitErr(true);
+                    break;
             }
         });
     };
