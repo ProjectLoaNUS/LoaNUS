@@ -70,9 +70,12 @@ export default function AuthCard() {
 
     const { hasUser, signInUserPass, signUpUser } = useAuth();
     const [ givenEmail, setGivenEmail ]  = useState("");
-    const [ givenPassword, setGivenPassword ] = useState("");
+    const [ givenPassword1, setGivenPassword1 ] = useState("");
+    const [ givenPassword2, setGivenPassword2 ] = useState("");
     const [ givenName, setGivenName ] = useState("");
     const [ givenAge, setGivenAge ] = useState(-1);
+    const [ isPwError, setIsPwError ] = useState(false);
+    const pwErrHelperText = "Passwords don't match";
     const navigate = useNavigate();
 
     const handleEmail = (event) => {
@@ -91,7 +94,7 @@ export default function AuthCard() {
 
     const handleSignIn = (event) => {
         event.preventDefault();
-        completeSignInUserPass(givenEmail, givenPassword);
+        completeSignInUserPass(givenEmail, givenPassword1);
     };
 
     const prevPage = () => {
@@ -108,9 +111,19 @@ export default function AuthCard() {
 
     const handleSignUp = (event) => {
         event.preventDefault();
-        const isSuccessful = signUpUser(givenName, givenAge, givenEmail, givenPassword);
+        const isSuccessful = signUpUser(givenName, givenAge, givenEmail, givenPassword1);
         if (!isSuccessful) {
             console.log('Error while creating user account');
+        }
+    }
+
+    const handleChangePasswordSignUp = (event, password1Setter, password2) => {
+        const password1 = event.target.value;
+        password1Setter(password1);
+        if (password1 === password2) {
+            setIsPwError(false);
+        } else {
+            setIsPwError(true);
         }
     }
 
@@ -125,12 +138,26 @@ export default function AuthCard() {
             { showSignUp && (<SignUpComp 
                 setName={setGivenName} setAge={setGivenAge} />) }
             <EmailComp setEmail={ setGivenEmail } />
-            { (showSignIn || showSignUp ) && (<SignInComp 
-                setPassword={ setGivenPassword }/>) }
+            { (showSignIn) && (<SignInComp 
+                setPassword={ setGivenPassword1 }/>) }
+            { (showSignUp ) && (
+                <>
+                    <SignInComp 
+                        id="password1"
+                        handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
+                        isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
+                    <SignInComp 
+                        id="password2"
+                        label="Re-enter password"
+                        handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
+                        isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
+                </>
+            ) }
             <WideBtn
                 id="submit"
                 type="submit"
                 variant="contained"
+                disabled={isPwError}
                 color="success">
                 { showSignIn ? signInBtnText : 
                         ( showSignUp ? signUpBtnText : 
