@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
+import { FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { SignInFormControl } from "./AuthCard";
@@ -9,8 +9,12 @@ export const signInTitle = "Sign in to your account";
 export const signInBtnText = "Sign In";
 
 export default function SignInComp(props) {
-    const { setPassword, style } = props;
+    const { handleChangePassword, id, isPwError, pwErrHelperText, label, setPassword, style } = props;
     const [ showPassword, setShowPassword ] = useState(false);
+
+    const handleChangePasswordSignIn = (event) => {
+        setPassword(event.target.value);
+    }
     
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -21,10 +25,10 @@ export default function SignInComp(props) {
     };
 
     return (
-        <SignInFormControl required variant="outlined" style={style}>
-            <InputLabel htmlFor="password">Password</InputLabel>
+        <SignInFormControl error={isPwError} required variant="outlined" style={style}>
+            <InputLabel htmlFor={ id || "password" }>{ label || "Password" }</InputLabel>
             <OutlinedInput
-                id="password"
+                id={ id || "password" }
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                     <InputAdornment position="end">
@@ -36,8 +40,9 @@ export default function SignInComp(props) {
                           </IconButton>
                     </InputAdornment>
                 }
-                label="Password"
-                onChange={(event) => setPassword(event.target.value)} />
+                label={ label || "Password" }
+                onChange={handleChangePassword || handleChangePasswordSignIn} />
+            {isPwError && <FormHelperText id={id + "-helper"}>{pwErrHelperText}</FormHelperText>}
         </SignInFormControl>
     );
 }
