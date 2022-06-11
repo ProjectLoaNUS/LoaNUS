@@ -140,10 +140,12 @@ export default function AuthCard() {
     const handleChangePasswordSignUp = (event, password1Setter, password2) => {
         const password1 = event.target.value;
         password1Setter(password1);
-        if (password1 === password2) {
-            setIsPwError(false);
-        } else {
-            setIsPwError(true);
+        if (!!password2) {
+            if (password1 === password2) {
+                setIsPwError(false);
+            } else {
+                setIsPwError(true);
+            }
         }
     }
 
