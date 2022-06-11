@@ -35,20 +35,26 @@ app.post("/api/hasUser", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res) => {
+  const signInResultCodes = {
+    SUCCESS: 0,
+    INVALID_PASSWORD: 1,
+    NO_SUCH_USER: 2,
+    UNKNOWN: 3
+  }
   const givenUser = await UserModel.findOne({
     email: req.body.email
   });
   if (!givenUser) {
-    return res.json({status: 'error', error: 'No such user'});
+    return res.json({status: 'error', errorCode: signInResultCodes.NO_SUCH_USER, error: `User {givenUser.name} doesn't exist`});
   }
   await bcrypt.compare(req.body.password, givenUser.password, (err, result) => {
     if (err) {
-      return res.json({status: 'error', error: err});
+      return res.json({status: 'error', errorCode: signInResultCodes.UNKNOWN, error: err});
     }
     if (result) {
       return res.json({status: 'ok', user: givenUser});
     }
-    return res.json({status: 'error', error: `Invalid password for {givenUser.name}`});
+    return res.json({status: 'error', errorCode: signInResultCodes.INVALID_PASSWORD, error: `Invalid password for {givenUser.name}`});
   });
 });
 
