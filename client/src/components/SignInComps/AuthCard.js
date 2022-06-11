@@ -23,6 +23,7 @@ export const WideBox = styled(Box)`
     flex-basis: 100%;
     flex-direction: row;
     align-self: stretch;
+    column-gap: 1ch;
 `;
 
 export const WideBtn = styled(Button)`
@@ -31,6 +32,10 @@ export const WideBtn = styled(Button)`
 
 export const WideFormControl = styled(FormControl)`
     align-self: stretch;
+`;
+
+const GrowBtn = styled(Button)`
+    flex: 1 1 auto;
 `;
 
 const scaleAnimationDown = keyframes`
@@ -166,16 +171,36 @@ export default function AuthCard() {
                         isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
                 </>
             ) }
-            <WideBtn
-                id="submit"
-                type="submit"
-                variant="contained"
-                disabled={isPwError}
-                color="success">
-                { showSignIn ? signInBtnText : 
-                        ( showSignUp ? signUpBtnText : 
-                                emailBtnText ) }
-            </WideBtn>
+            { showSignUp ? 
+                (<WideBox>
+                    <GrowBtn
+                        id="sign-in"
+                        variant="outlined"
+                        color="success"
+                        onClick={() => {
+                            setShowSignIn(true);
+                            setShowSignUp(false);
+                        }}>
+                        Sign In
+                    </GrowBtn>
+                    <GrowBtn
+                        id="submit"
+                        type="submit"
+                        variant="contained"
+                        disabled={isPwError}
+                        color="success">
+                            { signUpBtnText }
+                    </GrowBtn>
+                </WideBox>) :
+                (<WideBtn
+                    id="submit"
+                    type="submit"
+                    variant="contained"
+                    disabled={isPwError}
+                    color="success">
+                    { showSignIn ? signInBtnText :  emailBtnText }
+                </WideBtn>)
+            }
             {!!submitErrHelperText && 
                 (<FormHelperText id="errorHelper" error>{submitErrHelperText}</FormHelperText>)}
             <AltSignInComp />
