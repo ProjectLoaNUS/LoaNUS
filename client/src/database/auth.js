@@ -106,13 +106,15 @@ function useAuthProvider() {
 export const signInResultCodes = {
     SUCCESS: 0,
     INVALID_PASSWORD: 1,
-    NO_SUCH_USER: 2
+    NO_SUCH_USER: 2,
+    UNKNOWN: 3
 }
 
 export const signInResultTexts = [
     "Login successful", // Return code 0
     "Invalid password", // Return code 1
-    "No such user" // Return code 2
+    "No such user", // Return code 2
+    "Unknown error occurred" // Return code 3
 ];
 
 export const useAuth = () => {
