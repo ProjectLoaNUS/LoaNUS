@@ -15,7 +15,7 @@ export default function SignUpComp(props) {
                   required
                   id="name"
                   variant="outlined"
-                  label="Your name"
+                  label="Your full name"
                   onChange={(event) => setName(event.target.value)} />
             </SignUpFormControl>
             <SignUpFormControl required variant="outlined">
