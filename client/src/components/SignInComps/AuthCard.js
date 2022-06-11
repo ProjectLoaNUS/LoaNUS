@@ -206,7 +206,7 @@ export default function AuthCard() {
                 </WideBtn>)
             }
             {!!submitErrHelperText && 
-                (<FormHelperText id="errorHelper" error>{submitErrHelperText}</FormHelperText>)}
+                (<FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>)}
             <AltSignInComp />
         </FlexCard>
     );
