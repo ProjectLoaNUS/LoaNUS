@@ -162,21 +162,17 @@ export default function AuthCard() {
             <EmailComp
                 setEmail={ setGivenEmail }
                 setIsPwError={setIsPwError} />
-            { (showSignIn) && (<SignInComp 
-                setPassword={ setGivenPassword1 }/>) }
-            { (showSignUp ) && (
-                <>
-                    <SignInComp 
-                        id="password1"
-                        handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
-                        isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
-                    <SignInComp 
-                        id="password2"
-                        label="Re-enter password"
-                        handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
-                        isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
-                </>
-            ) }
+            { (showSignIn || showSignUp) && 
+                <SignInComp 
+                    id="password1"
+                    handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
+                    isPwError={isPwError} pwErrHelperText={pwErrHelperText}/> }
+            { showSignUp &&
+                <SignInComp 
+                    id="password2"
+                    label="Re-enter password"
+                    handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
+                    isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>}
             { showSignUp ? 
                 (<WideBox>
                     <GrowBtn
