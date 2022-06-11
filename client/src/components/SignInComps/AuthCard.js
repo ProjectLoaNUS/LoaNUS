@@ -107,6 +107,9 @@ export default function AuthCard() {
         signInUserPass(email, password).then((isSignedIn) => {
             if(isSignedIn) {
                 prevPage();
+            } else {
+                setSubmitErrHelperText("Sign in failed");
+                setIsSubmitErr(true);
             }
         });
     };
