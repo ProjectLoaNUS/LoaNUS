@@ -1,9 +1,7 @@
-import { FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
+import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { SignInFormControl } from "./AuthCard";
 import { useState } from "react";
-import styled, {keyframes} from "styled-components";
 
 export const signInTitle = "Sign in to your account";
 export const signInBtnText = "Sign In";
@@ -25,7 +23,7 @@ export default function SignInComp(props) {
     };
 
     return (
-        <SignInFormControl error={isPwError} required variant="outlined" style={style}>
+        <FormControl error={isPwError} required variant="outlined" style={style}>
             <InputLabel htmlFor={ id || "password" }>{ label || "Password" }</InputLabel>
             <OutlinedInput
                 id={ id || "password" }
@@ -43,6 +41,6 @@ export default function SignInComp(props) {
                 label={ label || "Password" }
                 onChange={handleChangePassword || handleChangePasswordSignIn} />
             {isPwError && <FormHelperText id={id + "-helper"}>{pwErrHelperText}</FormHelperText>}
-        </SignInFormControl>
+        </FormControl>
     );
 }

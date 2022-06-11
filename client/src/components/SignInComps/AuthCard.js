@@ -1,20 +1,33 @@
-import { Box, Button, Card, FormControl, FormHelperText, Typography } from "@mui/material";
+import { Box, Button, Card, Fade, FormHelperText, Grow, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled, {keyframes} from "styled-components";
+import styled from "styled-components";
 import { signInResultCodes, signInResultTexts, useAuth } from "../../database/auth";
 import AltSignInComp from "./AltSignInComp";
 import EmailComp, { emailBtnText, emailTitle } from "./EmailComp";
 import SignInComp, { signInBtnText } from "./SignInComp";
 import SignUpComp, { signUpBtnText } from "./SignUpComp";
+import { TransitionGroup } from 'react-transition-group';
+import { CentredDiv } from "../FlexDiv";
 
 export const FlexCard = styled(Card)`
-    display: flex;
+    div:empty {
+        margin: -1rem 0rem 0rem;
+    }
+    div:not([class]) {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        align-self: center;
+        padding: 1em 1ex;
+        gap: 1rem;
+    }
+`;
+
+const FormDiv = styled(CentredDiv)`
     flex-direction: column;
-    align-items: center;
-    align-self: center;
-    padding: 1em 1ex;
-    gap: 1em;
+    align-self: stretch;
+    gap: 1rem;
 `;
 
 export const WideBox = styled(Box)`
@@ -22,51 +35,27 @@ export const WideBox = styled(Box)`
     justify-content: space-between;
     flex-basis: 100%;
     flex-direction: row;
-    align-self: stretch;
     column-gap: 1ch;
-`;
-
-export const WideBtn = styled(Button)`
-    align-self: stretch;
-`;
-
-export const WideFormControl = styled(FormControl)`
-    align-self: stretch;
 `;
 
 const GrowBtn = styled(Button)`
     flex: 1 1 auto;
 `;
 
-const scaleAnimationDown = keyframes`
-    0% {
-        transform: scale(1, 0);
-        transform-origin: center top;
-        animation-timing-function: ease-out;
-    }
-    100% {
-        transform: scale(1, 1);
-        transform-origin: center top;
-    }
+const GrowUp = styled(Grow)`
+    transform-origin: center bottom;
 `;
-export const SignInFormControl = styled(WideFormControl)`
-    animation: ${scaleAnimationDown} 0.5s;
-    animation-fill-mode: both;
+
+const GrowDown = styled(Grow)`
+    transform-origin: center top;
 `;
-const scaleAnimationUp = keyframes`
-    0% {
-        transform: scale(1, 0);
-        transform-origin: center bottom;
-        animation-timing-function: ease-out;
-    }
-    100% {
-        transform: scale(1, 1);
-        transform-origin: center bottom;
-    }
-`;
-export const SignUpFormControl = styled(WideFormControl)`
-    animation: ${scaleAnimationUp} 0.5s;
-    animation-fill-mode: both;
+
+const GrowRight = styled(Grow)`
+    transform-origin: left center;
+`
+
+export const CentredTypo = styled(Typography)`
+    text-align: center;
 `;
 
 export default function AuthCard() {
@@ -156,56 +145,75 @@ export default function AuthCard() {
             onSubmit={ showSignIn ? handleSignIn : 
                     (showSignUp ? handleSignUp : 
                             handleEmail) } >
-            <Typography variant="body1">{ emailTitle }</Typography>
-            { showSignUp && (<SignUpComp 
-                setName={setGivenName} setAge={setGivenAge} />) }
-            <EmailComp
-                setEmail={ setGivenEmail }
-                setIsPwError={setIsPwError} />
-            { (showSignIn || showSignUp) && 
-                <SignInComp 
-                    id="password1"
-                    handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
-                    isPwError={isPwError} pwErrHelperText={pwErrHelperText}/> }
-            { showSignUp &&
-                <SignInComp 
-                    id="password2"
-                    label="Re-enter password"
-                    handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
-                    isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>}
-            { showSignUp ? 
-                (<WideBox>
-                    <GrowBtn
-                        id="sign-in"
-                        variant="outlined"
-                        color="success"
-                        onClick={() => {
-                            setShowSignIn(true);
-                            setShowSignUp(false);
-                        }}>
-                        Sign In
-                    </GrowBtn>
-                    <GrowBtn
-                        id="submit"
-                        type="submit"
-                        variant="contained"
-                        disabled={isPwError}
-                        color="success">
-                            { signUpBtnText }
-                    </GrowBtn>
-                </WideBox>) :
-                (<WideBtn
-                    id="submit"
-                    type="submit"
-                    variant="contained"
-                    disabled={isPwError}
-                    color="success">
-                    { showSignIn ? signInBtnText :  emailBtnText }
-                </WideBtn>)
-            }
-            {!!submitErrHelperText && 
-                (<FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>)}
-            <AltSignInComp />
+            <TransitionGroup>
+                <CentredTypo variant="body1">{ emailTitle }</CentredTypo>
+                { showSignUp &&
+                    <GrowUp timeout={500}>
+                        <FormDiv>
+                            <SignUpComp 
+                                setName={setGivenName} setAge={setGivenAge} showSignUp={showSignUp} />
+                        </FormDiv>
+                    </GrowUp>}
+                <EmailComp
+                    setEmail={ setGivenEmail }
+                    setIsPwError={setIsPwError} />
+                { (showSignIn || showSignUp) && 
+                    <GrowDown timeout={1000}>
+                        <FormDiv>
+                            <SignInComp 
+                                id="password1"
+                                handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
+                                isPwError={isPwError} pwErrHelperText={pwErrHelperText}/> 
+                        </FormDiv>
+                    </GrowDown> }
+                { showSignUp &&
+                    <GrowDown timeout={1000}>
+                        <FormDiv>
+                            <SignInComp 
+                                id="password2"
+                                label="Re-enter password"
+                                handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
+                                isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
+                        </FormDiv>
+                    </GrowDown> }
+                {showSignUp ? 
+                    (<Fade {...(showSignUp ? {timeout: 2000} : {})}>
+                        <WideBox>
+                            <GrowBtn
+                                id="sign-in"
+                                variant="outlined"
+                                color="success"
+                                onClick={() => {
+                                    setShowSignIn(true);
+                                    setShowSignUp(false);
+                                }}>
+                                Sign In
+                            </GrowBtn>
+                            <GrowBtn
+                                id="submit"
+                                type="submit"
+                                variant="contained"
+                                disabled={isPwError}
+                                color="success">
+                                    { signUpBtnText }
+                            </GrowBtn>
+                        </WideBox>
+                    </Fade>) :
+                    (<Fade appear={false} {...(showSignUp ? {timeout: 2000} : {})}>
+                        <Button
+                            id="submit"
+                            type="submit"
+                            variant="contained"
+                            disabled={isPwError}
+                            color="success">
+                            { showSignIn ? signInBtnText :  emailBtnText }
+                        </Button>
+                    </Fade>)
+                }
+                {!!submitErrHelperText && 
+                    (<FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>)}
+                <AltSignInComp />
+            </TransitionGroup>
         </FlexCard>
     );
 }

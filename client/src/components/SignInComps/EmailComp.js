@@ -1,5 +1,4 @@
-import { WideFormControl } from "./AuthCard";
-import { FormHelperText, InputLabel, OutlinedInput } from "@mui/material";
+import { FormControl, FormHelperText, InputLabel, OutlinedInput } from "@mui/material";
 import { useState } from "react";
 
 export const emailTitle = "First enter your email"
@@ -30,7 +29,7 @@ export default function EmailComp(props) {
     }
 
     return (
-        <WideFormControl error={isEmailError} required variant="outlined">
+        <FormControl error={isEmailError} required variant="outlined">
             <InputLabel htmlFor="email">Email</InputLabel>
             <OutlinedInput
                 required
@@ -39,6 +38,6 @@ export default function EmailComp(props) {
                 label="Email"
                 onChange={handleEmailChange} />
             { isEmailError && (<FormHelperText>{ invalidEmailText }</FormHelperText>)}
-        </WideFormControl>
+        </FormControl>
     );
 }
