@@ -130,6 +130,10 @@ export default function AuthCard() {
         if (!isSuccessful) {
             setSubmitErrHelperText("Error while creating user account");
             setIsSubmitErr(true);
+        } else {
+            setSubmitErrHelperText("Account created! Log in now");
+            setShowSignUp(false);
+            setShowSignIn(true);
         }
     }
 
