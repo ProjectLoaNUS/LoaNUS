@@ -1,4 +1,4 @@
-import { Box, Button, Card, FormControl, Typography } from "@mui/material";
+import { Box, Button, Card, FormControl, FormHelperText, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, {keyframes} from "styled-components";
@@ -75,7 +75,9 @@ export default function AuthCard() {
     const [ givenName, setGivenName ] = useState("");
     const [ givenAge, setGivenAge ] = useState(-1);
     const [ isPwError, setIsPwError ] = useState(false);
+    const [ isSubmitErr, setIsSubmitErr ] = useState(false);
     const pwErrHelperText = "Passwords don't match";
+    const [ submitErrHelperText, setSubmitErrHelperText ] = useState("");
     const navigate = useNavigate();
 
     const handleEmail = (event) => {
@@ -109,11 +111,12 @@ export default function AuthCard() {
         });
     };
 
-    const handleSignUp = (event) => {
+    const handleSignUp = async (event) => {
         event.preventDefault();
-        const isSuccessful = signUpUser(givenName, givenAge, givenEmail, givenPassword1);
+        const isSuccessful = await signUpUser(givenName, givenAge, givenEmail, givenPassword1);
         if (!isSuccessful) {
-            console.log('Error while creating user account');
+            setSubmitErrHelperText("Error while creating user account");
+            setIsSubmitErr(true);
         }
     }
 
@@ -163,6 +166,8 @@ export default function AuthCard() {
                         ( showSignUp ? signUpBtnText : 
                                 emailBtnText ) }
             </WideBtn>
+            {isSubmitErr && 
+                (<FormHelperText id="errorHelper" error>{submitErrHelperText}</FormHelperText>)}
             <AltSignInComp />
         </FlexCard>
     );
