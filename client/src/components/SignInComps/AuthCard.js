@@ -78,7 +78,6 @@ export default function AuthCard() {
     const [ givenAge, setGivenAge ] = useState(-1);
     const [ isPwError, setIsPwError ] = useState(false);
     const [ isSubmitErr, setIsSubmitErr ] = useState(false);
-    const pwErrHelperText = "Passwords don't match";
     const [ submitErrHelperText, setSubmitErrHelperText ] = useState("");
     const cardRef = useRef(null);
     const navigate = useNavigate();
@@ -173,7 +172,7 @@ export default function AuthCard() {
                             <SignInComp 
                                 id="password1"
                                 handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
-                                isPwError={isPwError} pwErrHelperText={pwErrHelperText}/> 
+                                isPwError={isPwError}/> 
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp &&
@@ -183,7 +182,7 @@ export default function AuthCard() {
                                 id="password2"
                                 label="Re-enter password"
                                 handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
-                                isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
+                                isPwError={isPwError}/>
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp && 

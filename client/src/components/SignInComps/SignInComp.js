@@ -5,9 +5,10 @@ import { useState } from "react";
 
 export const signInTitle = "Sign in to your account";
 export const signInBtnText = "Sign In";
+const pwErrHelperText = "Passwords don't match";
 
 export default function SignInComp(props) {
-    const { handleChangePassword, id, isPwError, pwErrHelperText, label, setPassword, style } = props;
+    const { handleChangePassword, id, isPwError, label, setPassword, style } = props;
     const [ showPassword, setShowPassword ] = useState(false);
 
     const handleChangePasswordSignIn = (event) => {
