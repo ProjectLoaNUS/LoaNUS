@@ -184,8 +184,8 @@ export default function AuthCard() {
                                 isPwError={isPwError} pwErrHelperText={pwErrHelperText}/>
                         </FormDiv>
                     </GrowDown> }
-                {showSignUp ? 
-                    (<Fade {...(showSignUp ? {timeout: 2000} : {})}>
+                { showSignUp && 
+                    (<Fade timeout={{appear: 1000, enter: 1000, exit: 0}}>
                         <WideBox>
                             <GrowBtn
                                 id="sign-in"
@@ -206,8 +206,9 @@ export default function AuthCard() {
                                     { signUpBtnText }
                             </GrowBtn>
                         </WideBox>
-                    </Fade>) :
-                    (<Fade appear={false} {...(showSignUp ? {timeout: 2000} : {})}>
+                    </Fade>) }
+                { !showSignUp &&
+                    (<Fade appear={false} style={{transitionDelay: showSignUp ? '-1000ms' : '750ms'}} timeout={{enter: 1000, exit: 0}}>
                         <Button
                             id="submit"
                             type="submit"
@@ -216,8 +217,7 @@ export default function AuthCard() {
                             color="success">
                             { showSignIn ? signInBtnText :  emailBtnText }
                         </Button>
-                    </Fade>)
-                }
+                    </Fade>) }
                 {!!submitErrHelperText && 
                     (<FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>)}
             </TransitionGroup>
