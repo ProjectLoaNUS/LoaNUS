@@ -1,5 +1,5 @@
-import { Box, Button, Card, Fade, FormHelperText, Grow, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Card, Fade, FormHelperText, Grow, Slide, Typography } from "@mui/material";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { signInResultCodes, signInResultTexts, useAuth } from "../../database/auth";
@@ -80,6 +80,7 @@ export default function AuthCard() {
     const [ isSubmitErr, setIsSubmitErr ] = useState(false);
     const pwErrHelperText = "Passwords don't match";
     const [ submitErrHelperText, setSubmitErrHelperText ] = useState("");
+    const cardRef = useRef(null);
     const navigate = useNavigate();
 
     const handleEmail = (event) => {
@@ -152,7 +153,8 @@ export default function AuthCard() {
             color="secondary" 
             onSubmit={ showSignIn ? handleSignIn : 
                     (showSignUp ? handleSignUp : 
-                            handleEmail) } >
+                            handleEmail) }
+            ref={cardRef}>
             <CentredTypo variant="body1">{ emailTitle }</CentredTypo>
             <TransitionGroup>
                 { showSignUp &&
@@ -218,8 +220,10 @@ export default function AuthCard() {
                             { showSignIn ? signInBtnText :  emailBtnText }
                         </Button>
                     </Fade>) }
-                {!!submitErrHelperText && 
-                    (<FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>)}
+                { !!submitErrHelperText && 
+                    (<Slide direction="right" container={cardRef.current}>
+                        <FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>
+                    </Slide>) }
             </TransitionGroup>
             <AltSignInComp />
         </FlexCard>
