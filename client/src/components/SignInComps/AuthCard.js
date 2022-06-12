@@ -164,7 +164,9 @@ export default function AuthCard() {
                         </FormDiv>
                     </GrowUp>}
                 <EmailComp
+                    isEmailError={isEmailError}
                     setEmail={ setGivenEmail }
+                    setIsEmailError={setIsEmailError}
                     setIsPwError={setIsPwError} />
                 { (showSignIn || showSignUp) && 
                     <GrowDown timeout={1000}>

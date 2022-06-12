@@ -1,12 +1,10 @@
 import { FormControl, FormHelperText, InputLabel, OutlinedInput } from "@mui/material";
-import { useState } from "react";
 
 export const emailTitle = "First enter your email"
 export const emailBtnText = "Next";
 
 export default function EmailComp(props) {
-    const { setEmail, setIsPwError } = props;
-    const [ isEmailError, setIsEmailError ] = useState(false);
+    const { setEmail, isEmailError, setIsEmailError } = props;
     const invalidEmailText = "Invalid email address";
 
     const isValidEmail = (email) => {
@@ -21,10 +19,8 @@ export default function EmailComp(props) {
         if (isValidEmail(email)) {
             setIsEmailError(false);
             setEmail(email);
-            setIsPwError(false);
         } else {
             setIsEmailError(true);
-            setIsPwError(true);
         }
     }
 
