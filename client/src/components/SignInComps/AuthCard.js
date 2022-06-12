@@ -30,6 +30,9 @@ export const FlexCard = styled(Card)`
     p {
         text-align: center;
     }
+    & .MuiFormControl-root {
+        align-self: stretch;
+    }
 `;
 
 const FormDiv = styled(CentredDiv)`
