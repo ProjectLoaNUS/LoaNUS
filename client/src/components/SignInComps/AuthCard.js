@@ -1,4 +1,4 @@
-import { Box, Button, Card, Fade, FormHelperText, Grow, Slide, Typography } from "@mui/material";
+import { Box, Button, Card, Fade, FormHelperText, Grow, Link, Slide, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -38,6 +38,9 @@ export const FlexCard = styled(Card)`
 const FormDiv = styled(CentredDiv)`
     flex-direction: column;
     align-self: stretch;
+`;
+
+export const GapFormDiv = styled(FormDiv)`
     gap: 1rem;
 `;
 
@@ -64,6 +67,13 @@ const GrowDown = styled(Grow)`
 const GrowRight = styled(Grow)`
     transform-origin: left center;
 `
+
+const AccentLink = styled(Link)`
+    color: #eb8736;
+    text-decoration-color: #eb8736;
+    text-align: right;
+    align-self: end;
+`;
 
 export const CentredTypo = styled(Typography)`
     text-align: center;
@@ -161,10 +171,10 @@ export default function AuthCard() {
             <TransitionGroup>
                 { showSignUp &&
                     <GrowUp timeout={500}>
-                        <FormDiv>
+                        <GapFormDiv>
                             <SignUpComp 
                                 setName={setGivenName} setAge={setGivenAge} showSignUp={showSignUp} />
-                        </FormDiv>
+                        </GapFormDiv>
                     </GrowUp>}
                 <EmailComp
                     isEmailError={isEmailError}
@@ -180,6 +190,7 @@ export default function AuthCard() {
                                 otherPw={showSignUp && givenPassword2}
                                 setIsPwError={showSignUp && setIsPwError}
                                 setPassword={setGivenPassword1} /> 
+                            {showSignIn && <AccentLink component={Link} to="#">Can't log in?</AccentLink>}
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp &&
