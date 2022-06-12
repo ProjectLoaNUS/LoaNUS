@@ -1,7 +1,8 @@
-import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
+import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Tooltip, tooltipClasses, Zoom } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
+import styled from "styled-components";
 
 export const signInTitle = "Sign in to your account";
 export const signInBtnText = "Sign In";
@@ -24,10 +25,24 @@ const pwCheckResCodes = {
     NO_SPECIAL_CHARS: 5
 };
 
+const PasswordTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+        color: '#1976d2'
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: '#ffffff',
+        color: 'rgba(0, 0, 0, 0.87)',
+        border: '2px solid #1976d2'
+    },
+  }));
+
 export default function SignInComp(props) {
     const { id, isPwError, label, setIsPwError, setPassword, style, otherPw } = props;
     const [ showPassword, setShowPassword ] = useState(false);
     const [ pwErrorText, setPwErrorText ] = useState("");
+    const isTopPwField = id === 'password1';
 
     const validatePw = (pw) => {
         if (pw.length < 8) {
@@ -80,21 +95,28 @@ export default function SignInComp(props) {
     return (
         <FormControl error={isPwError} required variant="outlined" style={style}>
             <InputLabel htmlFor={ id || "password" }>{ label || "Password" }</InputLabel>
-            <OutlinedInput
-                id={ id || "password" }
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                    <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end">
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                    </InputAdornment>
-                }
-                label={ label || "Password" }
-                onChange={handlePasswordChange} />
+            <PasswordTooltip 
+              TransitionComponent={Zoom}
+              arrow 
+              disableHoverListener 
+              placement={isTopPwField ? 'top' : 'bottom'}
+              title="Passwords must be at least 8-characters long and contain lowercase and uppercase letters, numbers and special characters(!@#$%^&*)">
+                <OutlinedInput
+                    id={ id || "password" }
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end">
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                    label={ label || "Password" }
+                    onChange={handlePasswordChange} />
+            </PasswordTooltip>
             {isPwError && <FormHelperText id={id + "-helper"}>{pwErrorText}</FormHelperText>}
         </FormControl>
     );
