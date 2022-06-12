@@ -137,14 +137,14 @@ export default function AuthCard() {
     }
 
     useEffect(() => {
-        if (isPwError) {
+        if (isPwError || isEmailError) {
             setIsFormError(true);
         } else {
             if (isFormError) {
                 setIsFormError(false);
             }
         }
-    }, [isFormError, isPwError]);
+    }, [isEmailError, isFormError, isPwError]);
 
     return (
         <FlexCard 
