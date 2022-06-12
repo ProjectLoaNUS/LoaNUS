@@ -1,4 +1,4 @@
-import { Box, Button, Card, Fade, FormHelperText, Grow, Link, Slide, Typography } from "@mui/material";
+import { Box, Button, Card, Fade, FormHelperText, Grow, Link, Slide, Typography, Zoom } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -241,9 +241,9 @@ export default function AuthCard() {
                         </Button>
                     </Fade>) }
                 { !!submitErrHelperText && 
-                    (<Slide direction="right" container={cardRef.current}>
+                    (<Zoom style={{transitionDelay: isSubmitErr ? '0ms' : '750ms'}} timeout={isSubmitErr ? 500 : 1000}>
                         <FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>
-                    </Slide>) }
+                    </Zoom>) }
             </TransitionGroup>
             <AltSignInComp />
         </FlexCard>
