@@ -132,6 +132,10 @@ export default function AuthCard() {
                     setSubmitErrHelperText(signInResultTexts[resultCode]);
                     setIsSubmitErr(true);
                     break;
+                default:
+                    setSubmitErrHelperText("Unknown error occurred");
+                    setIsSubmitErr(true);
+                    break;
             }
         });
     };
