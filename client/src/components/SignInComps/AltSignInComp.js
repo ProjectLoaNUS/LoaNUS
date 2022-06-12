@@ -1,13 +1,18 @@
 import { Button } from "@mui/material";
-import { CentredTypo, GapFormDiv } from "./AuthCard";
+import { CentredTypo } from "./AuthCard";
 import GoogleIcon from '@mui/icons-material/Google'
 import { useAuth } from "../../database/auth";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { theme } from "../Theme";
+import { CentredDiv } from "../FlexDiv";
 
-const AltSignInDiv = styled(GapFormDiv)`
+const AltSignInDiv = styled(CentredDiv)`
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
     align-items: stretch;
+    gap: 1rem;
     & .MuiLink-root {
         color: ${theme.palette.accent.main};
         text-decoration-color: ${theme.palette.accent.main};
