@@ -195,7 +195,7 @@ export default function AuthCard() {
                                 id="submit"
                                 type="submit"
                                 variant="contained"
-                                disabled={isPwError}
+                                disabled={isFormError}
                                 color="success">
                                     { signUpBtnText }
                             </GrowBtn>
