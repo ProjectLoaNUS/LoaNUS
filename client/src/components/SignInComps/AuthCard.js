@@ -76,6 +76,7 @@ export default function AuthCard() {
     const [ givenPassword2, setGivenPassword2 ] = useState("");
     const [ givenName, setGivenName ] = useState("");
     const [ givenAge, setGivenAge ] = useState(-1);
+    const [ isEmailError, setIsEmailError ] = useState(false);
     const [ isFormError, setIsFormError ] = useState(false);
     const [ isPwError, setIsPwError ] = useState(false);
     const [ isSubmitErr, setIsSubmitErr ] = useState(false);
