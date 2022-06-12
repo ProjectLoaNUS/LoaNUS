@@ -202,6 +202,7 @@ export default function AuthCard() {
                                 variant="outlined"
                                 color="success"
                                 onClick={() => {
+                                    setIsPwError(false);
                                     setShowSignIn(true);
                                     setShowSignUp(false);
                                 }}>
