@@ -1,5 +1,5 @@
 import { Box, Button, Card, Fade, FormHelperText, Grow, Slide, Typography } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { signInResultCodes, signInResultTexts, useAuth } from "../../database/auth";
@@ -134,6 +134,16 @@ export default function AuthCard() {
             setShowSignIn(true);
         }
     }
+
+    useEffect(() => {
+        if (isPwError) {
+            setIsFormError(true);
+        } else {
+            if (isFormError) {
+                setIsFormError(false);
+            }
+        }
+    }, [isFormError, isPwError]);
 
     return (
         <FlexCard 
