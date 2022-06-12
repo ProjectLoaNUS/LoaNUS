@@ -64,10 +64,6 @@ const GrowDown = styled(Grow)`
     transform-origin: center top;
 `;
 
-const GrowRight = styled(Grow)`
-    transform-origin: left center;
-`
-
 const AccentLink = styled(Link)`
     color: #eb8736;
     text-decoration-color: #eb8736;
