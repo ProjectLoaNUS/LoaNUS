@@ -135,20 +135,6 @@ export default function AuthCard() {
         }
     }
 
-    const handleChangePasswordSignUp = (event, password1Setter, password2) => {
-        const password1 = event.target.value;
-        password1Setter(password1);
-        if (!!password2) {
-            if (password1 === password2) {
-                setIsPwError(false);
-                setIsFormError(false);
-            } else {
-                setIsPwError(true);
-                setIsPwError(true);
-            }
-        }
-    }
-
     return (
         <FlexCard 
             component="form" 
@@ -174,9 +160,10 @@ export default function AuthCard() {
                         <FormDiv>
                             <SignInComp 
                                 id="password1"
-                                handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
                                 isPwError={isPwError}
-                                isFormError={isFormError} /> 
+                                otherPw={showSignUp && givenPassword2}
+                                setIsPwError={showSignUp && setIsPwError}
+                                setPassword={setGivenPassword1} /> 
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp &&
@@ -185,9 +172,10 @@ export default function AuthCard() {
                             <SignInComp 
                                 id="password2"
                                 label="Re-enter password"
-                                handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
                                 isPwError={isPwError}
-                                isFormError={isFormError} />
+                                otherPw={givenPassword1}
+                                setIsPwError={setIsPwError}
+                                setPassword={setGivenPassword2} />
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp && 

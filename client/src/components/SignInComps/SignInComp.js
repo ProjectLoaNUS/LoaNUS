@@ -8,11 +8,19 @@ export const signInBtnText = "Sign In";
 const pwErrHelperText = "Passwords don't match";
 
 export default function SignInComp(props) {
-    const { handleChangePassword, id, isFormError, isPwError, label, setPassword, style } = props;
+    const { id, isPwError, label, setIsPwError, setPassword, style, otherPw } = props;
     const [ showPassword, setShowPassword ] = useState(false);
 
-    const handleChangePasswordSignIn = (event) => {
-        setPassword(event.target.value);
+    const handlePasswordChange = (event) => {
+        const thisPw = event.target.value;
+        setPassword(thisPw);
+        if (!!otherPw) {
+            if (thisPw === otherPw) {
+                setIsPwError(false);
+            } else {
+                setIsPwError(true);
+            }
+        }
     }
     
     const handleClickShowPassword = () => {
@@ -40,7 +48,7 @@ export default function SignInComp(props) {
                     </InputAdornment>
                 }
                 label={ label || "Password" }
-                onChange={handleChangePassword || handleChangePasswordSignIn} />
+                onChange={handlePasswordChange} />
             {isPwError && <FormHelperText id={id + "-helper"}>{pwErrHelperText}</FormHelperText>}
         </FormControl>
     );
