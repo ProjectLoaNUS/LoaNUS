@@ -76,6 +76,7 @@ export default function AuthCard() {
     const [ givenPassword2, setGivenPassword2 ] = useState("");
     const [ givenName, setGivenName ] = useState("");
     const [ givenAge, setGivenAge ] = useState(-1);
+    const [ isFormError, setIsFormError ] = useState(false);
     const [ isPwError, setIsPwError ] = useState(false);
     const [ isSubmitErr, setIsSubmitErr ] = useState(false);
     const [ submitErrHelperText, setSubmitErrHelperText ] = useState("");
@@ -140,7 +141,9 @@ export default function AuthCard() {
         if (!!password2) {
             if (password1 === password2) {
                 setIsPwError(false);
+                setIsFormError(false);
             } else {
+                setIsPwError(true);
                 setIsPwError(true);
             }
         }
@@ -172,7 +175,8 @@ export default function AuthCard() {
                             <SignInComp 
                                 id="password1"
                                 handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword1, givenPassword2)}
-                                isPwError={isPwError}/> 
+                                isPwError={isPwError}
+                                isFormError={isFormError} /> 
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp &&
@@ -182,7 +186,8 @@ export default function AuthCard() {
                                 id="password2"
                                 label="Re-enter password"
                                 handleChangePassword={(event) => handleChangePasswordSignUp(event, setGivenPassword2, givenPassword1)}
-                                isPwError={isPwError}/>
+                                isPwError={isPwError}
+                                isFormError={isFormError} />
                         </FormDiv>
                     </GrowDown> }
                 { showSignUp && 
@@ -214,7 +219,7 @@ export default function AuthCard() {
                             id="submit"
                             type="submit"
                             variant="contained"
-                            disabled={isPwError}
+                            disabled={isFormError}
                             color="success">
                             { showSignIn ? signInBtnText :  emailBtnText }
                         </Button>

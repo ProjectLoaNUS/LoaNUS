@@ -8,7 +8,7 @@ export const signInBtnText = "Sign In";
 const pwErrHelperText = "Passwords don't match";
 
 export default function SignInComp(props) {
-    const { handleChangePassword, id, isPwError, label, setPassword, style } = props;
+    const { handleChangePassword, id, isFormError, isPwError, label, setPassword, style } = props;
     const [ showPassword, setShowPassword ] = useState(false);
 
     const handleChangePasswordSignIn = (event) => {
