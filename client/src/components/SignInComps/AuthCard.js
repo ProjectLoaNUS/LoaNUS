@@ -11,6 +11,12 @@ import { TransitionGroup } from 'react-transition-group';
 import { CentredDiv } from "../FlexDiv";
 
 export const FlexCard = styled(Card)`
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-self: center;
+    padding: 1em 1ex;
+    gap: 1rem;
     div:empty {
         margin: -1rem 0rem 0rem;
     }
@@ -19,8 +25,10 @@ export const FlexCard = styled(Card)`
         flex-direction: column;
         align-items: stretch;
         align-self: center;
-        padding: 1em 1ex;
         gap: 1rem;
+    }
+    p {
+        text-align: center;
     }
 `;
 
@@ -145,8 +153,8 @@ export default function AuthCard() {
             onSubmit={ showSignIn ? handleSignIn : 
                     (showSignUp ? handleSignUp : 
                             handleEmail) } >
+            <CentredTypo variant="body1">{ emailTitle }</CentredTypo>
             <TransitionGroup>
-                <CentredTypo variant="body1">{ emailTitle }</CentredTypo>
                 { showSignUp &&
                     <GrowUp timeout={500}>
                         <FormDiv>
@@ -212,8 +220,8 @@ export default function AuthCard() {
                 }
                 {!!submitErrHelperText && 
                     (<FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>)}
-                <AltSignInComp />
             </TransitionGroup>
+            <AltSignInComp />
         </FlexCard>
     );
 }
