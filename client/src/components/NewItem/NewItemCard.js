@@ -3,6 +3,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
+import LocationField from "./LocationField";
 import TitleField from "./TitleField";
 
 export const FlexCard = styled(Card)`
@@ -45,6 +46,7 @@ export default function NewItemCard() {
             <ItemTypeChip isRequest={isRequest} setIsRequest={setIsRequest} />
             <TitleField setTitle={setTitle} />
             <DescriptionField setDescription={setDescription} />
+            <LocationField setLocation={setLocation} />
         </FlexCard>
     );
 }
