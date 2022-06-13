@@ -1,4 +1,4 @@
-import { Card, Grow, Typography } from "@mui/material";
+import { Button, Card, Grow, Typography } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
@@ -16,6 +16,9 @@ const FormDiv = styled(CentredDiv)`
 `;
 const GrowDown = styled(Grow)`
     transform-origin: center top;
+`;
+const NarrowBtn = styled(Button)`
+    align-self: center;
 `;
 
 export const FlexCard = styled(Card)`
@@ -74,6 +77,12 @@ export default function NewItemCard() {
                     </GrowDown> )
                 }
             </TransitionGroup>
+            <NarrowBtn
+              variant="contained"
+              color="secondary"
+              type="button">
+                  {isRequest ? "Request it" : "List it"}
+            </NarrowBtn>
         </FlexCard>
     );
 }
