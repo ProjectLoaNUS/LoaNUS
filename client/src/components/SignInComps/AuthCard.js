@@ -162,7 +162,6 @@ export default function AuthCard() {
     return (
         <FlexCard 
             component="form" 
-            color="secondary" 
             onSubmit={ showSignIn ? handleSignIn : 
                     (showSignUp ? handleSignUp : 
                             handleEmail) }
