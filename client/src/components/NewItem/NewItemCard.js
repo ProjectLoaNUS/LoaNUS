@@ -63,7 +63,7 @@ export default function NewItemCard() {
             <TelegramField setTelegramHandle={setTelegramHandle} />
             <TransitionGroup>
                 { !isRequest && 
-                    ( <GrowDown timeeout={1000}>
+                    ( <GrowDown timeout={1000}>
                         <FormDiv>
                             <ReturnDateField 
                               returnDate={returnDate}
