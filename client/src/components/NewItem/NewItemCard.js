@@ -4,6 +4,7 @@ import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
 import LocationField from "./LocationField";
+import TelegramField from "./TelegramField";
 import TitleField from "./TitleField";
 
 export const FlexCard = styled(Card)`
@@ -47,6 +48,7 @@ export default function NewItemCard() {
             <TitleField setTitle={setTitle} />
             <DescriptionField setDescription={setDescription} />
             <LocationField setLocation={setLocation} />
+            <TelegramField setTelegramHandle={setTelegramHandle} />
         </FlexCard>
     );
 }
