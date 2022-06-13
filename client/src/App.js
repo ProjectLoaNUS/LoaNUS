@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
-import CreateRequestPage from "./pages/CreateRequestPage";
+import NewItemPage from "./pages/NewItemPage";
 import SignInPage from "./pages/SignInPage";
 import RewardsPage from "./pages/RewardsPage";
 import { theme } from "./components/Theme";
@@ -17,7 +17,7 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/create-request" element={<CreateRequestPage />} />
+          <Route path="/new-item" element={<NewItemPage />} />
           <Route path="/view-rewards" element={<RewardsPage />} />
         </Routes>
       </ThemeProvider>

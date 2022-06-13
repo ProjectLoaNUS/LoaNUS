@@ -40,8 +40,8 @@ export default function CreateBtn() {
                   'arial-labelledby': 'basic-button'
               }}
             >
-                <MenuItem component={ Link } to='/create-request'>List Item</MenuItem>
-                <MenuItem component={ Link } to='/create-request'>Request Item</MenuItem>
+                <MenuItem component={ Link } to='/new-item'>List Item</MenuItem>
+                <MenuItem component={ Link } to='/new-item'>Request Item</MenuItem>
             </Menu>
         </ShrinkDiv>
     );

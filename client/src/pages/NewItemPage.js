@@ -7,7 +7,7 @@ const MainContainer = styled.div`
   min-height: 100vh;
 `;
 
-function CreateRequestPage() {
+function NewItemPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState();
@@ -53,4 +53,4 @@ function CreateRequestPage() {
   );
 }
 
-export default CreateRequestPage;
+export default NewItemPage;
