@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import NavigationBar from "../components/NavigationBar";
+import NavigationBar from "../components/NavBar/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Buffer } from 'buffer';

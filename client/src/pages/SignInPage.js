@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import styled from "styled-components";
-import AppIcon from "../components/AppBtn/AppIcon";
+import AppIcon from "../components/NavBar/AppBtn/AppIcon";
 import AuthCard from "../components/SignInComps/AuthCard";
 
 const ContainerStyle = styled.div`

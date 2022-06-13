@@ -2,18 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IconButton, Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
-import { AddCircleOutline } from '@mui/icons-material';
-import { ShrinkDiv } from './FlexDiv';
-import styled from 'styled-components';
-import { theme } from './Theme';
+import { useAuth } from '../../database/auth';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { ShrinkDiv } from '../FlexDiv';
 
-const ContrastIconBtn = styled(IconButton)`
-    color: ${theme.palette.primary.contrastText};
-`;
-
-export default function CreateBtn() {
+export default function ProfileBtn() {
     const [ anchorEl, setAnchorEl ] = useState(null);
     const open = Boolean(anchorEl);
+    const { signOut } = useAuth();
     
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -22,17 +18,23 @@ export default function CreateBtn() {
         setAnchorEl(null);
     }
 
+    function logOutNow() {
+        handleClose();
+        signOut();
+    }
+
     return (
         <ShrinkDiv>
-            <ContrastIconBtn 
-              id="create-btn"
-              aria-controls={'create-menu'}
+            <IconButton 
+              id="profile-btn"
+              aria-controls={'profile-menu'}
               aria-haspopup="true"
-              onClick={handleClick}>
-                  <AddCircleOutline />
-              </ContrastIconBtn>
+              onClick={handleClick}
+              color="primary">
+                  <AccountCircleIcon />
+              </IconButton>
             <Menu
-              id="create-menu"
+              id="profile-menu"
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -40,8 +42,8 @@ export default function CreateBtn() {
                   'arial-labelledby': 'basic-button'
               }}
             >
-                <MenuItem component={ Link } to='/new-item'>List Item</MenuItem>
-                <MenuItem component={ Link } to='/new-item'>Request Item</MenuItem>
+                <MenuItem component={ Link } to='/profile'>Account</MenuItem>
+                <MenuItem onClick={logOutNow}>Sign Out</MenuItem>
             </Menu>
         </ShrinkDiv>
     );

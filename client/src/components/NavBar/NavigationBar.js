@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useAuth } from "../database/auth";
-import SignInBtn from "./SignInComps/SignInBtn";
+import { useAuth } from "../../database/auth";
+import SignInBtn from "../SignInComps/SignInBtn";
 import ProfileBtn from "./ProfileBtn";
 import CreateBtn from "./CreateBtn";
-import SearchBar from "./SearchBar/SearchBar";
-import { theme } from "./Theme";
+import SearchBar from "../SearchBar/SearchBar";
+import { theme } from "../Theme";
 import AppBtn from "./AppBtn/AppBtn";
 
 const MainContainer = styled.nav`
