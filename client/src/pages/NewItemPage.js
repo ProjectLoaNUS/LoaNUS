@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { BACKEND_URL } from "../database/const";
+import NewItemCard from "../components/NewItem/NewItemCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -49,6 +50,7 @@ function NewItemPage() {
         <input type="file" onChange={changeHandler}></input>
         <button type="submit">Upload</button>
       </form>
+      <NewItemCard />
     </MainContainer>
   );
 }
