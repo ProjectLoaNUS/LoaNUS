@@ -1,6 +1,7 @@
 import { Card, Typography } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
+import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
 import TitleField from "./TitleField";
 
@@ -43,6 +44,7 @@ export default function NewItemCard() {
             <Typography variant="h3">Item { isRequest ? 'Request' : 'Listing' }</Typography>
             <ItemTypeChip isRequest={isRequest} setIsRequest={setIsRequest} />
             <TitleField setTitle={setTitle} />
+            <DescriptionField setDescription={setDescription} />
         </FlexCard>
     );
 }
