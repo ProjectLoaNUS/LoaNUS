@@ -10,7 +10,7 @@ export default function SignInBtn(props) {
     const url = props.url;
 
     return (
-        <FlexBtn variant="contained" component={ Link } to={ url } color="accent">
+        <FlexBtn variant="contained" component={ Link } to={ url } color="secondary">
             Sign In
         </FlexBtn>
     );

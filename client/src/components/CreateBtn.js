@@ -4,6 +4,12 @@ import { IconButton, Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 import { ShrinkDiv } from './FlexDiv';
+import styled from 'styled-components';
+import { theme } from './Theme';
+
+const ContrastIconBtn = styled(IconButton)`
+    color: ${theme.palette.primary.contrastText};
+`;
 
 export default function CreateBtn() {
     const [ anchorEl, setAnchorEl ] = useState(null);
@@ -18,14 +24,13 @@ export default function CreateBtn() {
 
     return (
         <ShrinkDiv>
-            <IconButton 
+            <ContrastIconBtn 
               id="create-btn"
               aria-controls={'create-menu'}
               aria-haspopup="true"
-              onClick={handleClick}
-              color="primary">
+              onClick={handleClick}>
                   <AddCircleOutline />
-              </IconButton>
+              </ContrastIconBtn>
             <Menu
               id="create-menu"
               anchorEl={anchorEl}

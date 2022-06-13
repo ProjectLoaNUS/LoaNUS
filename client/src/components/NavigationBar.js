@@ -5,12 +5,11 @@ import SignInBtn from "./SignInComps/SignInBtn";
 import ProfileBtn from "./ProfileBtn";
 import CreateBtn from "./CreateBtn";
 import SearchBar from "./SearchBar/SearchBar";
-import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./Theme";
 import AppBtn from "./AppBtn/AppBtn";
 
 const MainContainer = styled.nav`
-  background-color: ${theme.palette.secondary.main};
+  background-color: ${theme.palette.primary.main};
   height: 10vh;
   display: flex;
   flex-direction: row;
@@ -26,14 +25,12 @@ const iconStyles = {
 function NavigationBar() {
   const { user } = useAuth();
   return (
-    <ThemeProvider theme={ theme }>
       <MainContainer>
-        <AppBtn component={ Link } to="/home" color="secondary" dark={true} iconStyles={iconStyles} />
+        <AppBtn component={ Link } to="/home" color="primary" dark={true} iconStyles={iconStyles} />
         <SearchBar />
         <CreateBtn />
         { user ? <ProfileBtn /> : <SignInBtn url='/signin' /> }
       </MainContainer>
-    </ThemeProvider>
   );
 }
 
