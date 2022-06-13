@@ -38,7 +38,7 @@ export default function NewItemCard() {
     const [ title, setTitle ] = useState("");
     const [ description, setDescription ] = useState("");
     const [ location, setLocation ] = useState("");
-    const [ returnDate, setReturnDate ] = useState("");
+    const [ returnDate, setReturnDate ] = useState(new Date());
     const [ telegramHandle, setTelegramHandle ] = useState("");
 
     return (
