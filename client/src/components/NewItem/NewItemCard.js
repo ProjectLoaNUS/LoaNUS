@@ -6,6 +6,7 @@ import TitleField from "./TitleField";
 
 export const FlexCard = styled(Card)`
     display: flex;
+    width: 75vw;
     flex-direction: column;
     align-items: stretch;
     align-self: center;

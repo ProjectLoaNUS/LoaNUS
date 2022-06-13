@@ -21,8 +21,8 @@ export default function ItemTypeChip(props) {
     
     return (
         <ChipStack direction="row" spacing={2}>
-            <Chip label="Request Item" variant={ isRequest ? "filled" : "outlined" } onClick={handleOnClickRequest} />
-            <Chip label="List Item" variant={ isRequest ? "outlined" : "filled" } onClick={handleOnClickList} />
+            <Chip color="primary" label="Request Item" variant={ isRequest ? "filled" : "outlined" } onClick={handleOnClickRequest} />
+            <Chip color="primary" label="List Item" variant={ isRequest ? "outlined" : "filled" } onClick={handleOnClickList} />
         </ChipStack>
     );
 }
