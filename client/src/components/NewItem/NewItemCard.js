@@ -1,4 +1,4 @@
-import { Card, Typography } from "@mui/material";
+import { Card, Grow, Typography } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
@@ -7,6 +7,16 @@ import LocationField from "./LocationField";
 import ReturnDateField from "./ReturnDateField";
 import TelegramField from "./TelegramField";
 import TitleField from "./TitleField";
+import { TransitionGroup } from 'react-transition-group';
+import { CentredDiv } from "../FlexDiv";
+
+const FormDiv = styled(CentredDiv)`
+    flex-direction: column;
+    align-self: stretch;
+`;
+const GrowDown = styled(Grow)`
+    transform-origin: center top;
+`;
 
 export const FlexCard = styled(Card)`
     display: flex;
@@ -23,7 +33,7 @@ export const FlexCard = styled(Card)`
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        align-self: center;
+        align-self: stretch;
         gap: 1rem;
     }
     p {
@@ -50,8 +60,15 @@ export default function NewItemCard() {
             <DescriptionField setDescription={setDescription} />
             <LocationField setLocation={setLocation} />
             <TelegramField setTelegramHandle={setTelegramHandle} />
-            { !isRequest && 
-                <ReturnDateField returnDate={returnDate} setReturnDate={setReturnDate} /> }
+            <TransitionGroup>
+                { !isRequest && 
+                    ( <GrowDown timeeout={1000}>
+                        <FormDiv>
+                            <ReturnDateField returnDate={returnDate} setReturnDate={setReturnDate} />
+                        </FormDiv>
+                    </GrowDown> )
+                }
+            </TransitionGroup>
         </FlexCard>
     );
 }
