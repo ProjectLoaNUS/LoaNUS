@@ -4,10 +4,16 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 export default function ReturnDateField(props) {
-    const { returnDate, setReturnDate } = props;
+    const { returnDate, setReturnDate, isDateError, setIsDateError } = props;
 
     const handleChangeDate = (newDate) => {
-        setReturnDate(newDate);
+        const dateNow = new Date();
+        if (newDate > dateNow) {
+            setIsDateError(true);
+        } else {
+            setIsDateError(false);
+            setReturnDate(newDate);
+        }
     }
 
     return (
@@ -17,7 +23,8 @@ export default function ReturnDateField(props) {
               inputFormat="dd/MM/yyyy"
               value={returnDate}
               onChange={handleChangeDate}
-              renderInput={(params) => <TextField {...params} />}
+              error={isDateError}
+              renderInput={(params) => <TextField {...params} helperText={ isDateError ? "Date is invalid(in the future)" : null } />}
             />
         </LocalizationProvider>
     );

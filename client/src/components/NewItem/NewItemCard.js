@@ -50,6 +50,7 @@ export default function NewItemCard() {
     const [ description, setDescription ] = useState("");
     const [ location, setLocation ] = useState("");
     const [ returnDate, setReturnDate ] = useState(new Date());
+    const [ isDateError, setIsDateError ] = useState(false);
     const [ telegramHandle, setTelegramHandle ] = useState("");
 
     return (
@@ -64,7 +65,11 @@ export default function NewItemCard() {
                 { !isRequest && 
                     ( <GrowDown timeeout={1000}>
                         <FormDiv>
-                            <ReturnDateField returnDate={returnDate} setReturnDate={setReturnDate} />
+                            <ReturnDateField 
+                              returnDate={returnDate}
+                              setReturnDate={setReturnDate}
+                              isDateError={isDateError}
+                              setIsDateError={setIsDateError} />
                         </FormDiv>
                     </GrowDown> )
                 }
