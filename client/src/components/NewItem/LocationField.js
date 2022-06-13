@@ -12,6 +12,7 @@ export default function LocationField(props) {
                 required
                 id="location"
                 variant="outlined"
+                placeholder="e.g. UTR Pickup Point"
                 label={ label }
                 onChange={(event) => setLocation(event.target.value)} />
         </FormControl>

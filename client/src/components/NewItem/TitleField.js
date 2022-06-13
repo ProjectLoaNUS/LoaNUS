@@ -11,6 +11,7 @@ export default function TitleField(props) {
                 required
                 id="title"
                 variant="outlined"
+                placeholder="e.g. Dyson V15 Detect"
                 label={ label }
                 onChange={(event) => setTitle(event.target.value)} />
         </FormControl>

@@ -13,6 +13,7 @@ export default function DescriptionField(props) {
                 id="description"
                 variant="outlined"
                 label={ label }
+                placeholder="e.g. Newly bought(3 weeks ago), rarely used since I usually mop my dorm room floor instead"
                 multiline={true}
                 minRows={3}
                 onChange={(event) => setDescription(event.target.value)} />

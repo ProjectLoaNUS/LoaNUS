@@ -11,7 +11,7 @@ export default function TelegramField(props) {
                 required
                 id="telegram"
                 variant="outlined"
-                placeholder="@HelpfulNusStudent"
+                placeholder="e.g. @HelpfulNusStudent"
                 label={ label }
                 onChange={(event) => setTelegramHandle(event.target.value)} />
         </FormControl>
