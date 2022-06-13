@@ -8,12 +8,12 @@ export default function ReturnDateField(props) {
 
     const handleChangeDate = (newDate) => {
         const dateNow = new Date();
-        if (newDate > dateNow) {
+        if (newDate < dateNow) {
             setIsDateError(true);
         } else {
             setIsDateError(false);
-            setReturnDate(newDate);
         }
+        setReturnDate(newDate);
     }
 
     return (
@@ -23,8 +23,7 @@ export default function ReturnDateField(props) {
               inputFormat="dd/MM/yyyy"
               value={returnDate}
               onChange={handleChangeDate}
-              error={isDateError}
-              renderInput={(params) => <TextField {...params} helperText={ isDateError ? "Date is invalid(in the future)" : null } />}
+              renderInput={(params) => <TextField {...params} error={isDateError} helperText={ isDateError ? "Date is invalid(in the past)" : null } />}
             />
         </LocalizationProvider>
     );
