@@ -4,6 +4,7 @@ import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
 import LocationField from "./LocationField";
+import ReturnDateField from "./ReturnDateField";
 import TelegramField from "./TelegramField";
 import TitleField from "./TitleField";
 
@@ -49,6 +50,8 @@ export default function NewItemCard() {
             <DescriptionField setDescription={setDescription} />
             <LocationField setLocation={setLocation} />
             <TelegramField setTelegramHandle={setTelegramHandle} />
+            { !isRequest && 
+                <ReturnDateField returnDate={returnDate} setReturnDate={setReturnDate} /> }
         </FlexCard>
     );
 }
