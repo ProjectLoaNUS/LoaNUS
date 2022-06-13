@@ -1,5 +1,5 @@
 import { Button, Card, Grow, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
@@ -48,6 +48,7 @@ export const FlexCard = styled(Card)`
 `;
 
 export default function NewItemCard() {
+    const [ isFormError, setIsFormError ] = useState(false);
     const [ isRequest, setIsRequest ] = useState(true);
     const [ title, setTitle ] = useState("");
     const [ description, setDescription ] = useState("");
@@ -55,6 +56,16 @@ export default function NewItemCard() {
     const [ returnDate, setReturnDate ] = useState(new Date());
     const [ isDateError, setIsDateError ] = useState(false);
     const [ telegramHandle, setTelegramHandle ] = useState("");
+
+    useEffect(() => {
+        if (isDateError) {
+            setIsFormError(true);
+        } else {
+            if (isFormError) {
+                setIsFormError(false);
+            }
+        }
+    }, [isFormError, isDateError]);
 
     return (
         <FlexCard>
@@ -80,7 +91,8 @@ export default function NewItemCard() {
             <NarrowBtn
               variant="contained"
               color="secondary"
-              type="button">
+              type="button"
+              disabled={isFormError}>
                   {isRequest ? "Request it" : "List it"}
             </NarrowBtn>
         </FlexCard>
