@@ -50,6 +50,7 @@ export const FlexCard = styled(Card)`
 export default function NewItemCard() {
     const [ isFormError, setIsFormError ] = useState(false);
     const [ isRequest, setIsRequest ] = useState(true);
+    const [ images, setImages ] = useState([]);
     const [ title, setTitle ] = useState("");
     const [ description, setDescription ] = useState("");
     const [ location, setLocation ] = useState("");
