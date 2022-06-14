@@ -119,6 +119,9 @@ app.post("/api/item-upload", upload.single("image"), (request, response, next) =
   response.send("Upload success");
 });
 
+const items = require("./routes/items/index");
+app.use("/api", items);
+
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);
 });
