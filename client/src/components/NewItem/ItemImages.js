@@ -66,7 +66,7 @@ const ImageDiv = styled.div`
 export default function ItemImages(props) {
     const { images, setImages } = props;
     const chosenImg = useRef(null);
-    const maxNumOfImages = 6;
+    const maxNumOfImages = 4;
 
     const handleChooseImg = () => {
         chosenImg.current.click();
