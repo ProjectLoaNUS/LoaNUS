@@ -10,6 +10,7 @@ import TitleField from "./TitleField";
 import { TransitionGroup } from 'react-transition-group';
 import { CentredDiv } from "../FlexDiv";
 import ItemImages from "./ItemImages";
+import { BACKEND_URL } from "../../database/const";
 
 const FormDiv = styled(CentredDiv)`
     flex-direction: column;
@@ -59,6 +60,31 @@ export default function NewItemCard() {
     const [ isDateError, setIsDateError ] = useState(false);
     const [ telegramHandle, setTelegramHandle ] = useState("");
 
+    const onSubmitItem = async (event) => {
+        event.preventDefault();
+        const itemData = new FormData();
+
+        if (!isRequest) {
+            images.forEach((image) => {
+                itemData.append("images", image);
+            })
+            itemData.append("deadline", returnDate);
+        }
+        itemData.append("title", title);
+        itemData.append("description", description);
+        itemData.append("location", location);
+        itemData.append("telegram", telegramHandle);
+        const apiEndpoint = `${BACKEND_URL}/api/items/addListing`;
+        const req = await fetch(apiEndpoint, {
+            method: "POST",
+            body: itemData
+        });
+        const data = await req.json();
+        if (data.status === 'ok') {
+            console.log("File Upload successful");
+        }
+    }
+
     useEffect(() => {
         if (isDateError) {
             setIsFormError(true);
@@ -70,7 +96,7 @@ export default function NewItemCard() {
     }, [isFormError, isDateError]);
 
     return (
-        <FlexCard>
+        <FlexCard component="form" onSubmit={onSubmitItem}>
             <Typography variant="h3">Item { isRequest ? 'Request' : 'Listing' }</Typography>
             <ItemTypeChip isRequest={isRequest} setIsRequest={setIsRequest} />
             <TransitionGroup>
@@ -102,7 +128,7 @@ export default function NewItemCard() {
             <NarrowBtn
               variant="contained"
               color="secondary"
-              type="button"
+              type="submit"
               disabled={isFormError}>
                   {isRequest ? "Request it" : "List it"}
             </NarrowBtn>
