@@ -100,7 +100,6 @@ app.get("/api/getItemImages", (req, res) => {
   });
 });
 app.post("/api/item-upload", upload.single("image"), (request, response, next) => {
-  console.log(request.file);
   const obj = {
     name: request.body.name,
     desc: request.body.description,
