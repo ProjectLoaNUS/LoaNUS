@@ -9,6 +9,7 @@ import TelegramField from "./TelegramField";
 import TitleField from "./TitleField";
 import { TransitionGroup } from 'react-transition-group';
 import { CentredDiv } from "../FlexDiv";
+import ItemImages from "./ItemImages";
 
 const FormDiv = styled(CentredDiv)`
     flex-direction: column;
@@ -72,6 +73,15 @@ export default function NewItemCard() {
         <FlexCard>
             <Typography variant="h3">Item { isRequest ? 'Request' : 'Listing' }</Typography>
             <ItemTypeChip isRequest={isRequest} setIsRequest={setIsRequest} />
+            <TransitionGroup>
+                { !isRequest &&
+                    (<GrowDown timeout={750}>
+                        <FormDiv>
+                            <ItemImages images={images} setImages={setImages} />
+                        </FormDiv>
+                    </GrowDown>)
+                }
+            </TransitionGroup>
             <TitleField setTitle={setTitle} />
             <DescriptionField setDescription={setDescription} />
             <LocationField setLocation={setLocation} />
