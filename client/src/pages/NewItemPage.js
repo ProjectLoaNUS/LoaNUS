@@ -6,6 +6,7 @@ const MainContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+  padding: 1rem 0rem;
   background-color: #fafdf3;
   min-height: 100vh;
 `;
