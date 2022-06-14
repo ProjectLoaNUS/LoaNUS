@@ -62,23 +62,34 @@ export default function NewItemCard() {
 
     const onSubmitItem = async (event) => {
         event.preventDefault();
-        const itemData = new FormData();
 
-        if (!isRequest) {
+        let object = {
+            method: "POST"
+        }
+        if (isRequest) {
+            object["headers"] = {'Content-Type': 'application/json'};
+            object["body"] = JSON.stringify({
+                title: title,
+                description: description,
+                location: location,
+                telegram: telegramHandle
+            });
+        } else {
+            const itemData = new FormData();
             images.forEach((image) => {
                 itemData.append("images", image);
             })
             itemData.append("deadline", returnDate);
+            itemData.append("title", title);
+            itemData.append("description", description);
+            itemData.append("location", location);
+            itemData.append("telegram", telegramHandle);
+            object["body"] = itemData;
         }
-        itemData.append("title", title);
-        itemData.append("description", description);
-        itemData.append("location", location);
-        itemData.append("telegram", telegramHandle);
-        const apiEndpoint = `${BACKEND_URL}/api/items/addListing`;
-        const req = await fetch(apiEndpoint, {
-            method: "POST",
-            body: itemData
-        });
+        const apiEndpoint = isRequest ? 
+                `${BACKEND_URL}/api/items/addRequest` : 
+                `${BACKEND_URL}/api/items/addListing`;
+        const req = await fetch(apiEndpoint, object);
         const data = await req.json();
         if (data.status === 'ok') {
             console.log("File Upload successful");
