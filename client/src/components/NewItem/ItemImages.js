@@ -80,6 +80,10 @@ export default function ItemImages(props) {
         return URL.createObjectURL(image);
     }
 
+    const rmImage = (img) => {
+        setImages((prev) => [...prev.filter((i) => i !== img)]);
+    }
+
     return (
         <ImageStack direction="row">
             { images.map((image, index) => {
@@ -93,7 +97,7 @@ export default function ItemImages(props) {
                         </ImageDiv>
                         <CardActions>
                             <IconButton size="small"><ArrowLeftIcon /></IconButton>
-                            <IconButton size="small"><DeleteIcon /></IconButton>
+                            <IconButton size="small" onClick={() => rmImage(image)}><DeleteIcon /></IconButton>
                             <IconButton size="small"><ArrowRightIcon /></IconButton>
                         </CardActions>
                     </ImageCard>
