@@ -84,6 +84,16 @@ export default function ItemImages(props) {
         setImages((prev) => [...prev.filter((i) => i !== img)]);
     }
 
+    const swapImages = (firstIndex, secondIndex) => {
+        setImages((prev) => {
+            let data = [...prev];
+            const temp = data[firstIndex];
+            data[firstIndex] = data[secondIndex];
+            data[secondIndex] = temp;
+            return data;
+        })
+    }
+
     return (
         <ImageStack direction="row">
             { images.map((image, index) => {
@@ -96,9 +106,9 @@ export default function ItemImages(props) {
                                 alt="Item image" />
                         </ImageDiv>
                         <CardActions>
-                            <IconButton size="small"><ArrowLeftIcon /></IconButton>
+                            <IconButton size="small" onClick={() => swapImages((index - 1), index)}><ArrowLeftIcon /></IconButton>
                             <IconButton size="small" onClick={() => rmImage(image)}><DeleteIcon /></IconButton>
-                            <IconButton size="small"><ArrowRightIcon /></IconButton>
+                            <IconButton size="small" onClick={() => swapImages(index, (index + 1))}><ArrowRightIcon /></IconButton>
                         </CardActions>
                     </ImageCard>
                 );
