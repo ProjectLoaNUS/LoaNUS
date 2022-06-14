@@ -73,8 +73,11 @@ export default function ItemImages(props) {
     }
 
     const onImgChosen = (event) => {
-        const url = URL.createObjectURL(event.target.files[0]);
-        setImages([...images, url]);
+        setImages([...images, event.target.files[0]]);
+    }
+
+    const getImgUrl = (image) => {
+        return URL.createObjectURL(image);
     }
 
     return (
@@ -85,7 +88,7 @@ export default function ItemImages(props) {
                         <ImageDiv>
                             <CardMedia 
                                 component="img"
-                                image={image}
+                                image={getImgUrl(image)}
                                 alt="Item image" />
                         </ImageDiv>
                         <CardActions>
