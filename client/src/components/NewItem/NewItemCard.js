@@ -94,7 +94,6 @@ export default function NewItemCard() {
         const req = await fetch(apiEndpoint, object);
         const data = await req.json();
         if (data.status === 'ok') {
-            console.log("File Upload successful");
             setIsSubmitError(false);
             setSubmitResultText("Item " + (isRequest ? "requested" : "listed"));
         } else {
