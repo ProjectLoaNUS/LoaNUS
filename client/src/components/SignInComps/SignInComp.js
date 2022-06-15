@@ -99,6 +99,8 @@ export default function SignInComp(props) {
               TransitionComponent={Zoom}
               arrow 
               disableHoverListener 
+              disableFocusListener={typeof(otherPw) !== 'string'}
+              disableTouchListener={typeof(otherPw) !== 'string'}
               placement={isTopPwField ? 'top' : 'bottom'}
               title="Passwords must be at least 8-characters long and contain lowercase and uppercase letters, numbers and special characters(!@#$%^&*)">
                 <OutlinedInput
