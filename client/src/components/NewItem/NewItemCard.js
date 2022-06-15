@@ -11,6 +11,7 @@ import { TransitionGroup } from 'react-transition-group';
 import { CentredDiv } from "../FlexDiv";
 import ItemImages from "./ItemImages";
 import { BACKEND_URL } from "../../database/const";
+import { useAuth } from "../../database/auth";
 
 const FormDiv = styled(CentredDiv)`
     flex-direction: column;
@@ -61,10 +62,13 @@ export default function NewItemCard() {
     const [ telegramHandle, setTelegramHandle ] = useState("");
     const [ submitResultText, setSubmitResultText ] = useState("");
     const [ isSubmitError, setIsSubmitError ] = useState(false);
+
     const itemCardRef = useRef(null);
+    const { user } = useAuth();
 
     const onSubmitItem = async (event) => {
         event.preventDefault();
+        const date = new Date().toISOString();
 
         let object = {
             method: "POST"
@@ -75,7 +79,9 @@ export default function NewItemCard() {
                 title: title,
                 description: description,
                 location: location,
-                telegram: telegramHandle
+                telegram: telegramHandle,
+                date: date,
+                userName: user.displayName
             });
         } else {
             const itemData = new FormData();
@@ -87,6 +93,8 @@ export default function NewItemCard() {
             itemData.append("description", description);
             itemData.append("location", location);
             itemData.append("telegram", telegramHandle);
+            itemData.append("date", date);
+            itemData.append("userName", user.displayName);
             object["body"] = itemData;
         }
         const apiEndpoint = isRequest ? 

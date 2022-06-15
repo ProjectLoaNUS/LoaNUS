@@ -8,7 +8,9 @@ router.post("/addRequest", async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       location: req.body.location,
-      telegram: req.body.telegram
+      telegram: req.body.telegram,
+      date: req.body.date,
+      userName: req.body.userName
     };
     ItemRequestsModel.create(obj, (err, request) => {
       if (err) {

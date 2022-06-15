@@ -27,7 +27,9 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
       title: request.body.title,
       description: request.body.description,
       location: request.body.location,
-      telegram: request.body.telegram
+      telegram: request.body.telegram,
+      date: request.body.date,
+      userName: request.body.userName
     };
     ItemListingsModel.create(obj, (err, listing) => {
       if (err) {
