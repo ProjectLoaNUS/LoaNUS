@@ -1,7 +1,9 @@
 import { Box, Typography } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import AppIcon from "../components/NavBar/AppBtn/AppIcon";
 import AuthCard from "../components/SignInComps/AuthCard";
+import NotSignedInToast from "../components/SignInComps/NotSignedInToast";
 
 const ContainerStyle = styled.div`
   display: flex;
@@ -20,6 +22,7 @@ const FlexBox = styled(Box)`
 `;
 
 function SignInPage() {
+  const { state } = useLocation();
 
   return (
     <ContainerStyle>
@@ -28,6 +31,7 @@ function SignInPage() {
         <Typography variant="h3">LoaNUS</Typography>
       </FlexBox>
       <AuthCard />
+      <NotSignedInToast open={state.open} />
     </ContainerStyle>
   );
 }
