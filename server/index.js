@@ -52,7 +52,11 @@ app.post("/api/login", async (req, res) => {
       return res.json({status: 'error', errorCode: signInResultCodes.UNKNOWN, error: err});
     }
     if (result) {
-      return res.json({status: 'ok', user: givenUser});
+      return res.json({status: 'ok', user: {
+        displayName: givenUser.name,
+        age: givenUser.age,
+        email: givenUser.email
+      }});
     }
     return res.json({status: 'error', errorCode: signInResultCodes.INVALID_PASSWORD, error: `Invalid password for {givenUser.name}`});
   });
