@@ -41,5 +41,23 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
   
     return response.json({status: 'ok'});
 });
+router.get("/getListingsText", (req, res) => {
+    ItemListingsModel.find({}, ['title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, listings) => {
+        if (err) {
+          res.status(500).send("An error occurred", err);
+        } else {
+          res.json({status: 'ok', listings: listings});
+        }
+    });
+});
+router.get("/getListingsImgs", (req, res) => {
+    ItemListingsModel.find({}, ['images'], null, (err, images) => {
+        if (err) {
+          res.status(500).send("An error occurred", err);
+        } else {
+          res.json({status: 'ok', images: images});
+        }
+    });
+});
 
 module.exports = router;

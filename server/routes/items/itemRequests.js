@@ -22,5 +22,14 @@ router.post("/addRequest", async (req, res) => {
       }
     });
 });
+router.get("/getRequests", (req, res) => {
+    ItemRequestsModel.find({}, ['title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
+        if (err) {
+          res.status(500).send("An error occurred", err);
+        } else {
+          res.json({status: 'ok', requests: requests});
+        }
+    });
+});
 
 module.exports = router;
