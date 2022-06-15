@@ -1,5 +1,5 @@
-import { Button, Card, Grow, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Button, Card, Grow, Slide, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
@@ -61,6 +61,7 @@ export default function NewItemCard() {
     const [ telegramHandle, setTelegramHandle ] = useState("");
     const [ submitResultText, setSubmitResultText ] = useState("");
     const [ isSubmitError, setIsSubmitError ] = useState(false);
+    const itemCardRef = useRef(null);
 
     const onSubmitItem = async (event) => {
         event.preventDefault();
@@ -113,7 +114,7 @@ export default function NewItemCard() {
     }, [isFormError, isDateError]);
 
     return (
-        <FlexCard component="form" onSubmit={onSubmitItem}>
+        <FlexCard component="form" onSubmit={onSubmitItem} ref={itemCardRef}>
             <Typography variant="h3">Item { isRequest ? 'Request' : 'Listing' }</Typography>
             <ItemTypeChip isRequest={isRequest} setIsRequest={setIsRequest} />
             <TransitionGroup>
@@ -149,7 +150,13 @@ export default function NewItemCard() {
               disabled={isFormError}>
                   {isRequest ? "Request it" : "List it"}
             </NarrowBtn>
-            { submitResultText && <Typography align="center" variant="caption">{ submitResultText }</Typography>}
+            <TransitionGroup>
+                { submitResultText && (
+                    <Slide container={itemCardRef.current} direction="right" >
+                        <Typography align="center" variant="caption">{ submitResultText }</Typography>
+                    </Slide>
+                )}
+            </TransitionGroup>
         </FlexCard>
     );
 }
