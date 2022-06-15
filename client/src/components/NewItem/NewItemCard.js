@@ -59,6 +59,8 @@ export default function NewItemCard() {
     const [ returnDate, setReturnDate ] = useState(new Date());
     const [ isDateError, setIsDateError ] = useState(false);
     const [ telegramHandle, setTelegramHandle ] = useState("");
+    const [ submitResultText, setSubmitResultText ] = useState("");
+    const [ isSubmitError, setIsSubmitError ] = useState(false);
 
     const onSubmitItem = async (event) => {
         event.preventDefault();
@@ -93,6 +95,11 @@ export default function NewItemCard() {
         const data = await req.json();
         if (data.status === 'ok') {
             console.log("File Upload successful");
+            setIsSubmitError(false);
+            setSubmitResultText("Item " + (isRequest ? "requested" : "listed"));
+        } else {
+            setIsSubmitError(true);
+            setSubmitResultText("Error occurred when creating item " + (isRequest ? "request" : "listing"));
         }
     }
 
@@ -138,11 +145,12 @@ export default function NewItemCard() {
             </TransitionGroup>
             <NarrowBtn
               variant="contained"
-              color="secondary"
+              color={!!submitResultText ? (isSubmitError ? "error" : "success") : "secondary"}
               type="submit"
               disabled={isFormError}>
                   {isRequest ? "Request it" : "List it"}
             </NarrowBtn>
+            { submitResultText && <Typography align="center" variant="caption">{ submitResultText }</Typography>}
         </FlexCard>
     );
 }
