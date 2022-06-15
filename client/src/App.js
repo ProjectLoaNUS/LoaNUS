@@ -8,17 +8,18 @@ import SignInPage from "./pages/SignInPage";
 import RewardsPage from "./pages/RewardsPage";
 import { theme } from "./components/Theme";
 import { ThemeProvider } from "@mui/material";
+import { HOME, NEW_ITEM, PROFILE, REWARDS, SIGN_IN } from "./pages/routes";
 
 function App() {
   return (
     <div>
       <ThemeProvider theme={ theme }>
         <Routes>
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/new-item" element={<NewItemPage />} />
-          <Route path="/view-rewards" element={<RewardsPage />} />
+          <Route path={SIGN_IN} element={<SignInPage />} />
+          <Route path={HOME} element={<HomePage />} />
+          <Route path={PROFILE} element={<ProfilePage />} />
+          <Route path={NEW_ITEM} element={<NewItemPage />} />
+          <Route path={REWARDS} element={<RewardsPage />} />
         </Routes>
       </ThemeProvider>
     </div>
