@@ -1,4 +1,5 @@
 const express = require("express");
+const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const mongoose = require("mongoose");
 const multer = require("multer");
@@ -9,12 +10,15 @@ const ItemModel = require("./models/Items");
 const cors = require("cors");
 const { request } = require("http");
 const sgMail = require("@sendgrid/mail");
+const ejs = require("ejs");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const { Router } = require("express");
 const PORT = process.env.PORT || 3001;
 require("dotenv").config();
 
+app.use(expressLayouts);
+app.set("view engine", "ejs");
 app.use(express.json());
 app.use(cors());
 mongoose.connect(
@@ -46,10 +50,18 @@ app.post("/api/login", async (req, res) => {
     INVALID_PASSWORD: 1,
     NO_SUCH_USER: 2,
     UNKNOWN: 3,
+    EMAIL_NOT_VERIFIED: 4,
   };
   const givenUser = await UserModel.findOne({
     email: req.body.email,
   });
+  if (!givenUser.isVerified) {
+    return res.json({
+      status: "error",
+      errorCode: signInResultCodes.EMAIL_NOT_VERIFIED,
+      error: `User yet to verify account`,
+    });
+  }
   if (!givenUser) {
     return res.json({
       status: "error",
@@ -97,6 +109,10 @@ app.post("/api/signUpUser", async (req, res) => {
     from: "yongbin0162@gmail.com",
     subject: "LoaNUS - Verify your email",
     text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
+    html: `<h1>Hello,</h1>
+    <p>Thanks for registering on our app.</p>
+    <p>Please click the link below to verify your account.</p>
+    <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
   };
 
   sgMail.send(msg, function (err, info) {
@@ -122,6 +138,7 @@ app.get("/verify-email", async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
+  res.render("verify-email");
 });
 
 const storage = multer.memoryStorage();
