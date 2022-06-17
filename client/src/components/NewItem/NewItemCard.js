@@ -13,10 +13,15 @@ import ItemImages from "./ItemImages";
 import { BACKEND_URL } from "../../database/const";
 import { useAuth } from "../../database/auth";
 import CategoryField from "./CategoryField";
+import { HOME } from "../../pages/routes";
+import { useNavigate } from "react-router-dom";
 
 const FormDiv = styled(CentredDiv)`
     flex-direction: column;
     align-self: stretch;
+`;
+const GapDiv = styled(CentredDiv)`
+    gap: 1rem;
 `;
 const GrowDown = styled(Grow)`
     transform-origin: center top;
@@ -67,6 +72,11 @@ export default function NewItemCard() {
 
     const itemCardRef = useRef(null);
     const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const backHome = () => {
+        navigate(HOME, {replace: true});
+    }
 
     const onSubmitItem = async (event) => {
         event.preventDefault();
@@ -156,13 +166,21 @@ export default function NewItemCard() {
                     </GrowDown> )
                 }
             </TransitionGroup>
-            <NarrowBtn
-              variant="contained"
-              color={!!submitResultText ? (isSubmitError ? "error" : "success") : "secondary"}
-              type="submit"
-              disabled={isFormError}>
-                  {isRequest ? "Request it" : "List it"}
-            </NarrowBtn>
+            <GapDiv>
+                <NarrowBtn
+                  variant="outlined"
+                  color="secondary"
+                  onClick={backHome}>
+                      Back to Home
+                </NarrowBtn>
+                <NarrowBtn
+                variant="contained"
+                color={!!submitResultText ? (isSubmitError ? "error" : "success") : "secondary"}
+                type="submit"
+                disabled={isFormError}>
+                    {isRequest ? "Request it" : "List it"}
+                </NarrowBtn>
+            </GapDiv>
             <TransitionGroup>
                 { submitResultText && (
                     <Slide container={itemCardRef.current} direction="right" >
