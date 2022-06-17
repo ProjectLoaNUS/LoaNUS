@@ -9,6 +9,10 @@ const ItemListingsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  category: {
+    type: Number,
+    required: true
+  },
   title: {
     type: String,
     required: true,
