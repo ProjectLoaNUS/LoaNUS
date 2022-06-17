@@ -24,6 +24,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
     const obj = {
       images: filesToImgArray(request.files),
       deadline: request.body.deadline,
+      category: request.body.category,
       title: request.body.title,
       description: request.body.description,
       location: request.body.location,
@@ -42,7 +43,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
     return response.json({status: 'ok'});
 });
 router.get("/getListingsText", (req, res) => {
-    ItemListingsModel.find({}, ['title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, listings) => {
+    ItemListingsModel.find({}, ['category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, listings) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {

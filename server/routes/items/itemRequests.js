@@ -5,6 +5,7 @@ const ItemRequestsModel = require("../../models/ItemRequests");
 router.post("/addRequest", async (req, res) => {
     console.log(req);
     const obj = {
+      category: req.body.category,
       title: req.body.title,
       description: req.body.description,
       location: req.body.location,
@@ -23,7 +24,7 @@ router.post("/addRequest", async (req, res) => {
     });
 });
 router.get("/getRequests", (req, res) => {
-    ItemRequestsModel.find({}, ['title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
+    ItemRequestsModel.find({}, ['category', 'title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
