@@ -3,7 +3,6 @@ const router = express.Router();
 const ItemRequestsModel = require("../../models/ItemRequests");
 
 router.post("/addRequest", async (req, res) => {
-    console.log(req);
     const obj = {
       category: req.body.category,
       title: req.body.title,
