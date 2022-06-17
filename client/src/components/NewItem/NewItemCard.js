@@ -12,6 +12,7 @@ import { CentredDiv } from "../FlexDiv";
 import ItemImages from "./ItemImages";
 import { BACKEND_URL } from "../../database/const";
 import { useAuth } from "../../database/auth";
+import CategoryField from "./CategoryField";
 
 const FormDiv = styled(CentredDiv)`
     flex-direction: column;
@@ -53,6 +54,7 @@ export const FlexCard = styled(Card)`
 export default function NewItemCard() {
     const [ isFormError, setIsFormError ] = useState(false);
     const [ isRequest, setIsRequest ] = useState(true);
+    const [ category, setCategory ] = useState(18);
     const [ images, setImages ] = useState([]);
     const [ title, setTitle ] = useState("");
     const [ description, setDescription ] = useState("");
@@ -76,6 +78,7 @@ export default function NewItemCard() {
         if (isRequest) {
             object["headers"] = {'Content-Type': 'application/json'};
             object["body"] = JSON.stringify({
+                category: category,
                 title: title,
                 description: description,
                 location: location,
@@ -89,6 +92,7 @@ export default function NewItemCard() {
                 itemData.append("images", image);
             })
             itemData.append("deadline", returnDate);
+            itemData.append("category", category);
             itemData.append("title", title);
             itemData.append("description", description);
             itemData.append("location", location);
@@ -125,6 +129,7 @@ export default function NewItemCard() {
         <FlexCard component="form" onSubmit={onSubmitItem} ref={itemCardRef}>
             <Typography variant="h3">Item { isRequest ? 'Request' : 'Listing' }</Typography>
             <ItemTypeChip isRequest={isRequest} setIsRequest={setIsRequest} />
+            <CategoryField category={category} setCategory={setCategory} />
             <TransitionGroup>
                 { !isRequest &&
                     (<GrowDown timeout={750}>
