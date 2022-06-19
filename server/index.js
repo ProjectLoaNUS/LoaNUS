@@ -1,4 +1,5 @@
 const express = require("express");
+//const { MongoClient } = require("mongodb");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const mongoose = require("mongoose");
@@ -20,9 +21,18 @@ require("dotenv").config();
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 app.use(express.json());
+//const client = new MongoClient(
+// "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
+//);
+//client.connect();
 app.use(cors());
+
 mongoose.connect(
-  "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
+  "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
 );
 
 sgMail.setApiKey(process.env.API_KEY);
@@ -193,6 +203,125 @@ app.post("/api/item-upload", upload.single("image"), (request, response, next) =
 
 const items = require("./routes/items/index");
 app.use("/api", items);
+
+// Search function
+
+app.get("/search", async (request, response) => {
+  try {
+    var title = ".";
+    if (request.query.name) {
+      title = request.query.name;
+    }
+    const agg = [
+      {
+        $search: {
+          autocomplete: {
+            query: title,
+            path: "name",
+            fuzzy: {
+              maxEdits: 2,
+            },
+          },
+        },
+      },
+      {
+        $limit: 5,
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          image: 1,
+          desc: 1,
+        },
+      },
+    ];
+    const result = await ItemModel.aggregate(agg);
+    return response.json(result);
+  } catch (error) {
+    console.log(error);
+    return response.json([]);
+  }
+  /* var collection;
+  collection = client.db("loanusdatabase").collection("itemlistings");
+  try {
+    let result = await collection
+      .aggregate([
+        {
+          $search: {
+            autocomplete: {
+              query: `${request.query.title}`,
+              path: "title",
+              fuzzy: {
+                maxEdits: 2,
+              },
+            },
+          },
+        },
+      ])
+      .toArray();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send({ message: error.message });
+  }
+  /*try {
+    let result = await ItemModel.aggregate([
+      {
+        $search: {
+          autocomplete: {
+            query: `${request.query.name}`,
+            path: "name",
+            fuzzy: {
+              maxEdits: 2,
+            },
+          },
+        },
+      },
+    ]);
+    response.send(result);
+  } catch (error) {
+    response.status(500).send({ message: error.message });
+  }
+  /*
+    let results;
+    if (request.query.name) {
+      console.log("Detected");
+      results = await ItemModel.aggregate([
+        {
+          $search: {
+            index: "autocomplete",
+            autocomplete: {
+              query: request.query.name,
+              path: "name",
+              fuzzy: {
+                maxEdits: 2,
+              },
+              tokenOrder: "sequential",
+            },
+          },
+        },
+        {
+          $project: {
+            name: 1,
+            _id: 1,
+          },
+        },
+        {
+          $limit: 15,
+        },
+      ]);
+      if (results) {
+        console.log("Confirmed");
+        console.log(results);
+        return response.send(results);
+      }
+    }
+    response.send([]);
+  } catch (error) {
+    console.log(error);
+    response.send([]);
+  }*/
+});
 
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);

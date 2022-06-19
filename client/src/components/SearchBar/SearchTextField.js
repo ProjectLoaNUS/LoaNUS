@@ -1,15 +1,23 @@
 import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { react, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
-import { alpha } from '@mui/material/styles';
+import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import SearchResults from "./SearchResults";
+import { CentredGrowDiv } from "../FlexDiv";
 import { theme } from '../Theme';
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
 `;
 
+const Container = styled.div`
+  width: 100%;
+`;
 const GrowTextField = styled(TextField)`
-    flex: 1 0 auto;
+  flex: 1 0 auto;
 `;
 
 const StyledTextField = styled((props) => (
@@ -37,21 +45,60 @@ const StyledTextField = styled((props) => (
     '& .MuiInputLabel-root': {
         color: theme.palette.primary.contrastText // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
     },
-}));
+  })
+);
 
 export default function SearchTextField() {
-    return (
-        <StyledTextField
-            variant="filled" 
-            label="Search" 
-            InputProps={{
-                endAdornment: 
-                    <InputAdornment position="end">
-                        <ContrastIconBtn>
-                            <SearchIcon />
-                        </ContrastIconBtn>
-                    </InputAdornment>,
-                disableUnderline: true
-            }} />
-    );
+  const navigate = useNavigate();
+  const [queryText, setQueryText] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  useEffect(() => {
+    if (!queryText) {
+      setSearchResults([]);
+    }
+    (async () => {
+      const url = "http://localhost:3001/search";
+      axios
+        .get(url, {
+          params: {
+            name: queryText,
+          },
+        })
+        .then((res) => {
+          setSearchResults(res.data);
+        })
+        .catch((err) => console.log(err, "error occured"));
+    })();
+    console.log(searchResults);
+  }, [queryText]);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (queryText) {
+      navigate({
+        pathname: "/search-items",
+        search: `?name=${queryText}`,
+      });
+    }
+  };
+  console.log(queryText);
+  return (
+    <CentredGrowDiv>
+      <StyledTextField
+        onChange={(e) => setQueryText(e.target.value)}
+        variant="filled"
+        label="Search"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <ContrastIconBtn onClick={handleSubmit}>
+                <SearchIcon />
+              </ContrastIconBtn>
+            </InputAdornment>
+          ),
+          disableUnderline: true,
+        }}
+      />
+      <SearchResults searchResults={searchResults}></SearchResults>
+    </CentredGrowDiv>
+  );
 }
