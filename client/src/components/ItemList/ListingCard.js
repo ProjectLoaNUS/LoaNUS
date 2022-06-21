@@ -6,10 +6,8 @@ const ListCard = styled(Card)`
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    flex: 1 1 auto;
-    min-width: 10rem;
-    max-width: 40%;
-    height: 100%;
+    flex: 0 0 auto;
+    width: 30%;
     & .MuiCardHeader-title {
         white-space: nowrap;
         overflow: hidden;
