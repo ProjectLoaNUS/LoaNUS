@@ -3,7 +3,7 @@ import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 const label = "Item Description";
 
 export default function DescriptionField(props) {
-    const { setDescription } = props;
+    const { description, setDescription } = props;
 
     return (
         <FormControl required variant="outlined">
@@ -16,6 +16,7 @@ export default function DescriptionField(props) {
                 placeholder="e.g. Newly bought(3 weeks ago), rarely used since I usually mop my dorm room floor instead"
                 multiline={true}
                 minRows={3}
+                value={description}
                 onChange={(event) => setDescription(event.target.value)} />
         </FormControl>
     );

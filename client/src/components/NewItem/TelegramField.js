@@ -1,7 +1,7 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 
 export default function TelegramField(props) {
-    const { setTelegramHandle } = props;
+    const { telegram, setTelegramHandle } = props;
     const label = "Your Telegram handle";
 
     return (
@@ -13,6 +13,7 @@ export default function TelegramField(props) {
                 variant="outlined"
                 placeholder="e.g. @HelpfulNusStudent"
                 label={ label }
+                value={ telegram }
                 onChange={(event) => setTelegramHandle(event.target.value)} />
         </FormControl>
     );

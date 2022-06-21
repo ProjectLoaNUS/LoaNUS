@@ -119,6 +119,9 @@ export default function NewItemCard() {
         if (data.status === 'ok') {
             setIsSubmitError(false);
             setSubmitResultText("Item " + (isRequest ? "requested" : "listed"));
+            setTimeout(() => {
+                setSubmitResultText("");
+            }, 5000);
         } else {
             setIsSubmitError(true);
             setSubmitResultText("Error occurred when creating item " + (isRequest ? "request" : "listing"));
@@ -149,10 +152,10 @@ export default function NewItemCard() {
                     </GrowDown>)
                 }
             </TransitionGroup>
-            <TitleField setTitle={setTitle} />
-            <DescriptionField setDescription={setDescription} />
-            <LocationField setLocation={setLocation} />
-            <TelegramField setTelegramHandle={setTelegramHandle} />
+            <TitleField title={title} setTitle={setTitle} />
+            <DescriptionField description={description} setDescription={setDescription} />
+            <LocationField location={location} setLocation={setLocation} />
+            <TelegramField telegram={telegramHandle} setTelegramHandle={setTelegramHandle} />
             <TransitionGroup>
                 { !isRequest && 
                     ( <GrowDown timeout={750}>
