@@ -42,7 +42,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
   
     return response.json({status: 'ok'});
 });
-router.get("/getListingsText", (req, res) => {
+router.get("/getListingsTexts", (req, res) => {
     ItemListingsModel.find({}, ['category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, listings) => {
         if (err) {
           res.status(500).send("An error occurred", err);
