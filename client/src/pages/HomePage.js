@@ -6,6 +6,7 @@ import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 import { CentredDiv } from "../components/FlexDiv";
 import ItemList from "../components/ItemList/ItemList";
+import ListingList from "../components/ItemList/ListingList";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -14,8 +15,22 @@ const MainContainer = styled.div`
 function HomePage() {
   const [ texts, setTexts ] = useState([]);
   const [ imgUrls, setImgUrls ] = useState([]);
+  const [ listingTexts, setListingTexts ] = useState([]);
+  const [ listingImgs, setListingImgs ] = useState([]);
 
   useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/api/items/getListingsImgs`)
+      .then((res) => {
+        binsToImgUrls(res.data.images);
+      })
+      .catch((err) => console.log(err, "error occured"));
+    axios
+      .get(`${BACKEND_URL}/api/items/getListingsTexts`)
+      .then((res) => {
+        setListingTexts(res.data.listings);
+      })
+      .catch((err) => console.log(err, "error occured"));
     axios
       .get(`${BACKEND_URL}/api/getItemImages`)
       .then((res) => {
@@ -41,9 +56,26 @@ function HomePage() {
     });
   }
 
+  async function binsToImgUrls(bins) {
+    let imgs = [];
+    bins.forEach((bin, index) => {
+      const datas = bin.images.data;
+      let urls = [];
+      datas.forEach((data, i) => {
+        const binary = Buffer.from(data.data);
+        const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
+        const url = URL.createObjectURL(blob);
+        urls[i] = url;
+      });
+      imgs[index] = urls;
+    });
+    setListingImgs(imgs);
+  }
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
+      <ListingList imageUrls={listingImgs} texts={listingTexts} />
       <CentredDiv>Image upload</CentredDiv>
       <ItemList texts={texts} setTexts={setTexts} imgUrls={imgUrls} setImgUrls={setImgUrls} />
     </MainContainer>
