@@ -35,12 +35,6 @@ export default function ListingList(props) {
                     const title = text.title;
                     const userName = text.userName;
 
-                    function LoadingDisplay() {
-                        return (
-                            <img src={ Loading } />
-                        );
-                    }
-
                     return (
                         <ListingCard
                           key={index}
