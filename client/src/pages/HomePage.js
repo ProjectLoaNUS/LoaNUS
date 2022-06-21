@@ -8,6 +8,7 @@ import ListingList from "../components/ItemList/ListingList";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
+  min-height: 100vh;
 `;
 
 function HomePage() {
