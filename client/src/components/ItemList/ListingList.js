@@ -10,6 +10,8 @@ const ListingsStack = styled(Stack)`
     justify-content: flex-start;
     flex: 1 1 auto;
     overflow-x: auto;
+    column-gap: 1ch;
+    padding: 1ch;
 `;
 const ListingsPaper = styled(Paper)`
     display: flex;
