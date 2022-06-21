@@ -49,7 +49,7 @@ function HomePage() {
     var imgs = [];
     bins.forEach((bin, index) => {
       const binary = Buffer.from(bin.image.data.data);
-      const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
+      const blob = new Blob([binary.buffer], {type: bin.image.contentType});
       const url = URL.createObjectURL(blob);
       imgs[index] = url;
       setImgUrls(imgs);
