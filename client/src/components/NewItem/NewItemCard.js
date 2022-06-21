@@ -78,6 +78,18 @@ export default function NewItemCard() {
         navigate(HOME, {replace: true});
     }
 
+    const clearForm = () => {
+        setCategory(18);
+        setTitle("");
+        setDescription("");
+        setLocation("");
+        setTelegramHandle("");
+        if (!isRequest) {    
+            setImages([]);
+            setReturnDate(new Date());
+        }
+    }
+
     const onSubmitItem = async (event) => {
         event.preventDefault();
         const date = new Date().toISOString();
@@ -119,6 +131,7 @@ export default function NewItemCard() {
         if (data.status === 'ok') {
             setIsSubmitError(false);
             setSubmitResultText("Item " + (isRequest ? "requested" : "listed"));
+            clearForm();
             setTimeout(() => {
                 setSubmitResultText("");
             }, 5000);
