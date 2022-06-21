@@ -11,6 +11,15 @@ const MainContainer = styled.div`
   min-height: 100vh;
 `;
 
+const BodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+`;
+
 function HomePage() {
   const [ listingTexts, setListingTexts ] = useState([]);
   const [ listingImgs, setListingImgs ] = useState([]);
@@ -49,7 +58,9 @@ function HomePage() {
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
-      <ListingList imageUrls={listingImgs} texts={listingTexts} />
+      <BodyContainer>
+        <ListingList imageUrls={listingImgs} texts={listingTexts} />
+      </BodyContainer>
     </MainContainer>
   );
 }
