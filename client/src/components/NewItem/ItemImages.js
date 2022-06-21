@@ -73,7 +73,7 @@ export default function ItemImages(props) {
     }
 
     const onImgChosen = (event) => {
-        setImages([...images, event.target.files[0]]);
+        setImages((prevImages) => [...prevImages, event.target.files[0]]);
     }
 
     const getImgUrl = (image) => {
