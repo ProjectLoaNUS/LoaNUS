@@ -37,7 +37,7 @@ export default function DetailsDialog(props) {
           fullWidth={true}
           TransitionComponent={Transition}>
             <DialogTitle>
-                Item {isRequest ? "Request" : "Listing"}
+                Item Listing
                 <IconButton
                   aria-label="close"
                   onClick={handleClose}
