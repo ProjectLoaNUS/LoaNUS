@@ -23,7 +23,7 @@ export default function DetailsDialog(props) {
     }
 
     return (
-        <Dialog open={open} onClose={handleClose} scroll="paper">
+        <Dialog open={open} onClose={handleClose} scroll="paper" fullWidth={true}>
             <DialogTitle>
                 Item {isRequest ? "Request" : "Listing"}
                 <IconButton
