@@ -1,7 +1,8 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, Link, Typography } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Grow, IconButton, Link, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import styled from "styled-components";
 import ImageList from "./ImageList";
+import { forwardRef } from "react";
 
 const DialogContainer = styled(DialogContent)`
     display: flex;
@@ -10,6 +11,12 @@ const DialogContainer = styled(DialogContent)`
     align-items: stretch;
     padding: 1rem;
 `;
+const GrowUp = styled(Grow)`
+    transform-origin: bottom center;
+`;
+const Transition = forwardRef(function Transition(props, ref) {
+    return <GrowUp ref={ref} {...props} />;
+});
 
 export default function DetailsDialog(props) {
     const { date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
@@ -23,7 +30,12 @@ export default function DetailsDialog(props) {
     }
 
     return (
-        <Dialog open={open} onClose={handleClose} scroll="paper" fullWidth={true}>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          scroll="paper"
+          fullWidth={true}
+          TransitionComponent={Transition}>
             <DialogTitle>
                 Item {isRequest ? "Request" : "Listing"}
                 <IconButton
