@@ -8,6 +8,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchResults from "./SearchResults";
 import { CentredGrowDiv } from "../FlexDiv";
 import { theme } from '../Theme';
+import { BACKEND_URL } from "../../database/const";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -57,7 +58,7 @@ export default function SearchTextField() {
       setSearchResults([]);
     }
     (async () => {
-      const url = "http://localhost:3001/search";
+      const url = `${BACKEND_URL}/search`;
       axios
         .get(url, {
           params: {

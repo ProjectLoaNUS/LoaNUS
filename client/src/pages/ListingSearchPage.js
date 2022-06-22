@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchResults from "../components/SearchBar/SearchResults";
+import { BACKEND_URL } from "../database/const";
 
 const Container = styled.div`
   width: 100%;
@@ -17,7 +18,7 @@ function SearchedListings() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchTerm = searchParams.get("name");
   useEffect(() => {
-    const url = "http://localhost:3001/search";
+    const url = `${BACKEND_URL}/search`;
     axios
       .get(url, {
         params: {
