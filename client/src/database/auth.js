@@ -51,8 +51,8 @@ function useAuthProvider() {
   };
 
   const signUpUser = async (givenName, givenAge, givenEmail, givenPassword) => {
-    const isRegistered = await hasUser(givenEmail);
-    if (!isRegistered) {
+    const userStatus = await hasUser(givenEmail);
+    if (userStatus === hasUserResultCodes.NO_SUCH_USER) {
       const req = await fetch(`${BACKEND_URL}/api/signUpUser`, {
         method: "POST",
         headers: {
@@ -87,9 +87,15 @@ function useAuthProvider() {
 
     const data = await req.json();
     if (data.status === "ok") {
-      return data.hasUser;
+        if (data.hasUser) {
+            if (data.isVerified) {
+                return hasUserResultCodes.HAS_USER;
+            }
+            return hasUserResultCodes.UNVERIFIED_USER;
+        }
+        return hasUserResultCodes.NO_SUCH_USER;
     }
-    return false;
+    return hasUserResultCodes.UNKOWN_ERROR;
   };
 
   return {

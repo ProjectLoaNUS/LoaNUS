@@ -14,6 +14,8 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
+  hasUserResultCodes,
+  hasUserResultTexts,
   signInResultCodes,
   signInResultTexts,
   useAuth,
@@ -114,11 +116,23 @@ export default function AuthCard() {
   };
 
   const checkEmail = async (email) => {
-    const isValid = await hasUser(email);
-    if (isValid) {
-      setShowSignIn(true);
-    } else {
-      setShowSignUp(true);
+    const userStatus = await hasUser(email);
+    switch(userStatus) {
+      case hasUserResultCodes.HAS_USER:
+        setShowSignIn(true);
+        break;
+      case hasUserResultCodes.NO_SUCH_USER:
+        setShowSignUp(true);
+        break;
+      case hasUserResultCodes.UNVERIFIED_USER:
+        setSubmitErrHelperText(hasUserResultTexts[userStatus]);
+        setIsSubmitErr(true);
+        break;
+      case hasUserResultCodes.UNKOWN_ERROR:
+      default:
+        setSubmitErrHelperText(hasUserResultTexts[userStatus]);
+        setIsSubmitErr(true);
+        break;
     }
   };
 
