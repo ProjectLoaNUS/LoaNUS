@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ListingCard from "./ListingCard";
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
+import { CATEGORIES } from "../NewItem/ItemCategories";
 
 const ListingsStack = styled(Stack)`
     display: flex;
@@ -34,16 +35,22 @@ export default function ListingList(props) {
                 { texts ? (texts.map((text, index) => {
                     const date = new Date(text.date).toLocaleDateString({}, 
                             {year: 'numeric', month: 'short', day: 'numeric'});
-                    const title = text.title;
-                    const userName = text.userName;
+                    const deadline = new Date(text.deadline).toLocaleDateString({}, 
+                        {year: 'numeric', month: 'short', day: 'numeric'});
+                    const category = CATEGORIES[text.category];
 
                     return (
                         <ListingCard
                           key={index}
                           date={date}
                           imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
-                          title={title}
-                          userName={userName} />
+                          title={text.title}
+                          userName={text.userName}
+                          deadline={deadline}
+                          category={category}
+                          description={text.description}
+                          location={text.location}
+                          telegram={text.telegram} />
                     );
                 })) : 
                 'Loading'}
