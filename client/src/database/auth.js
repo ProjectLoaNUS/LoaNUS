@@ -119,6 +119,18 @@ export const signInResultTexts = [
   "Email not verified", //Return code 4
 ];
 
+export const hasUserResultCodes = {
+    HAS_USER: 0,
+    NO_SUCH_USER: 1,
+    UNVERIFIED_USER: 2
+}
+
+export const hasUserResultTexts = [
+    "",
+    "No such user",
+    "Email not verified"
+]
+
 export const useAuth = () => {
   return useContext(authCtx);
 };
