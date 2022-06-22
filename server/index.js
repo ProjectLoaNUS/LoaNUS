@@ -41,6 +41,7 @@ app.post("/api/hasUser", async (req, res) => {
   return res.json({
     status: "ok",
     hasUser: true,
+    isVerified: user.isVerified
   });
 });
 
