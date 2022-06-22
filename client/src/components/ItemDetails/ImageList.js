@@ -48,7 +48,7 @@ const ImageDiv = styled.div`
     justify-content: center;
     flex: 1 1 0;
     min-height: 0;
-    width: 100%;
+    width: 40%;
     img {
         min-height: 0;
         object-fit: contain;
