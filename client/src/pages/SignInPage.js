@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AppIcon from "../components/AppBtn/AppIcon";
 import AuthCard from "../components/SignInComps/AuthCard";
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 
 const ContainerStyle = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ function SignInPage() {
   return (
     <ContainerStyle>
       <TopBar>
-        <Button color="primary" variant="outlined" onClick={backToHome}>Back to Home</Button>
+        <Button color="primary" variant="outlined" onClick={backToHome} startIcon={<ArrowLeftIcon />}>Home</Button>
       </TopBar>
       <BodyContainer>
         <FlexBox>
