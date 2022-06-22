@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import styled from "styled-components";
 import ImageList from "./ImageList";
 import { forwardRef } from "react";
+import { theme } from "../Theme";
 
 const DialogContainer = styled(DialogContent)`
     display: flex;
@@ -17,6 +18,14 @@ const GrowUp = styled(Grow)`
 const Transition = forwardRef(function Transition(props, ref) {
     return <GrowUp ref={ref} {...props} />;
 });
+const Row = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+const ContrastTypo = styled(Typography)`
+    white-space: pre-wrap;
+    color: ${theme.palette.secondary.main};
+`;
 
 export default function DetailsDialog(props) {
     const { date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
@@ -54,8 +63,14 @@ export default function DetailsDialog(props) {
             <DialogContainer>
                 <Typography variant="h3" align="left">{ title }</Typography>
                 {imageUrls && <ImageList imageUrls={imageUrls} />}
-                <Typography variant="caption" align="left">{date} by {userName}</Typography>
-                <Typography variant="caption" align="left">In {category}</Typography>
+                <Row>
+                    <Typography variant="caption" align="left">{date} by</Typography>
+                    <ContrastTypo variant="caption" align="left"> {userName}</ContrastTypo>
+                </Row>
+                <Row>
+                    <Typography variant="caption" align="left">In</Typography>
+                    <ContrastTypo variant="caption" align="left"> {category}</ContrastTypo>
+                </Row>
                 <Typography variant="body1" align="left">{description}</Typography>
                 {deadline && (
                     <>
@@ -65,7 +80,7 @@ export default function DetailsDialog(props) {
                 )}
                 <Typography variant="subtitle1" align="left">Meet-up</Typography>
                 <Typography variant="subtitle2" align="left">{location}</Typography>
-                <Link variant="subtitle2" onClick={ onClickChat }>Contact {telegram}</Link>
+                <Link variant="subtitle2" onClick={ onClickChat } color="secondary">Contact {telegram}</Link>
             </DialogContainer>
         </Dialog>
     );
