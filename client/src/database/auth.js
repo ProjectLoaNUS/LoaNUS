@@ -122,13 +122,15 @@ export const signInResultTexts = [
 export const hasUserResultCodes = {
     HAS_USER: 0,
     NO_SUCH_USER: 1,
-    UNVERIFIED_USER: 2
+    UNVERIFIED_USER: 2,
+    UNKOWN_ERROR: 3
 }
 
 export const hasUserResultTexts = [
     "",
     "No such user",
-    "Email not verified"
+    "Email not verified",
+    "Unknown error occurred"
 ]
 
 export const useAuth = () => {
