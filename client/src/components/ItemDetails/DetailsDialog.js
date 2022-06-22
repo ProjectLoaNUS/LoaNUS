@@ -32,13 +32,18 @@ const BoldedTypo = styled(Typography)`
 
 export default function DetailsDialog(props) {
     const { date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
+    const telegramUsername = telegram.replace("@", "");
 
     const handleClose = () => {
         setOpen(false);
     };
 
     const onClickChat = (event) => {
-
+        const telegramUrl = "https://t.me/" + telegramUsername;
+        const chatOnTelegram = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+        if (chatOnTelegram) {
+            chatOnTelegram.opener = null;
+        }
     }
 
     return (
