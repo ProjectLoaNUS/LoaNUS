@@ -49,7 +49,7 @@ function SignInPage() {
   return (
     <ContainerStyle>
       <TopBar>
-        <Button color="primary" variant="outlined" onClick={backToHome} startIcon={<ArrowLeftIcon />}>Home</Button>
+        <Button color="primary" variant="contained" onClick={backToHome} startIcon={<ArrowLeftIcon />}>Home</Button>
       </TopBar>
       <BodyContainer>
         <FlexBox>
