@@ -26,6 +26,9 @@ const ContrastTypo = styled(Typography)`
     white-space: pre-wrap;
     color: ${theme.palette.secondary.main};
 `;
+const BoldedTypo = styled(Typography)`
+    font-weight: bold;
+`;
 
 export default function DetailsDialog(props) {
     const { date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
@@ -64,23 +67,24 @@ export default function DetailsDialog(props) {
                 <Typography variant="h3" align="left">{ title }</Typography>
                 {imageUrls && <ImageList imageUrls={imageUrls} />}
                 <Row>
-                    <Typography variant="caption" align="left">{date} by</Typography>
-                    <ContrastTypo variant="caption" align="left"> {userName}</ContrastTypo>
+                    <Typography variant="body1" align="left">{date} by</Typography>
+                    <ContrastTypo variant="body1" align="left"> {userName}</ContrastTypo>
                 </Row>
                 <Row>
-                    <Typography variant="caption" align="left">In</Typography>
-                    <ContrastTypo variant="caption" align="left"> {category}</ContrastTypo>
+                    <Typography variant="body1" align="left">In</Typography>
+                    <ContrastTypo variant="body1" align="left"> {category}</ContrastTypo>
                 </Row>
+                <BoldedTypo variant="h6" align="left">Description</BoldedTypo>
                 <Typography variant="body1" align="left">{description}</Typography>
                 {deadline && (
                     <>
-                        <Typography variant="subtitle1" align="left">Return deadline</Typography>
-                        <Typography variant="caption" align="left">{deadline}</Typography>
+                        <BoldedTypo variant="h6" align="left">Return deadline</BoldedTypo>
+                        <Typography variant="body1" align="left">{deadline}</Typography>
                     </>
                 )}
-                <Typography variant="subtitle1" align="left">Meet-up</Typography>
-                <Typography variant="subtitle2" align="left">{location}</Typography>
-                <Link variant="subtitle2" onClick={ onClickChat } color="secondary">Contact {telegram}</Link>
+                <BoldedTypo variant="h6" align="left">Meet-up</BoldedTypo>
+                <Typography variant="body1" align="left">{location}</Typography>
+                <Link variant="body1" onClick={ onClickChat } color="secondary">Contact {telegram}</Link>
             </DialogContainer>
         </Dialog>
     );
