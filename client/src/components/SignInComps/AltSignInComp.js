@@ -14,8 +14,8 @@ const AltSignInDiv = styled(CentredDiv)`
     align-items: stretch;
     gap: 1rem;
     & .MuiLink-root {
-        color: ${theme.palette.accent.main};
-        text-decoration-color: ${theme.palette.accent.main};
+        color: ${theme.palette.secondary.main};
+        text-decoration-color: ${theme.palette.secondary.main};
     }
 `;
 

@@ -1,51 +1,66 @@
 import styled from "styled-components";
-import NavigationBar from "../components/NavigationBar";
+import NavigationBar from "../components/NavBar/NavigationBar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
-import { CentredDiv } from "../components/FlexDiv";
-import ItemList from "../components/ItemList/ItemList";
+import ListingList from "../components/ItemList/ListingList";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
+  min-height: 100vh;
+`;
+
+const BodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
 `;
 
 function HomePage() {
-  const [ texts, setTexts ] = useState([]);
-  const [ imgUrls, setImgUrls ] = useState([]);
+  const [ listingTexts, setListingTexts ] = useState([]);
+  const [ listingImgs, setListingImgs ] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/api/getItemImages`)
+      .get(`${BACKEND_URL}/api/items/getListingsImgs`)
       .then((res) => {
-        binsToImgs(res.data);
+        binsToImgUrls(res.data.images);
       })
       .catch((err) => console.log(err, "error occured"));
     axios
-      .get(`${BACKEND_URL}/api/getItemTexts`)
+      .get(`${BACKEND_URL}/api/items/getListingsTexts`)
       .then((res) => {
-        setTexts(res.data);
+        setListingTexts(res.data.listings);
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
 
-  async function binsToImgs(bins) {
-    var imgs = [];
+  async function binsToImgUrls(bins) {
+    let imgs = [];
     bins.forEach((bin, index) => {
-      const binary = Buffer.from(bin.image.data.data);
-      const blob = new Blob([binary.buffer], {type: 'application/octet-binary'});
-      const url = URL.createObjectURL(blob);
-      imgs[index] = url;
-      setImgUrls(imgs);
+      const datas = bin.images.data;
+      let urls = [];
+      datas.forEach((data, i) => {
+        const binary = Buffer.from(data.data);
+        const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
+        const url = URL.createObjectURL(blob);
+        urls[i] = url;
+      });
+      imgs[index] = urls;
     });
+    setListingImgs(imgs);
   }
 
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
-      <CentredDiv>Image upload</CentredDiv>
-      <ItemList texts={texts} setTexts={setTexts} imgUrls={imgUrls} setImgUrls={setImgUrls} />
+      <BodyContainer>
+        <ListingList imageUrls={listingImgs} texts={listingTexts} />
+      </BodyContainer>
     </MainContainer>
   );
 }

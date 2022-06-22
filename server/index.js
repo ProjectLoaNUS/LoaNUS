@@ -79,7 +79,11 @@ app.post("/api/login", async (req, res) => {
       });
     }
     if (result) {
-      return res.json({ status: "ok", user: givenUser });
+      return res.json({status: 'ok', user: {
+        displayName: givenUser.name,
+        age: givenUser.age,
+        email: givenUser.email
+      }});
     }
     return res.json({
       status: "error",
@@ -168,30 +172,27 @@ app.get("/api/getItemImages", (req, res) => {
     }
   });
 });
-app.post(
-  "/api/item-upload",
-  upload.single("image"),
-  (request, response, next) => {
-    console.log(request.file);
-    const obj = {
-      name: request.body.name,
-      desc: request.body.description,
-      image: {
-        data: request.file.buffer,
-        contentType: request.file.mimetype,
-      },
-    };
-    ItemModel.create(obj, (err, item) => {
-      if (err) {
-        console.log(err);
-      } else {
-        item.save();
-      }
-    });
+app.post("/api/item-upload", upload.single("image"), (request, response, next) => {
+  const obj = {
+    name: request.body.name,
+    desc: request.body.description,
+    image: {
+      data: request.file.buffer,
+      contentType: request.file.mimetype,
+    },
+  };
+  ItemModel.create(obj, (err, item) => {
+    if (err) {
+      console.log(err);
+    } else {
+      item.save();
+    }
+  });
+  response.send("Upload success");
+});
 
-    response.send("Upload success");
-  }
-);
+const items = require("./routes/items/index");
+app.use("/api", items);
 
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);

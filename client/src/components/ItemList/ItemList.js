@@ -8,6 +8,7 @@ const ItemsBox = styled(Box)`
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
 `;
 
 const ImageDiv = styled.div`

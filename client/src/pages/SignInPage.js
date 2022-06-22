@@ -1,8 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import AppIcon from "../components/AppBtn/AppIcon";
+import AppIcon from "../components/NavBar/AppBtn/AppIcon";
 import AuthCard from "../components/SignInComps/AuthCard";
+import NotSignedInToast from "../components/SignInComps/NotSignedInToast";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 
 const ContainerStyle = styled.div`
@@ -40,6 +41,7 @@ const FlexBox = styled(Box)`
 `;
 
 function SignInPage() {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   const backToHome = () => {
@@ -57,6 +59,7 @@ function SignInPage() {
           <Typography variant="h3">LoaNUS</Typography>
         </FlexBox>
         <AuthCard />
+        <NotSignedInToast open={state && state.open} />
       </BodyContainer>
     </ContainerStyle>
   );

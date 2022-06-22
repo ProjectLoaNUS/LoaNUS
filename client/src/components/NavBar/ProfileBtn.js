@@ -2,9 +2,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IconButton, Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
-import { useAuth } from '../database/auth';
+import { useAuth } from '../../database/auth';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { ShrinkDiv } from './FlexDiv';
+import { ShrinkDiv } from '../FlexDiv';
+import styled from 'styled-components';
+import { theme } from '../Theme';
+
+const ContrastIconBtn = styled(IconButton)`
+    color: ${theme.palette.primary.contrastText};
+`;
 
 export default function ProfileBtn() {
     const [ anchorEl, setAnchorEl ] = useState(null);
@@ -25,14 +31,13 @@ export default function ProfileBtn() {
 
     return (
         <ShrinkDiv>
-            <IconButton 
+            <ContrastIconBtn 
               id="profile-btn"
               aria-controls={'profile-menu'}
               aria-haspopup="true"
-              onClick={handleClick}
-              color="primary">
+              onClick={handleClick}>
                   <AccountCircleIcon />
-              </IconButton>
+              </ContrastIconBtn>
             <Menu
               id="profile-menu"
               anchorEl={anchorEl}
