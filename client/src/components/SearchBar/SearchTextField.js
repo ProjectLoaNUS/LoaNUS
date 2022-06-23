@@ -117,7 +117,6 @@ export default function SearchTextField() {
                       <SearchIcon />
                     </ContrastIconBtn>
                 ),
-                disableUnderline: true,
               }} />
           )
         }} />
