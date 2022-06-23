@@ -9,6 +9,7 @@ import SearchResults from "./SearchResults";
 import { CentredGrowDiv } from "../FlexDiv";
 import { theme } from '../Theme';
 import { BACKEND_URL } from "../../database/const";
+import { SEARCH_LISTINGS } from "../../pages/routes";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -83,10 +84,7 @@ export default function SearchTextField() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (queryText) {
-      navigate({
-        pathname: "/search-items",
-        search: `?name=${queryText}`,
-      });
+      navigate(SEARCH_LISTINGS, {state: {queryText: queryText}});
     }
   };
 

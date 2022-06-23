@@ -2,7 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import ItemList from "../components/ItemList/ItemList";
 import { CentredDiv } from "../components/FlexDiv";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchResults from "../components/SearchBar/SearchResults";
@@ -15,21 +15,23 @@ const Container = styled.div`
 
 function SearchedListings() {
   const [searchResults, setSearchResults] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchTerm = searchParams.get("name");
+  const { state } = useLocation();
   useEffect(() => {
     const url = `${BACKEND_URL}/search`;
-    axios
-      .get(url, {
-        params: {
-          name: searchTerm,
-          isFullSearch: true
-        },
-      })
-      .then((res) => {
-        setSearchResults(res.data);
-      })
-      .catch((err) => console.log(err, "error occured"));
+    const query = state ? (state.queryText || "") : "";
+    if (query) {
+      axios
+        .get(url, {
+          params: {
+            name: query,
+            isFullSearch: true
+          },
+        })
+        .then((res) => {
+          setSearchResults(res.data);
+        })
+        .catch((err) => console.log(err, "error occured"));
+    }
   }, []);
 
   return (
