@@ -206,7 +206,7 @@ app.use("/api", items);
 
 // Search function
 
-app.get("/search", async (request, response) => {
+app.get("/api/search", async (request, response) => {
   try {
     /*var title = ".";
     if (request.query.name) {
