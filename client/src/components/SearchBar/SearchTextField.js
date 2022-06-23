@@ -63,7 +63,7 @@ export default function SearchTextField() {
       setSearchResults([]);
     } else {
       (async () => {
-        const url = `${BACKEND_URL}/search`;
+        const url = `${BACKEND_URL}/api/search`;
         axios
           .get(url, {
             params: {
