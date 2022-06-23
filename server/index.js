@@ -283,23 +283,41 @@ app.get("/search", async (request, response) => {
     response.status(500).send({ message: error.message });
   }*/
   
+    const query = request.query;
     const ItemListingsModel = require("./models/ItemListings");
     let results;
-    if (request.query.name) {
+    if (query.name) {
       let resultData;
-      if (request.query.isFullSearch) {
-        resultData = {
-          _id: 0,
-          title: 1,
-          category: 1,
-          description: 1,
-          location: 1,
-          telegram: 1,
-          date: 1,
-          userName: 1,
-          deadline: 1,
-          images: 1
-        };
+      if (query.isFullSearch) {
+        if (query.isImageOnly) {
+          resultData = {
+            images: 1
+          };
+        } else if (query.isTextOnly) {
+          resultData = {
+            title: 1,
+            category: 1,
+            description: 1,
+            location: 1,
+            telegram: 1,
+            date: 1,
+            userName: 1,
+            deadline: 1,
+          };
+        } else {
+          resultData = {
+            _id: 0,
+            title: 1,
+            category: 1,
+            description: 1,
+            location: 1,
+            telegram: 1,
+            date: 1,
+            userName: 1,
+            deadline: 1,
+            images: 1
+          };
+        }
       } else {
         resultData = {
           title: 1,
