@@ -29,7 +29,7 @@ const SearchResults = (props) => {
           const category = CATEGORIES[text.category];
 
           return (
-            <Grid item direction="column" alignItems="stretch" justifyContent="center">
+            <Grid item direction="column" alignItems="stretch" justifyContent="center" xs={4}>
               {text.title}
             </Grid>
           )
