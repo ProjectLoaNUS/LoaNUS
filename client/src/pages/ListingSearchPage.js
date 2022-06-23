@@ -58,7 +58,7 @@ function SearchedListings() {
       const datas = bin.images.data;
       let urls = [];
       datas.forEach((data, i) => {
-        const binary = Buffer.from(data);
+        const binary = Buffer.from(data, 'base64');
         const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
         const url = URL.createObjectURL(blob);
         urls[i] = url;
