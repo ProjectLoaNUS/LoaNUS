@@ -14,21 +14,37 @@ const Container = styled.div`
 `;
 
 function SearchedListings() {
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResultsText, setSearchResultsText] = useState([]);
+  const [searchResultsImage, setSearchResultsImage] = useState([]);
   const { state } = useLocation();
   useEffect(() => {
     const url = `${BACKEND_URL}/search`;
     const query = state ? (state.queryText || "") : "";
     if (query) {
+      // Images of search result items
       axios
         .get(url, {
           params: {
             name: query,
-            isFullSearch: true
+            isFullSearch: true,
+            isImageOnly: true
           },
         })
         .then((res) => {
-          setSearchResults(res.data);
+          setSearchResultsImage(res.data);
+        })
+        .catch((err) => console.log(err, "error occured"));
+      // Text details(title, description, etc) of search result items
+      axios
+        .get(url, {
+          params: {
+            name: query,
+            isFullSearch: true,
+            isTextOnly: true
+          },
+        })
+        .then((res) => {
+          setSearchResultsText(res.data);
         })
         .catch((err) => console.log(err, "error occured"));
     }
@@ -38,7 +54,7 @@ function SearchedListings() {
     <Container>
       <NavigationBar></NavigationBar>
       <CentredDiv>Listings</CentredDiv>
-      <SearchResults searchResults={searchResults}></SearchResults>
+      <SearchResults resultTexts={searchResultsText} resultImages={searchResultsImage}></SearchResults>
     </Container>
   );
 }

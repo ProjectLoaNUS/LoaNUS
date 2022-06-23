@@ -8,14 +8,14 @@ const Container = styled.div`
 `;
 
 const SearchResults = (props) => {
-  const { searchResults } = props;
+  const { resultTexts, resultImages } = props;
   return (
     <Container>
       <List>
-        {searchResults.map(({ title }) => {
+        {resultTexts && resultTexts.map((text) => {
           return (
             <ListItem>
-              <ListItemText primary={title} />
+              <ListItemText primary={text.title} />
             </ListItem>
           )
         })}
