@@ -72,7 +72,7 @@ export default function SearchTextField() {
             },
           })
           .then((res) => {
-            setSearchResults(res.data);
+            setSearchResults(res.data.results);
             setLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));

@@ -33,7 +33,7 @@ function SearchedListings() {
           },
         })
         .then((res) => {
-          binsToImgUrls(res.data);
+          binsToImgUrls(res.data.results);
         })
         .catch((err) => console.log(err, "error occured"));
       // Text details(title, description, etc) of search result items
@@ -46,7 +46,7 @@ function SearchedListings() {
           },
         })
         .then((res) => {
-          setSearchResultsText(res.data);
+          setSearchResultsText(res.data.results);
         })
         .catch((err) => console.log(err, "error occured"));
     }

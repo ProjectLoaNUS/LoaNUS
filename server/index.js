@@ -347,13 +347,13 @@ app.get("/search", async (request, response) => {
       if (results) {
         console.log("Confirmed");
         console.log(results);
-        return response.json(results);
+        return response.json({status: 'ok', results: results});
       }
     }
-    response.json({});
+    response.json({status: 'error'});
   } catch (error) {
     console.log(error);
-    response.json({});
+    response.json({status: 'error'});
   }
 });
 
