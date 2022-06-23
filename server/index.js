@@ -8,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 const UserModel = require("./models/Users");
 const ItemModel = require("./models/Items");
+const ItemListingsModel = require("./models/ItemListings");
 const cors = require("cors");
 const { request } = require("http");
 const sgMail = require("@sendgrid/mail");
@@ -208,7 +209,6 @@ app.use("/api", items);
 app.get("/api/search", async (request, response) => {
   try {
     const query = request.query;
-    const ItemListingsModel = require("./models/ItemListings");
     let results;
     if (query.name) {
       let resultData;
@@ -271,6 +271,22 @@ app.get("/api/search", async (request, response) => {
       if (results) {
         return response.json({status: 'ok', results: results});
       }
+    }
+    response.json({status: 'error'});
+  } catch (error) {
+    console.log(error);
+    response.json({status: 'error'});
+  }
+});
+// Search function
+app.get("/api/search-exact", async (request, response) => {
+  try {
+    const query = request.query;
+    const result = await ItemListingsModel.findOne({
+      title: query.name,
+    });
+    if (result) {
+      return response.json({status: 'ok', result: result});
     }
     response.json({status: 'error'});
   } catch (error) {
