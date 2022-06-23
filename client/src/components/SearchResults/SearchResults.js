@@ -14,13 +14,16 @@ const ResultCard = styled(ListingCard)`
   height: 100%;
   width: 100%;
 `;
+const PaddedGrid = styled(Grid)`
+  padding: 0 1rem;
+`;
 
 const SearchResults = (props) => {
   const { resultTexts, resultImages } = props;
   console.log(resultImages);
 
   return (
-    <Grid container>
+    <PaddedGrid container>
         {resultTexts && resultTexts.map((text, index) => {
           const date = new Date(text.date).toLocaleDateString({}, 
               {year: 'numeric', month: 'short', day: 'numeric'});
@@ -34,7 +37,7 @@ const SearchResults = (props) => {
             </Grid>
           )
         })}
-    </Grid>
+    </PaddedGrid>
   );
 };
 
