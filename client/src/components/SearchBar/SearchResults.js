@@ -12,11 +12,13 @@ const SearchResults = (props) => {
   return (
     <Container>
       <List>
-        {searchResults.map(({ name }) => (
-          <ListItem>
-            <ListItemText primary={name} />
-          </ListItem>
-        ))}
+        {searchResults.map(({ title }) => {
+          return (
+            <ListItem>
+              <ListItemText primary={title} />
+            </ListItem>
+          )
+        })}
       </List>
     </Container>
   );
