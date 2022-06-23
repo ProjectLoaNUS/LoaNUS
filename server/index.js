@@ -208,7 +208,7 @@ app.use("/api", items);
 
 app.get("/search", async (request, response) => {
   try {
-    var title = ".";
+    /*var title = ".";
     if (request.query.name) {
       title = request.query.name;
     }
@@ -241,7 +241,7 @@ app.get("/search", async (request, response) => {
   } catch (error) {
     console.log(error);
     return response.json([]);
-  }
+  }*/
   /* var collection;
   collection = client.db("loanusdatabase").collection("itemlistings");
   try {
@@ -263,14 +263,14 @@ app.get("/search", async (request, response) => {
     response.send(result);
   } catch (error) {
     response.status(500).send({ message: error.message });
-  }
+  }*/
   /*try {
-    let result = await ItemModel.aggregate([
+    let result = await ItemListingsModel.aggregate([
       {
         $search: {
           autocomplete: {
             query: `${request.query.name}`,
-            path: "name",
+            path: "title",
             fuzzy: {
               maxEdits: 2,
             },
@@ -281,18 +281,17 @@ app.get("/search", async (request, response) => {
     response.send(result);
   } catch (error) {
     response.status(500).send({ message: error.message });
-  }
-  /*
+  }*/
+  
+    const ItemListingsModel = require("./models/ItemListings");
     let results;
     if (request.query.name) {
-      console.log("Detected");
-      results = await ItemModel.aggregate([
+      results = await ItemListingsModel.aggregate([
         {
           $search: {
-            index: "autocomplete",
             autocomplete: {
               query: request.query.name,
-              path: "name",
+              path: "title",
               fuzzy: {
                 maxEdits: 2,
               },
@@ -301,26 +300,26 @@ app.get("/search", async (request, response) => {
           },
         },
         {
-          $project: {
-            name: 1,
-            _id: 1,
-          },
+          $limit: 15,
         },
         {
-          $limit: 15,
+          $project: {
+            title: 1,
+            _id: 0,
+          },
         },
       ]);
       if (results) {
         console.log("Confirmed");
         console.log(results);
-        return response.send(results);
+        return response.json(results);
       }
     }
-    response.send([]);
+    response.json({});
   } catch (error) {
     console.log(error);
-    response.send([]);
-  }*/
+    response.json({});
+  }
 });
 
 app.listen(PORT, () => {
