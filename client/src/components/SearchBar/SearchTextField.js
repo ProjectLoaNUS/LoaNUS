@@ -100,6 +100,7 @@ export default function SearchTextField() {
         freeSolo
         fullWidth
         disableClearable
+        filterOptions={(x) => x} 
         id="search"
         loading={loading}
         options={searchResults.map((result) => result.title)}
