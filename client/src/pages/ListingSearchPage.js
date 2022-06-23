@@ -5,7 +5,7 @@ import { CentredDiv } from "../components/FlexDiv";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import SearchResults from "../components/SearchBar/SearchResults";
+import SearchResults from "../components/SearchResults/SearchResults";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 

@@ -5,7 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import SearchResults from "./SearchResults";
+import SearchResults from "../SearchResults/SearchResults";
 import { CentredGrowDiv } from "../FlexDiv";
 import { theme } from '../Theme';
 import { BACKEND_URL } from "../../database/const";
