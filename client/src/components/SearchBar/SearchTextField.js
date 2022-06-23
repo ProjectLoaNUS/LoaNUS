@@ -12,6 +12,8 @@ import { BACKEND_URL } from "../../database/const";
 import { SEARCH_LISTINGS } from "../../pages/routes";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
 import { Buffer } from 'buffer';
+import Loading from "../../assets/loading.svg";
+import NoImage from "../../assets/no-image.png";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -164,7 +166,7 @@ export default function SearchTextField() {
         date={clickResult && clickResult.date}
         userName={clickResult && clickResult.userName}
         title={clickResult && clickResult.title}
-        imageUrls={clickResultImgs}
+        imageUrls={(clickResultImgs !== undefined && (clickResultImgs).length === 0) ? [NoImage] : (clickResultImgs || [Loading])}
         category={clickResult && clickResult.category}
         description={clickResult && clickResult.description}
         location={clickResult && clickResult.location}
