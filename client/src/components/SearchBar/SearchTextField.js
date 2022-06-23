@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { Autocomplete, FilledInput, FormControl, IconButton, InputAdornment, InputLabel, TextField } from "@mui/material";
 import { react, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,19 +14,10 @@ const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
 `;
 
-const Container = styled.div`
-  width: 100%;
-`;
-const GrowTextField = styled(TextField)`
-  flex: 1 0 auto;
-`;
-
-const StyledTextField = styled((props) => (
-        <GrowTextField {...props} />
-    ))(({ theme }) => ({
-    '& .MuiFilledInput-root': {
-        border: `1px solid ${theme.palette.primary.contrastText}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-        borderRadius: 4,
+const StyledSearchField = styled((props) => (
+    <TextField {...props} />
+  ))(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
         color: theme.palette.primary.contrastText, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
         transition: theme.transitions.create([
             'border-color',
@@ -34,18 +25,29 @@ const StyledTextField = styled((props) => (
             'box-shadow',
         ]),
         '&.Mui-focused': {
-            borderColor: theme.palette.secondary.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
             boxShadow: `${alpha(theme.palette.secondary.main, 0.25)} 0 0 0 2px`,
             backgroundColor: theme.palette.primary.dark
         },
         '&:hover': {
-            borderColor: theme.palette.secondary.main,
             backgroundColor: '#354657'
-        }
+        },
+        '& fieldset': {
+          border: `1px solid ${theme.palette.primary.contrastText}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+          borderRadius: 4,
+        },
+        '&:hover fieldset': {
+          borderColor: theme.palette.secondary.main,
+        },
+        '&.Mui-focused fieldset': {
+          borderColor: theme.palette.secondary.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        },
     },
-    '& .MuiInputLabel-root': {
-        color: theme.palette.primary.contrastText // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+    '& label': {
+      color: theme.palette.primary.contrastText // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
     },
+    '& label.Mui-focused': {
+      color: theme.palette.primary.contrastText // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+    }
   })
 );
 
@@ -84,23 +86,28 @@ export default function SearchTextField() {
   };
   console.log(queryText);
   return (
-    <CentredGrowDiv>
-      <StyledTextField
-        onChange={(e) => setQueryText(e.target.value)}
-        variant="filled"
-        label="Search"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <ContrastIconBtn onClick={handleSubmit}>
-                <SearchIcon />
-              </ContrastIconBtn>
-            </InputAdornment>
-          ),
-          disableUnderline: true,
-        }}
-      />
-      <SearchResults searchResults={searchResults}></SearchResults>
-    </CentredGrowDiv>
+      <Autocomplete
+        freeSolo
+        fullWidth
+        id="search"
+        options={searchResults.map((result) => result.title)}
+        renderInput={(params) => {
+          return (
+            <StyledSearchField
+              {...params}
+              onChange={(e) => setQueryText(e.target.value)}
+              variant="outlined"
+              label="Search"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                    <ContrastIconBtn onClick={handleSubmit}>
+                      <SearchIcon />
+                    </ContrastIconBtn>
+                ),
+                disableUnderline: true,
+              }} />
+          )
+        }} />
   );
 }
