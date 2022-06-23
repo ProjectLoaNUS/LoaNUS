@@ -205,84 +205,8 @@ const items = require("./routes/items/index");
 app.use("/api", items);
 
 // Search function
-
 app.get("/api/search", async (request, response) => {
   try {
-    /*var title = ".";
-    if (request.query.name) {
-      title = request.query.name;
-    }
-    const agg = [
-      {
-        $search: {
-          autocomplete: {
-            query: title,
-            path: "name",
-            fuzzy: {
-              maxEdits: 2,
-            },
-          },
-        },
-      },
-      {
-        $limit: 5,
-      },
-      {
-        $project: {
-          _id: 0,
-          name: 1,
-          image: 1,
-          desc: 1,
-        },
-      },
-    ];
-    const result = await ItemModel.aggregate(agg);
-    return response.json(result);
-  } catch (error) {
-    console.log(error);
-    return response.json([]);
-  }*/
-  /* var collection;
-  collection = client.db("loanusdatabase").collection("itemlistings");
-  try {
-    let result = await collection
-      .aggregate([
-        {
-          $search: {
-            autocomplete: {
-              query: `${request.query.title}`,
-              path: "title",
-              fuzzy: {
-                maxEdits: 2,
-              },
-            },
-          },
-        },
-      ])
-      .toArray();
-    response.send(result);
-  } catch (error) {
-    response.status(500).send({ message: error.message });
-  }*/
-  /*try {
-    let result = await ItemListingsModel.aggregate([
-      {
-        $search: {
-          autocomplete: {
-            query: `${request.query.name}`,
-            path: "title",
-            fuzzy: {
-              maxEdits: 2,
-            },
-          },
-        },
-      },
-    ]);
-    response.send(result);
-  } catch (error) {
-    response.status(500).send({ message: error.message });
-  }*/
-  
     const query = request.query;
     const ItemListingsModel = require("./models/ItemListings");
     let results;
