@@ -56,21 +56,22 @@ export default function SearchTextField() {
   useEffect(() => {
     if (!queryText) {
       setSearchResults([]);
+    } else {
+      (async () => {
+        const url = `${BACKEND_URL}/search`;
+        axios
+          .get(url, {
+            params: {
+              name: queryText,
+            },
+          })
+          .then((res) => {
+            setSearchResults(res.data);
+          })
+          .catch((err) => console.log(err, "error occured"));
+      })();
+      console.log(searchResults);
     }
-    (async () => {
-      const url = `${BACKEND_URL}/search`;
-      axios
-        .get(url, {
-          params: {
-            name: queryText,
-          },
-        })
-        .then((res) => {
-          setSearchResults(res.data);
-        })
-        .catch((err) => console.log(err, "error occured"));
-    })();
-    console.log(searchResults);
   }, [queryText]);
   const handleSubmit = (e) => {
     e.preventDefault();
