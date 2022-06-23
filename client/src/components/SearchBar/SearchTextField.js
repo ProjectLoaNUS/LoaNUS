@@ -67,6 +67,7 @@ export default function SearchTextField() {
           .get(url, {
             params: {
               name: queryText,
+              isFullSearch: false
             },
           })
           .then((res) => {

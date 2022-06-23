@@ -23,6 +23,7 @@ function SearchedListings() {
       .get(url, {
         params: {
           name: searchTerm,
+          isFullSearch: true
         },
       })
       .then((res) => {
