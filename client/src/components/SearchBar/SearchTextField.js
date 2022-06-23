@@ -77,7 +77,6 @@ export default function SearchTextField() {
           })
           .catch((err) => console.log(err, "error occured"));
       })();
-      console.log(searchResults);
     }
   }, [queryText]);
 
@@ -93,7 +92,6 @@ export default function SearchTextField() {
     setQueryText(event.target.value);
   }
 
-  console.log(queryText);
   return (
       <Autocomplete
         freeSolo

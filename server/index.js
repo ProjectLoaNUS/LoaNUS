@@ -345,8 +345,6 @@ app.get("/search", async (request, response) => {
         },
       ]);
       if (results) {
-        console.log("Confirmed");
-        console.log(results);
         return response.json({status: 'ok', results: results});
       }
     }

@@ -22,7 +22,6 @@ const ItemGrid = styled(Grid)`
 
 const SearchResults = (props) => {
   const { resultTexts, resultImages } = props;
-  console.log(resultImages);
 
   return (
     <PaddedGrid container rowSpacing={1}>
