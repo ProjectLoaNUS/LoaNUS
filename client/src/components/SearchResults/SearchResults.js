@@ -32,8 +32,17 @@ const SearchResults = (props) => {
           const category = CATEGORIES[text.category];
 
           return (
-            <Grid item direction="column" alignItems="stretch" justifyContent="center" xs={4}>
-              {text.title}
+            <Grid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
+              <ResultCard
+                date={date}
+                imagesUrl={(resultImages[index] !== undefined && (resultImages[index]).length === 0) ? [NoImage] : (resultImages[index] || [Loading])}
+                title={text.title}
+                userName={text.userName}
+                deadline={deadline}
+                category={category}
+                description={text.description}
+                location={text.location}
+                telegram={text.telegram} />
             </Grid>
           )
         })}
