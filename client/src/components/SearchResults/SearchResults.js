@@ -10,12 +10,14 @@ const Container = styled.div`
   height: 20vh;
   width: 70vh;
 `;
-const ResultCard = styled(ListingCard)`
-  height: 100%;
-  width: 100%;
-`;
 const PaddedGrid = styled(Grid)`
   padding: 0 1rem;
+`;
+const ItemGrid = styled(Grid)`
+  .MuiCard-root {
+    height: 30vh;
+    width: 30vw;
+  }
 `;
 
 const SearchResults = (props) => {
@@ -23,7 +25,7 @@ const SearchResults = (props) => {
   console.log(resultImages);
 
   return (
-    <PaddedGrid container>
+    <PaddedGrid container rowSpacing={1}>
         {resultTexts && resultTexts.map((text, index) => {
           const date = new Date(text.date).toLocaleDateString({}, 
               {year: 'numeric', month: 'short', day: 'numeric'});
@@ -32,8 +34,8 @@ const SearchResults = (props) => {
           const category = CATEGORIES[text.category];
 
           return (
-            <Grid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
-              <ResultCard
+            <ItemGrid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
+              <ListingCard
                 date={date}
                 imagesUrl={(resultImages[index] !== undefined && (resultImages[index]).length === 0) ? [NoImage] : (resultImages[index] || [Loading])}
                 title={text.title}
@@ -43,7 +45,7 @@ const SearchResults = (props) => {
                 description={text.description}
                 location={text.location}
                 telegram={text.telegram} />
-            </Grid>
+            </ItemGrid>
           )
         })}
     </PaddedGrid>
