@@ -89,12 +89,14 @@ export default function SearchTextField() {
       <Autocomplete
         freeSolo
         fullWidth
+        disableClearable
         id="search"
         options={searchResults.map((result) => result.title)}
         renderInput={(params) => {
           return (
             <StyledSearchField
               {...params}
+              fullWidth
               onChange={(e) => setQueryText(e.target.value)}
               variant="outlined"
               label="Search"
