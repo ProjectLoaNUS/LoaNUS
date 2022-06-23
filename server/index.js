@@ -286,6 +286,26 @@ app.get("/search", async (request, response) => {
     const ItemListingsModel = require("./models/ItemListings");
     let results;
     if (request.query.name) {
+      let resultData;
+      if (request.query.isFullSearch) {
+        resultData = {
+          _id: 0,
+          title: 1,
+          category: 1,
+          description: 1,
+          location: 1,
+          telegram: 1,
+          date: 1,
+          userName: 1,
+          deadline: 1,
+          images: 1
+        };
+      } else {
+        resultData = {
+          title: 1,
+          _id: 0
+        }
+      }
       results = await ItemListingsModel.aggregate([
         {
           $search: {
@@ -303,10 +323,7 @@ app.get("/search", async (request, response) => {
           $limit: 15,
         },
         {
-          $project: {
-            title: 1,
-            _id: 0,
-          },
+          $project: resultData
         },
       ]);
       if (results) {
