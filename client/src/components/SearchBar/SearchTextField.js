@@ -88,7 +88,10 @@ export default function SearchTextField() {
   };
 
   const onChangeSearchField = (event) => {
-    setLoading(true);
+    const value = event.target.value;
+    if (value) {
+      setLoading(true);
+    }
     setQueryText(event.target.value);
   }
 
