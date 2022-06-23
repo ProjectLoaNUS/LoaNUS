@@ -55,6 +55,8 @@ export default function SearchTextField() {
   const navigate = useNavigate();
   const [queryText, setQueryText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (!queryText) {
       setSearchResults([]);
@@ -69,12 +71,14 @@ export default function SearchTextField() {
           })
           .then((res) => {
             setSearchResults(res.data);
+            setLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));
       })();
       console.log(searchResults);
     }
   }, [queryText]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (queryText) {
@@ -84,6 +88,12 @@ export default function SearchTextField() {
       });
     }
   };
+
+  const onChangeSearchField = (event) => {
+    setLoading(true);
+    setQueryText(event.target.value);
+  }
+
   console.log(queryText);
   return (
       <Autocomplete
@@ -91,13 +101,14 @@ export default function SearchTextField() {
         fullWidth
         disableClearable
         id="search"
+        loading={loading}
         options={searchResults.map((result) => result.title)}
         renderInput={(params) => {
           return (
             <StyledSearchField
               {...params}
               fullWidth
-              onChange={(e) => setQueryText(e.target.value)}
+              onChange={onChangeSearchField}
               variant="outlined"
               label="Search"
               InputProps={{
