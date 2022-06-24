@@ -19,6 +19,18 @@ const UserSchema = new mongoose.Schema({
   },
   emailToken: String,
   isVerified: Boolean,
+  itemsBorrowed: {
+    type: [String],
+    required: false
+  },
+  itemsListed: {
+    type: [String],
+    required: false
+  },
+  itemsRequested: {
+    type: [String],
+    required: false
+  }
 });
 
 const UserModel = mongoose.model("users", UserSchema);
