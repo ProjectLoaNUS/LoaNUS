@@ -17,7 +17,28 @@ router.post("/addRequest", async (req, res) => {
         console.log(err);
         return res.json({status: 'error'});
       } else {
-        request.save();
+        request.save().then(savedRequest => {
+          const UserModel = require("../../models/Users");
+          UserModel.findOne({
+            email: req.body.email
+          }, (err, user) => {
+            if (err) {
+              console.log(err);
+            } else if (user) {
+              let itemsRequested = user.itemsRequested;
+              const requestId = "" + savedRequest._id;
+              if (!itemsRequested) {
+                itemsRequested = [requestId];
+                user.itemsRequested = itemsRequested;
+                user.save();
+              } else if (!itemsRequested.includes(requestId)) {
+                itemsRequested.push(requestId);
+                user.itemsRequested = itemsRequested;
+                user.save();
+              }
+            }
+          });
+        });
         return res.json({status: 'ok'});
       }
     });
