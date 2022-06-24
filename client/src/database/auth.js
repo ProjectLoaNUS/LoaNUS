@@ -18,6 +18,7 @@ function useAuthProvider() {
     return signInWithPopup(auth, googleAuthProvider).then((result) => {
       setUser(result.user);
       setIsGoogleSignIn(true);
+      localStorage.setItem('user', JSON.stringify(result.user));
     });
   };
 
@@ -45,6 +46,7 @@ function useAuthProvider() {
     if (data.status === "ok") {
       setUser(data.user);
       setIsGoogleSignIn(false);
+      localStorage.setItem('user', JSON.stringify(data.user));
       return signInResultCodes.SUCCESS;
     }
     return data.errorCode;
@@ -105,6 +107,7 @@ function useAuthProvider() {
     signUpUser,
     signOut,
     user,
+    setUser,
     isGoogleSignIn,
   };
 }
