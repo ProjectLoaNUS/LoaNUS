@@ -42,7 +42,11 @@ function HomePage() {
     if (!user) {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (err) {
+          console.log(err);
+        }
       }
     }
   }, []);
