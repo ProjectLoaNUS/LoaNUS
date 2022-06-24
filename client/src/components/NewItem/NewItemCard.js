@@ -106,7 +106,8 @@ export default function NewItemCard() {
                 location: location,
                 telegram: telegramHandle,
                 date: date,
-                userName: user.displayName
+                userName: user.displayName,
+                email: user.email
             });
         } else {
             const itemData = new FormData();
@@ -121,6 +122,7 @@ export default function NewItemCard() {
             itemData.append("telegram", telegramHandle);
             itemData.append("date", date);
             itemData.append("userName", user.displayName);
+            itemData.append("email", user.email);
             object["body"] = itemData;
         }
         const apiEndpoint = isRequest ? 
