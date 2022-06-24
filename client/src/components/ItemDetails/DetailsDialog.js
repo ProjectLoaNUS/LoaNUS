@@ -32,7 +32,7 @@ const BoldedTypo = styled(Typography)`
 
 export default function DetailsDialog(props) {
     const { date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
-    const telegramUsername = telegram.replace("@", "");
+    const telegramUsername = telegram ? telegram.replace("@", "") : "";
 
     const handleClose = () => {
         setOpen(false);

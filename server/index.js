@@ -1,4 +1,5 @@
 const express = require("express");
+//const { MongoClient } = require("mongodb");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 const UserModel = require("./models/Users");
 const ItemModel = require("./models/Items");
+const ItemListingsModel = require("./models/ItemListings");
 const cors = require("cors");
 const { request } = require("http");
 const sgMail = require("@sendgrid/mail");
@@ -20,9 +22,18 @@ require("dotenv").config();
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 app.use(express.json());
+//const client = new MongoClient(
+// "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
+//);
+//client.connect();
 app.use(cors());
+
 mongoose.connect(
-  "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
+  "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
 );
 
 sgMail.setApiKey(process.env.API_KEY);
@@ -193,6 +204,96 @@ app.post("/api/item-upload", upload.single("image"), (request, response, next) =
 
 const items = require("./routes/items/index");
 app.use("/api", items);
+
+// Search function
+app.get("/api/search", async (request, response) => {
+  try {
+    const query = request.query;
+    let results;
+    if (query.name) {
+      let resultData;
+      if (query.isFullSearch) {
+        if (query.isImageOnly) {
+          resultData = {
+            images: 1
+          };
+        } else if (query.isTextOnly) {
+          resultData = {
+            title: 1,
+            category: 1,
+            description: 1,
+            location: 1,
+            telegram: 1,
+            date: 1,
+            userName: 1,
+            deadline: 1,
+          };
+        } else {
+          resultData = {
+            _id: 0,
+            title: 1,
+            category: 1,
+            description: 1,
+            location: 1,
+            telegram: 1,
+            date: 1,
+            userName: 1,
+            deadline: 1,
+            images: 1
+          };
+        }
+      } else {
+        resultData = {
+          title: 1,
+          _id: 0
+        }
+      }
+      results = await ItemListingsModel.aggregate([
+        {
+          $search: {
+            autocomplete: {
+              query: request.query.name,
+              path: "title",
+              fuzzy: {
+                maxEdits: 2,
+              },
+              tokenOrder: "sequential",
+            },
+          },
+        },
+        {
+          $limit: 15,
+        },
+        {
+          $project: resultData
+        },
+      ]);
+      if (results) {
+        return response.json({status: 'ok', results: results});
+      }
+    }
+    response.json({status: 'error'});
+  } catch (error) {
+    console.log(error);
+    response.json({status: 'error'});
+  }
+});
+// Search function
+app.get("/api/search-exact", async (request, response) => {
+  try {
+    const query = request.query;
+    const result = await ItemListingsModel.findOne({
+      title: query.name,
+    });
+    if (result) {
+      return response.json({status: 'ok', result: result});
+    }
+    response.json({status: 'error'});
+  } catch (error) {
+    console.log(error);
+    response.json({status: 'error'});
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);

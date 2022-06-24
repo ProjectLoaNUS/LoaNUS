@@ -53,6 +53,7 @@ export default function ListingCard(props) {
 
     const handleLike = (event) => {
         event.stopPropagation();
+        event.preventDefault();
     }
 
     const handleMouseDown = (event) => {
@@ -61,7 +62,7 @@ export default function ListingCard(props) {
 
     return (
         <ListCard>
-            <ListingActionArea onClick={ handleShowDetails }>
+            <ListingActionArea component="a" onClick={ handleShowDetails }>
                 <CardHeader 
                 avatar={
                     <Avatar>{userName.charAt(0)}</Avatar>
