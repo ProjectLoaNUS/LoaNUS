@@ -36,10 +36,31 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
       if (err) {
         console.log(err);
       } else {
-        listing.save();
+        listing.save().then(savedListing => {
+          const UserModel = require("../../models/Users");
+          UserModel.findOne({
+            email: request.body.email
+          }, (err, user) => {
+            if (err) {
+              console.log(err);
+            } else if (user) {
+              let itemsListed = user.itemsListed;
+              const listingId = "" + savedListing._id;
+              if (!itemsListed) {
+                itemsListed = [listingId];
+                user.itemsListed = itemsListed;
+                user.save();
+              } else if (!itemsListed.includes(listingId)) {
+                itemsListed.push(listingId);
+                user.itemsListed = itemsListed;
+                user.save();
+              }
+            }
+          });
+        });
       }
     });
-  
+    
     return response.json({status: 'ok'});
 });
 router.get("/getListingsTexts", (req, res) => {
