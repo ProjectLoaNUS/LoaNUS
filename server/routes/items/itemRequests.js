@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ItemRequestsModel = require("../../models/ItemRequests");
+const UserModel = require("../../models/Users");
 
 router.post("/addRequest", async (req, res) => {
     const obj = {
@@ -18,7 +19,6 @@ router.post("/addRequest", async (req, res) => {
         return res.json({status: 'error'});
       } else {
         request.save().then(savedRequest => {
-          const UserModel = require("../../models/Users");
           UserModel.findOne({
             email: req.body.email
           }, (err, user) => {
@@ -51,6 +51,18 @@ router.get("/getRequests", (req, res) => {
           res.json({status: 'ok', requests: requests});
         }
     });
+});
+router.post("/getRequestsOfUser", async (req, res) => {
+  const email = req.body.email;
+  const user = await UserModel.findOne({
+    email: email
+  });
+  if (!user) {
+    return res.json({status: 'error'});
+  }
+  const requestIds = user.itemsRequested;
+  let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'telegram', 'date', 'userName']);
+  return res.json({status: 'ok', requests: requests});
 });
 
 module.exports = router;
