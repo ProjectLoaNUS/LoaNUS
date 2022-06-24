@@ -36,6 +36,10 @@ const ItemListingsSchema = new mongoose.Schema({
   userName: {
     type: String,
     required: true
+  },
+  borowedBy: {
+    type: String,
+    required: false
   }
 });
 
