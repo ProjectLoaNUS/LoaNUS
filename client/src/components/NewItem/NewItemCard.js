@@ -114,7 +114,7 @@ export default function NewItemCard() {
             images.forEach((image) => {
                 itemData.append("images", image);
             })
-            itemData.append("deadline", returnDate);
+            itemData.append("deadline", returnDate.toISOString());
             itemData.append("category", category);
             itemData.append("title", title);
             itemData.append("description", description);
