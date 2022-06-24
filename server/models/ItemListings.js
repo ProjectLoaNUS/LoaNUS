@@ -37,7 +37,7 @@ const ItemListingsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  borowedBy: {
+  borrowedBy: {
     type: String,
     required: false
   }
