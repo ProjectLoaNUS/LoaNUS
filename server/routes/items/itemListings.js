@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const ItemListingsModel = require("../../models/ItemListings");
+const UserModel = require("../../models/Users");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -37,7 +38,6 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
         console.log(err);
       } else {
         listing.save().then(savedListing => {
-          const UserModel = require("../../models/Users");
           UserModel.findOne({
             email: request.body.email
           }, (err, user) => {
@@ -80,6 +80,30 @@ router.get("/getListingsImgs", (req, res) => {
           res.json({status: 'ok', images: images});
         }
     });
+});
+router.post("/getListingsTextsOfUser", async (req, res) => {
+  const email = req.body.email;
+  const user = await UserModel.findOne({
+    email: email
+  });
+  if (!user) {
+    return res.json({status: 'error'});
+  }
+  const listingIds = user.itemsListed;
+  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName']);
+  return res.json({status: 'ok', listingsTexts: listingsTexts});
+});
+router.post("/getListingsImgsOfUser", async (req, res) => {
+  const email = req.body.email;
+  const user = await UserModel.findOne({
+    email: email
+  });
+  if (!user) {
+    return res.json({status: 'error'});
+  }
+  const listingIds = user.itemsListed;
+  let listingsImgs = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['images']);
+  return res.json({status: 'ok', listingsImgs: listingsImgs});
 });
 
 module.exports = router;
