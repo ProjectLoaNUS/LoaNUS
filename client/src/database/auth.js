@@ -26,9 +26,11 @@ function useAuthProvider() {
     if (isGoogleSignIn) {
       return auth.signOut().then(() => {
         setUser(false);
+        localStorage.setItem("user", "");
       });
     }
     setUser(false);
+    localStorage.setItem("user", "");
   };
 
   const signInUserPass = async (givenEmail, givenPassword) => {
@@ -46,7 +48,7 @@ function useAuthProvider() {
     if (data.status === "ok") {
       setUser(data.user);
       setIsGoogleSignIn(false);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(data.user));
       return signInResultCodes.SUCCESS;
     }
     return data.errorCode;
