@@ -44,7 +44,7 @@ router.post("/addRequest", async (req, res) => {
     });
 });
 router.get("/getRequests", (req, res) => {
-    ItemRequestsModel.find({}, ['category', 'title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
+    ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
