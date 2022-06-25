@@ -113,7 +113,7 @@ export default function SearchTextField() {
       axios
         .get(`${BACKEND_URL}/api/search-exact`, {
           params: {
-            name: newValue
+            name: newValue.title
           },
         })
         .then((res) => {
@@ -142,7 +142,8 @@ export default function SearchTextField() {
         filterOptions={(x) => x} 
         id="search"
         loading={loading}
-        options={searchResults.map((result) => result.title)}
+        options={searchResults}
+        getOptionLabel={result => result.title}
         onChange={onClickResult}
         renderInput={(params) => {
           return (
