@@ -50,7 +50,7 @@ function SearchedListings() {
         })
         .catch((err) => console.log(err, "error occured"));
     }
-  }, []);
+  }, [state]);
 
   async function binsToImgUrls(bins) {
     let imgs = [];
