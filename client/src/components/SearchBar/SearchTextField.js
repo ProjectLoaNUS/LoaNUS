@@ -113,7 +113,7 @@ export default function SearchTextField() {
       axios
         .get(`${BACKEND_URL}/api/search-exact`, {
           params: {
-            name: newValue.title
+            id: newValue._id
           },
         })
         .then((res) => {
