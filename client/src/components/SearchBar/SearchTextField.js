@@ -79,7 +79,7 @@ export default function SearchTextField() {
             },
           })
           .then((res) => {
-            setSearchResults(res.data.results);
+            setSearchResults(res.data.results.filter((item) => !item.borrowedBy));
             setLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));
@@ -163,6 +163,7 @@ export default function SearchTextField() {
           )
         }} />
       <DetailsDialog
+        itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
         userName={clickResult && clickResult.userName}
         title={clickResult && clickResult.title}

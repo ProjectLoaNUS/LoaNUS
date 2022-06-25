@@ -26,26 +26,29 @@ const SearchResults = (props) => {
   return (
     <PaddedGrid container rowSpacing={1}>
         {resultTexts && resultTexts.map((text, index) => {
-          const date = new Date(text.date).toLocaleDateString({}, 
-              {year: 'numeric', month: 'short', day: 'numeric'});
-          const deadline = new Date(text.deadline).toLocaleDateString({}, 
-              {year: 'numeric', month: 'short', day: 'numeric'});
-          const category = CATEGORIES[text.category];
+          if (!text.borrowedBy) {
+            const date = new Date(text.date).toLocaleDateString({}, 
+                {year: 'numeric', month: 'short', day: 'numeric'});
+            const deadline = new Date(text.deadline).toLocaleDateString({}, 
+                {year: 'numeric', month: 'short', day: 'numeric'});
+            const category = CATEGORIES[text.category];
 
-          return (
-            <ItemGrid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
-              <ListingCard
-                date={date}
-                imagesUrl={(resultImages[index] !== undefined && (resultImages[index]).length === 0) ? [NoImage] : (resultImages[index] || [Loading])}
-                title={text.title}
-                userName={text.userName}
-                deadline={deadline}
-                category={category}
-                description={text.description}
-                location={text.location}
-                telegram={text.telegram} />
-            </ItemGrid>
-          )
+            return (
+              <ItemGrid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
+                <ListingCard
+                  itemId={text._id}
+                  date={date}
+                  imagesUrl={(resultImages[index] !== undefined && (resultImages[index]).length === 0) ? [NoImage] : (resultImages[index] || [Loading])}
+                  title={text.title}
+                  userName={text.userName}
+                  deadline={deadline}
+                  category={category}
+                  description={text.description}
+                  location={text.location}
+                  telegram={text.telegram} />
+              </ItemGrid>
+            );
+          }
         })}
     </PaddedGrid>
   );

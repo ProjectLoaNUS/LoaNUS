@@ -44,7 +44,7 @@ const ListingActions = styled(CardActions)`
 `;
 
 export default function ListingCard(props) {
-    const { date, title, imagesUrl, userName, category, description, location, telegram, deadline } = props;
+    const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline } = props;
     const [ open, setOpen ] = useState(false);
 
     const handleShowDetails = (event) => {
@@ -83,17 +83,18 @@ export default function ListingCard(props) {
                 </CardActions>
             </ListingActionArea>
             <DetailsDialog
-                  date={date}
-                  userName={userName}
-                  title={title}
-                  imageUrls={imagesUrl}
-                  category={category}
-                  description={description}
-                  location={location}
-                  telegram={telegram}
-                  deadline={deadline}
-                  open={open}
-                  setOpen={setOpen} />
+                itemId={itemId}
+                date={date}
+                userName={userName}
+                title={title}
+                imageUrls={imagesUrl}
+                category={category}
+                description={description}
+                location={location}
+                telegram={telegram}
+                deadline={deadline}
+                open={open}
+                setOpen={setOpen} />
         </ListCard>
     );
 }

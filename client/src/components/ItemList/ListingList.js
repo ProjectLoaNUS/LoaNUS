@@ -33,25 +33,28 @@ export default function ListingList(props) {
             <Typography align="left" variant="h3">Recent listings</Typography>
             <ListingsStack direction="row">
                 { texts ? (texts.map((text, index) => {
-                    const date = new Date(text.date).toLocaleDateString({}, 
-                            {year: 'numeric', month: 'short', day: 'numeric'});
-                    const deadline = new Date(text.deadline).toLocaleDateString({}, 
-                        {year: 'numeric', month: 'short', day: 'numeric'});
-                    const category = CATEGORIES[text.category];
+                    if (!text.borrowedBy) {
+                        const date = new Date(text.date).toLocaleDateString({}, 
+                                {year: 'numeric', month: 'short', day: 'numeric'});
+                        const deadline = new Date(text.deadline).toLocaleDateString({}, 
+                                {year: 'numeric', month: 'short', day: 'numeric'});
+                        const category = CATEGORIES[text.category];
 
-                    return (
-                        <ListingCard
-                          key={index}
-                          date={date}
-                          imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
-                          title={text.title}
-                          userName={text.userName}
-                          deadline={deadline}
-                          category={category}
-                          description={text.description}
-                          location={text.location}
-                          telegram={text.telegram} />
-                    );
+                        return (
+                            <ListingCard
+                            key={index}
+                            itemId={text._id}
+                            date={date}
+                            imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
+                            title={text.title}
+                            userName={text.userName}
+                            deadline={deadline}
+                            category={category}
+                            description={text.description}
+                            location={text.location}
+                            telegram={text.telegram} />
+                        );
+                    }
                 })) : 
                 'Loading'}
             </ListingsStack>
