@@ -60,6 +60,9 @@ export default function DetailsDialog(props) {
     const [ borrowStatusTxt, setBorrowStatusTxt ] = useState("");
 
     const handleClose = () => {
+        setBorrowStatusTxt("");
+        setIsBorrowError(false);
+        setIsBorrowed(false);
         setOpen(false);
     };
 
