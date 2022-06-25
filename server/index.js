@@ -286,6 +286,9 @@ app.get("/api/search", async (request, response) => {
 app.get("/api/search-exact", async (request, response) => {
   try {
     const query = request.query;
+    if (!query.id) {
+      return response.json({status: 'error'});
+    }
     const result = await ItemListingsModel.findOne({
       _id: query.id,
     });
