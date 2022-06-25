@@ -36,6 +36,21 @@ const CentredButton = styled(Button)`
     align-self: center;
 `;
 
+const BORROW_RES_CODES = {
+    SUCCESS: 0,
+    BORROWED_BY_ANOTHER: 1,
+    ALR_BORROWED_BY_U: 2,
+    NO_SUCH_ITEM: 3,
+    NO_SUCH_USER: 4
+}
+const BORROW_RES_TEXT = [
+    "Item borrowed!",
+    "Already borrowed by another user",
+    "Already borrowed by you",
+    "Cannot find this item in database",
+    "Cannot authenticate you"
+]
+
 export default function DetailsDialog(props) {
     const { itemId, date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
     const telegramUsername = telegram ? telegram.replace("@", "") : "";
@@ -71,13 +86,12 @@ export default function DetailsDialog(props) {
         const data = await req.json();
         if (data.status !== "ok") {
             setIsBorrowError(true);
-            setBorrowStatusTxt("Error while borrowing item");
             console.log(`Error occurred in backend while marking item ${itemId} as borrwed`);
         } else {
             setIsBorrowError(false);
             setIsBorrowed(true);
-            setBorrowStatusTxt("Item borrowed!");
         }
+        setBorrowStatusTxt(BORROW_RES_TEXT[data.statusCode]);
     }
 
     return (
@@ -128,7 +142,7 @@ export default function DetailsDialog(props) {
                 <TransitionGroup>
                     { borrowStatusTxt &&
                         <Slide direction="right">
-                            <Typography variant="subtitle1" align="center" color={ isBorrowError ? "error" : "success" }>{borrowStatusTxt}</Typography>
+                            <Typography variant="subtitle1" align="center" color={ isBorrowError ? "error" : "success.main" }>{borrowStatusTxt}</Typography>
                         </Slide>
                     }
                 </TransitionGroup>

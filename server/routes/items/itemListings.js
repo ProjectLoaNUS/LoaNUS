@@ -110,13 +110,16 @@ router.post("/borrowItem", async (req, res) => {
     email: email
   });
   const item = await ItemListingsModel.findOne({_id: itemId});
-  if (!user || !item) {
-    return res.json({status: 'error'});
+  if (!user) {
+    return res.json({status: 'error', statusCode: 4});
+  }
+  if (!item) {
+    return res.json({status: 'error', statusCode: 3});
   }
   const userId = "" + user._id;
   if (item.borrowedBy) {
     // Item is already borrowed by someone. Major error
-    return res.json({status: 'error'});
+    return res.json({status: 'error', statusCode: 1});
   }
   item.borrowedBy = userId;
   item.save();
@@ -130,9 +133,9 @@ router.post("/borrowItem", async (req, res) => {
     user.save();
   } else {
     // This user has already borrowed this item. Major error
-    return res.json({status: 'error'});
+    return res.json({status: 'error', statusCode: 2});
   }
-  return res.json({status: 'ok'});
+  return res.json({status: 'ok', statusCode: 0});
 })
 
 module.exports = router;
