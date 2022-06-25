@@ -212,7 +212,7 @@ app.get("/api/search", async (request, response) => {
     let results;
     if (query.name) {
       let resultData;
-      if (query.isFullSearch) {
+      if (query.isFullSearch === "true") {
         if (query.isImageOnly) {
           resultData = {
             images: 1
