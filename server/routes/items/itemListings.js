@@ -47,8 +47,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
               let itemsListed = user.itemsListed;
               const listingId = "" + savedListing._id;
               if (!itemsListed) {
-                itemsListed = [listingId];
-                user.itemsListed = itemsListed;
+                user.itemsListed = [listingId];
                 user.save();
               } else if (!itemsListed.includes(listingId)) {
                 itemsListed.push(listingId);
@@ -60,11 +59,10 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
         });
       }
     });
-    
     return response.json({status: 'ok'});
 });
 router.get("/getListingsTexts", (req, res) => {
-    ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, listings) => {
+    ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName', 'borrowedBy'], null, (err, listings) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
@@ -105,5 +103,36 @@ router.post("/getListingsImgsOfUser", async (req, res) => {
   let listingsImgs = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['images']);
   return res.json({status: 'ok', listingsImgs: listingsImgs});
 });
+router.post("/borrowItem", async (req, res) => {
+  const email = req.body.email;
+  const itemId = req.body.itemId;
+  const user = await UserModel.findOne({
+    email: email
+  });
+  const item = await ItemListingsModel.findOne({_id: itemId});
+  if (!user || !item) {
+    return res.json({status: 'error'});
+  }
+  const userId = "" + user._id;
+  if (item.borrowedBy) {
+    // Item is already borrowed by someone. Major error
+    return res.json({status: 'error'});
+  }
+  item.borrowedBy = userId;
+  item.save();
+  let itemsBorrowed = user.itemsBorrowed;
+  if (!itemsBorrowed) {
+    user.itemsBorrowed = [itemId];
+    user.save();
+  } else if (!itemsBorrowed.includes(itemId)) {
+    itemsBorrowed.push(itemId);
+    user.itemsBorrowed = itemsBorrowed;
+    user.save();
+  } else {
+    // This user has already borrowed this item. Major error
+    return res.json({status: 'error'});
+  }
+  return res.json({status: 'ok'});
+})
 
 module.exports = router;

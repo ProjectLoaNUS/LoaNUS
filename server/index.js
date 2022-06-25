@@ -219,6 +219,7 @@ app.get("/api/search", async (request, response) => {
           };
         } else if (query.isTextOnly) {
           resultData = {
+            _id: 1,
             title: 1,
             category: 1,
             description: 1,
@@ -227,10 +228,11 @@ app.get("/api/search", async (request, response) => {
             date: 1,
             userName: 1,
             deadline: 1,
+            borrowedBy: 1
           };
         } else {
           resultData = {
-            _id: 0,
+            _id: 1,
             title: 1,
             category: 1,
             description: 1,
@@ -239,13 +241,15 @@ app.get("/api/search", async (request, response) => {
             date: 1,
             userName: 1,
             deadline: 1,
-            images: 1
+            images: 1,
+            borrowedBy: 1
           };
         }
       } else {
         resultData = {
           title: 1,
-          _id: 0
+          borrowedBy: 1,
+          _id: 1
         }
       }
       results = await ItemListingsModel.aggregate([
