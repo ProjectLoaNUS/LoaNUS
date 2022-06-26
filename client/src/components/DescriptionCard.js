@@ -10,7 +10,6 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 100px;
 `;
 const DescriptionContainer = styled.div`
   display: flex;
