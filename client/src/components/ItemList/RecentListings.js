@@ -22,7 +22,7 @@ const ListingsPaper = styled(Paper)`
     height: 40vh;
 `;
 
-export default function ListingList(props) {
+export default function RecentListings(props) {
     const { imageUrls, setImageUrls, texts, setTexts } = props;
 
     return (

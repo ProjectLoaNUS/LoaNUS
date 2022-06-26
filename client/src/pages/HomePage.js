@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
-import ListingList from "../components/ItemList/ListingList";
+import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
 
 const MainContainer = styled.div`
@@ -71,7 +71,7 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <ListingList imageUrls={listingImgs} setImageUrls={setListingImgs} texts={listingTexts} setTexts={setListingTexts} />
+        <RecentListings imageUrls={listingImgs} setImageUrls={setListingImgs} texts={listingTexts} setTexts={setListingTexts} />
       </BodyContainer>
     </MainContainer>
   );
