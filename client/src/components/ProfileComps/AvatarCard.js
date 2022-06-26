@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Avatar, Rating } from "@mui/material";
+import { Avatar, Rating, Typography } from "@mui/material";
 import { useAuth } from "../../database/auth";
 import { useState } from "react";
 import ButtonComponent from "../Button";
@@ -19,7 +19,7 @@ const MainContainer = styled.div`
 const UserName = styled.h1`
   color: black;
 `;
-const Email = styled.text`
+const Email = styled(Typography)`
   color: grey;
 `;
 const LocationDateContainer = styled.div`
