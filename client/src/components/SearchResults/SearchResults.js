@@ -1,10 +1,7 @@
-import { Grid, List, ListItem, ListItemText } from "@mui/material";
+import { Grid } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
-import ListingCard from "../ItemList/ListingCard";
-import Loading from "../../assets/loading.svg";
-import NoImage from "../../assets/no-image.png";
-import { CATEGORIES } from "../NewItem/ItemCategories";
+import ItemList from "../ItemList/ItemList";
 
 const Container = styled.div`
   height: 20vh;
@@ -23,44 +20,24 @@ const ItemGrid = styled(Grid)`
 const SearchResults = (props) => {
   const { resultTexts, setResultTexts, resultImages, setResultImages } = props;
 
+  function ResultsGrid(props) {
+    const { children, key } = props;
+
+    return (
+      <ItemGrid item key={key} alignItems="stretch" justifyContent="center" xs={4}>
+        {children}
+      </ItemGrid>
+    );
+  }
+
   return (
     <PaddedGrid container rowSpacing={1}>
-        {resultTexts && resultTexts.map((text, index) => {
-          if (!text.borrowedBy) {
-            const date = new Date(text.date).toLocaleDateString({}, 
-                {year: 'numeric', month: 'short', day: 'numeric'});
-            const deadline = new Date(text.deadline).toLocaleDateString({}, 
-                {year: 'numeric', month: 'short', day: 'numeric'});
-            const category = CATEGORIES[text.category];
-
-            const removeItem = () => {
-              setResultTexts(prevResults => {
-                return prevResults.filter(other => other !== text);
-              });
-              setResultImages(prevImgs => {
-                const thisImg = prevImgs[index];
-                return prevImgs.filter(other => other !== thisImg);
-              });
-            }
-
-            return (
-              <ItemGrid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
-                <ListingCard
-                  itemId={text._id}
-                  date={date}
-                  imagesUrl={(resultImages[index] !== undefined && (resultImages[index]).length === 0) ? [NoImage] : (resultImages[index] || [Loading])}
-                  title={text.title}
-                  userName={text.userName}
-                  deadline={deadline}
-                  category={category}
-                  description={text.description}
-                  location={text.location}
-                  telegram={text.telegram}
-                  removeItem={removeItem} />
-              </ItemGrid>
-            );
-          }
-        })}
+        <ItemList
+          CardContainer={ResultsGrid}
+          texts={resultTexts}
+          setTexts={setResultTexts}
+          imageUrls={resultImages}
+          setimageUrls={setResultImages} />
     </PaddedGrid>
   );
 };
