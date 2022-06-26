@@ -135,14 +135,17 @@ app.post("/api/signUpUser", async (req, res) => {
   const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
-    email: req.body.email,
-    emailToken: crypto.randomBytes(64).toString("hex"),
-    isVerified: false
+    email: req.body.email
   });
   const password = req.body.password;
   if (password) {
     const hashedPassword = await bcrypt.hash(password, 10);
     newUser.password = hashedPassword;
+    newUser.emailToken = crypto.randomBytes(64).toString("hex");
+    newUser.isVerified = false;
+  } else {
+    newUser.emailToken = null;
+    newUser.isVerified = true;
   }
   await newUser.save({}, (err) => {
     if (err) {
