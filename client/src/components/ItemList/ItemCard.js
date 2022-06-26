@@ -43,7 +43,7 @@ const ListingActions = styled(CardActions)`
     }
 `;
 
-export default function ListingCard(props) {
+export default function ItemCard(props) {
     const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline, removeItem } = props;
     const [ open, setOpen ] = useState(false);
 

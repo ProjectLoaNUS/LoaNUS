@@ -1,4 +1,4 @@
-import ListingCard from "./ListingCard";
+import ItemCard from "./ItemCard";
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
@@ -28,7 +28,7 @@ export default function ItemList(props) {
 
                     function Item() {
                         return (
-                            <ListingCard
+                            <ItemCard
                                 key={index}
                                 itemId={text._id}
                                 date={date}
