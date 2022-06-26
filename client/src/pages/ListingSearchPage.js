@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
-import ItemList from "../components/ItemList/ItemList";
 import { CentredDiv } from "../components/FlexDiv";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -50,7 +49,7 @@ function SearchedListings() {
         })
         .catch((err) => console.log(err, "error occured"));
     }
-  }, []);
+  }, [state]);
 
   async function binsToImgUrls(bins) {
     let imgs = [];
@@ -72,7 +71,7 @@ function SearchedListings() {
     <Container>
       <NavigationBar></NavigationBar>
       <CentredDiv>Listings</CentredDiv>
-      <SearchResults resultTexts={searchResultsText} resultImages={searchResultsImage}></SearchResults>
+      <SearchResults resultTexts={searchResultsText} setResultTexts={setSearchResultsText} resultImages={searchResultsImage} setResultImages={setSearchResultsImage}></SearchResults>
     </Container>
   );
 }

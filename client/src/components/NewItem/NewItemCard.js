@@ -106,14 +106,15 @@ export default function NewItemCard() {
                 location: location,
                 telegram: telegramHandle,
                 date: date,
-                userName: user.displayName
+                userName: user.displayName,
+                email: user.email
             });
         } else {
             const itemData = new FormData();
             images.forEach((image) => {
                 itemData.append("images", image);
             })
-            itemData.append("deadline", returnDate);
+            itemData.append("deadline", returnDate.toISOString());
             itemData.append("category", category);
             itemData.append("title", title);
             itemData.append("description", description);
@@ -121,6 +122,7 @@ export default function NewItemCard() {
             itemData.append("telegram", telegramHandle);
             itemData.append("date", date);
             itemData.append("userName", user.displayName);
+            itemData.append("email", user.email);
             object["body"] = itemData;
         }
         const apiEndpoint = isRequest ? 

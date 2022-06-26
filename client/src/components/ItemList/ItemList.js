@@ -1,54 +1,56 @@
-import { Box } from "@mui/material";
-import ItemCard from "./ItemCard";
+import ListingCard from "./ListingCard";
 import Loading from "../../assets/loading.svg";
-import styled from "styled-components";
-
-const ItemsBox = styled(Box)`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-`;
-
-const ImageDiv = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    img {
-        height: 35vh
-    }
-`;
+import NoImage from "../../assets/no-image.png";
+import { CATEGORIES } from "../NewItem/ItemCategories";
 
 export default function ItemList(props) {
-    const { texts, setTexts, imgUrls, setImgUrls } = props;
+    const { CardContainer, imageUrls, setImageUrls, texts, setTexts } = props;
 
     return (
-        <ItemsBox>
-            { texts ? 
-                (texts.map((text, index) => {
-                    function Image() {
+        <>
+            { texts ? (texts.map((text, index) => {
+                if (!text.borrowedBy) {
+                    const date = new Date(text.date).toLocaleDateString({}, 
+                            {year: 'numeric', month: 'short', day: 'numeric'});
+                    const deadline = new Date(text.deadline).toLocaleDateString({}, 
+                            {year: 'numeric', month: 'short', day: 'numeric'});
+                    const category = CATEGORIES[text.category];
+
+                    const removeItem = () => {
+                        setTexts(prevTexts => {
+                            return prevTexts.filter(other => other !== text);
+                        });
+                        setImageUrls(prevUrls => {
+                            const thisUrl = prevUrls[index];
+                            return prevUrls.filter(other => other !== thisUrl);
+                        });
+                    }
+
+                    function Item() {
                         return (
-                            <ImageDiv>
-                                <img src={ imgUrls[index] } height="35vh" />
-                            </ImageDiv>
+                            <ListingCard
+                                key={index}
+                                itemId={text._id}
+                                date={date}
+                                imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
+                                title={text.title}
+                                userName={text.userName}
+                                deadline={deadline}
+                                category={category}
+                                description={text.description}
+                                location={text.location}
+                                telegram={text.telegram}
+                                removeItem={removeItem} />
                         );
                     }
 
-                    function LoadingDisplay() {
-                        return (
-                            <img src={ Loading } />
-                        );
+                    if (CardContainer) {
+                        return <CardContainer key={index}><Item/></CardContainer>
                     }
-
-                    return <ItemCard 
-                                key={ index } 
-                                title={text.name} 
-                                component={ Image || LoadingDisplay } 
-                                description={text.desc} />
-                })) : 
-                "Loading..." 
-            }
-        </ItemsBox>
+                    return <Item/>
+                }
+            })) : 
+            'Loading' }
+        </>
     );
 }

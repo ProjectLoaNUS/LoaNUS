@@ -212,13 +212,14 @@ app.get("/api/search", async (request, response) => {
     let results;
     if (query.name) {
       let resultData;
-      if (query.isFullSearch) {
+      if (query.isFullSearch === "true") {
         if (query.isImageOnly) {
           resultData = {
             images: 1
           };
         } else if (query.isTextOnly) {
           resultData = {
+            _id: 1,
             title: 1,
             category: 1,
             description: 1,
@@ -227,10 +228,11 @@ app.get("/api/search", async (request, response) => {
             date: 1,
             userName: 1,
             deadline: 1,
+            borrowedBy: 1
           };
         } else {
           resultData = {
-            _id: 0,
+            _id: 1,
             title: 1,
             category: 1,
             description: 1,
@@ -239,13 +241,15 @@ app.get("/api/search", async (request, response) => {
             date: 1,
             userName: 1,
             deadline: 1,
-            images: 1
+            images: 1,
+            borrowedBy: 1
           };
         }
       } else {
         resultData = {
           title: 1,
-          _id: 0
+          borrowedBy: 1,
+          _id: 1
         }
       }
       results = await ItemListingsModel.aggregate([
@@ -282,8 +286,11 @@ app.get("/api/search", async (request, response) => {
 app.get("/api/search-exact", async (request, response) => {
   try {
     const query = request.query;
+    if (!query.id) {
+      return response.json({status: 'error'});
+    }
     const result = await ItemListingsModel.findOne({
-      title: query.name,
+      _id: query.id,
     });
     if (result) {
       return response.json({status: 'ok', result: result});

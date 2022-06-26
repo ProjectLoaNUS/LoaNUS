@@ -5,6 +5,7 @@ import axios from "axios";
 import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 import ListingList from "../components/ItemList/ListingList";
+import { useAuth } from "../database/auth";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -23,6 +24,7 @@ const BodyContainer = styled.div`
 function HomePage() {
   const [ listingTexts, setListingTexts ] = useState([]);
   const [ listingImgs, setListingImgs ] = useState([]);
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     axios
@@ -37,6 +39,16 @@ function HomePage() {
         setListingTexts(res.data.listings);
       })
       .catch((err) => console.log(err, "error occured"));
+    if (!user) {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
   }, []);
 
   async function binsToImgUrls(bins) {
@@ -59,7 +71,7 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <ListingList imageUrls={listingImgs} texts={listingTexts} />
+        <ListingList imageUrls={listingImgs} setImageUrls={setListingImgs} texts={listingTexts} setTexts={setListingTexts} />
       </BodyContainer>
     </MainContainer>
   );

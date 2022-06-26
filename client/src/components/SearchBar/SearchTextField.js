@@ -65,6 +65,12 @@ export default function SearchTextField() {
   const [clickResultImgs, setClickResultImgs] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const removeResult = () => {
+    setSearchResults((prevResults) => {
+      return prevResults.filter((result) => (result._id !== clickResult._id));
+    });
+  }
+
   useEffect(() => {
     if (!queryText) {
       setSearchResults([]);
@@ -79,7 +85,7 @@ export default function SearchTextField() {
             },
           })
           .then((res) => {
-            setSearchResults(res.data.results);
+            setSearchResults(res.data.results.filter((item) => !item.borrowedBy));
             setLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));
@@ -110,10 +116,11 @@ export default function SearchTextField() {
 
     if (reason === "selectOption") {
       event.defaultMuiPrevented = true;
+
       axios
         .get(`${BACKEND_URL}/api/search-exact`, {
           params: {
-            name: newValue
+            id: newValue._id
           },
         })
         .then((res) => {
@@ -142,7 +149,8 @@ export default function SearchTextField() {
         filterOptions={(x) => x} 
         id="search"
         loading={loading}
-        options={searchResults.map((result) => result.title)}
+        options={searchResults}
+        getOptionLabel={result => result.title}
         onChange={onClickResult}
         renderInput={(params) => {
           return (
@@ -163,6 +171,7 @@ export default function SearchTextField() {
           )
         }} />
       <DetailsDialog
+        itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
         userName={clickResult && clickResult.userName}
         title={clickResult && clickResult.title}
@@ -173,7 +182,8 @@ export default function SearchTextField() {
         telegram={clickResult && clickResult.telegram}
         deadline={clickResult && clickResult.deadline}
         open={open}
-        setOpen={setOpen} />
+        setOpen={setOpen}
+        removeItem={clickResult && removeResult} />
     </>
   );
 }
