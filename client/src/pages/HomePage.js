@@ -71,7 +71,7 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <ListingList imageUrls={listingImgs} texts={listingTexts} />
+        <ListingList imageUrls={listingImgs} setImageUrls={setListingImgs} texts={listingTexts} setTexts={setListingTexts} />
       </BodyContainer>
     </MainContainer>
   );

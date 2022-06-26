@@ -72,7 +72,7 @@ function SearchedListings() {
     <Container>
       <NavigationBar></NavigationBar>
       <CentredDiv>Listings</CentredDiv>
-      <SearchResults resultTexts={searchResultsText} resultImages={searchResultsImage}></SearchResults>
+      <SearchResults resultTexts={searchResultsText} setResultTexts={setSearchResultsText} resultImages={searchResultsImage} setResultImages={setSearchResultsImage}></SearchResults>
     </Container>
   );
 }

@@ -44,7 +44,7 @@ const ListingActions = styled(CardActions)`
 `;
 
 export default function ListingCard(props) {
-    const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline } = props;
+    const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline, removeItem } = props;
     const [ open, setOpen ] = useState(false);
 
     const handleShowDetails = (event) => {
@@ -94,7 +94,8 @@ export default function ListingCard(props) {
                 telegram={telegram}
                 deadline={deadline}
                 open={open}
-                setOpen={setOpen} />
+                setOpen={setOpen}
+                removeItem={removeItem} />
         </ListCard>
     );
 }

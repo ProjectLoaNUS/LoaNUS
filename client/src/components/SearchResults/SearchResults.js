@@ -21,7 +21,7 @@ const ItemGrid = styled(Grid)`
 `;
 
 const SearchResults = (props) => {
-  const { resultTexts, resultImages } = props;
+  const { resultTexts, setResultTexts, resultImages, setResultImages } = props;
 
   return (
     <PaddedGrid container rowSpacing={1}>
@@ -32,6 +32,16 @@ const SearchResults = (props) => {
             const deadline = new Date(text.deadline).toLocaleDateString({}, 
                 {year: 'numeric', month: 'short', day: 'numeric'});
             const category = CATEGORIES[text.category];
+
+            const removeItem = () => {
+              setResultTexts(prevResults => {
+                return prevResults.filter(other => other !== text);
+              });
+              setResultImages(prevImgs => {
+                const thisImg = prevImgs[index];
+                return prevImgs.filter(other => other !== thisImg);
+              });
+            }
 
             return (
               <ItemGrid item key={index} alignItems="stretch" justifyContent="center" xs={4}>
@@ -45,7 +55,8 @@ const SearchResults = (props) => {
                   category={category}
                   description={text.description}
                   location={text.location}
-                  telegram={text.telegram} />
+                  telegram={text.telegram}
+                  removeItem={removeItem} />
               </ItemGrid>
             );
           }

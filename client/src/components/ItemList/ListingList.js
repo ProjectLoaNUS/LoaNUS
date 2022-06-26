@@ -26,7 +26,7 @@ const ListingsPaper = styled(Paper)`
 `;
 
 export default function ListingList(props) {
-    const { imageUrls, texts } = props;
+    const { imageUrls, setImageUrls, texts, setTexts } = props;
 
     return (
         <ListingsPaper>
@@ -40,19 +40,30 @@ export default function ListingList(props) {
                                 {year: 'numeric', month: 'short', day: 'numeric'});
                         const category = CATEGORIES[text.category];
 
+                        const removeItem = () => {
+                            setTexts(prevTexts => {
+                                return prevTexts.filter(other => other !== text);
+                            });
+                            setImageUrls(prevUrls => {
+                                const thisUrl = prevUrls[index];
+                                return prevUrls.filter(other => other !== thisUrl);
+                            });
+                        }
+
                         return (
                             <ListingCard
-                            key={index}
-                            itemId={text._id}
-                            date={date}
-                            imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
-                            title={text.title}
-                            userName={text.userName}
-                            deadline={deadline}
-                            category={category}
-                            description={text.description}
-                            location={text.location}
-                            telegram={text.telegram} />
+                                key={index}
+                                itemId={text._id}
+                                date={date}
+                                imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
+                                title={text.title}
+                                userName={text.userName}
+                                deadline={deadline}
+                                category={category}
+                                description={text.description}
+                                location={text.location}
+                                telegram={text.telegram}
+                                removeItem={removeItem} />
                         );
                     }
                 })) : 

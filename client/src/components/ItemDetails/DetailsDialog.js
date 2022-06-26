@@ -52,7 +52,7 @@ const BORROW_RES_TEXT = [
 ]
 
 export default function DetailsDialog(props) {
-    const { itemId, date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen } = props;
+    const { itemId, date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen, removeItem } = props;
     const telegramUsername = telegram ? telegram.replace("@", "") : "";
     const { user } = useAuth();
     const [ isBorrowed, setIsBorrowed ] = useState(false);
@@ -93,6 +93,12 @@ export default function DetailsDialog(props) {
         } else {
             setIsBorrowError(false);
             setIsBorrowed(true);
+            setTimeout(() => {
+                setOpen(false);
+            }, 5000);
+            setTimeout(() => {
+                removeItem();
+            }, 7000);
         }
         setBorrowStatusTxt(BORROW_RES_TEXT[data.statusCode]);
     }
