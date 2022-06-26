@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Avatar, Rating } from "@mui/material";
 import { useAuth } from "../../database/auth";
@@ -45,11 +45,22 @@ const HiddenInput = styled.input`
 
 function AvatarCard(props) {
   const [profileimage, setProfileImage] = useState();
+  const [photoURL, setPhotoURL] = useState("");
   const { user } = useAuth();
-  const binary = Buffer.from(user.photodata);
-  const blob = new Blob([binary.buffer], { type: user.photoformat });
-  const url = URL.createObjectURL(blob);
   const hiddenFileInput = React.useRef(null);
+
+  useEffect(() => {
+    if (user) {
+      if (user.photoURL) {
+        setPhotoURL(user.photoURL);
+      } else if (user.photodata && user.photoformat) {  
+        const binary = Buffer.from(user.photodata);
+        const blob = new Blob([binary.buffer], { type: user.photoformat });
+        setPhotoURL(URL.createObjectURL(blob));
+      }
+    }
+  }, [user]);
+
   const handleClick = (event) => {
     hiddenFileInput.current.click();
   };
@@ -78,7 +89,7 @@ function AvatarCard(props) {
 
   return (
     <MainContainer>
-      <Avatar src={url || null} sx={{ width: 120, height: 120 }}>
+      <Avatar src={photoURL} sx={{ width: 120, height: 120 }}>
         {user.displayName[0]}
       </Avatar>
       <UserName>{user.displayName}</UserName>
