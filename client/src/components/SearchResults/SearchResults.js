@@ -31,7 +31,7 @@ const SearchResults = (props) => {
   }
 
   return (
-    <PaddedGrid container rowSpacing={1}>
+    <PaddedGrid container spacing={1}>
         <ItemList
           CardContainer={ResultsGrid}
           texts={resultTexts}
