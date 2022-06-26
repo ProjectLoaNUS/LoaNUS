@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const MyButton = styled(Button)`
   min-height: 35px;
-  height: auto;
+  height: ${(props) => props.height ?? `auto`};
   width: ${(props) => props.width ?? `max-content`};
   border-radius: 25px;
   font-size: 12px;
@@ -34,6 +34,7 @@ function ButtonComponent(props) {
       disabled={props.disabled}
       type={props.type ?? "button"}
       width={props.setWidth}
+      height={props.setHeight}
       size={props.size ?? "medium"}
     >
       {props.text}

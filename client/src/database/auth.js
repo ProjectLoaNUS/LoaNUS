@@ -91,13 +91,13 @@ function useAuthProvider() {
 
     const data = await req.json();
     if (data.status === "ok") {
-        if (data.hasUser) {
-            if (data.isVerified) {
-                return hasUserResultCodes.HAS_USER;
-            }
-            return hasUserResultCodes.UNVERIFIED_USER;
+      if (data.hasUser) {
+        if (data.isVerified) {
+          return hasUserResultCodes.HAS_USER;
         }
-        return hasUserResultCodes.NO_SUCH_USER;
+        return hasUserResultCodes.UNVERIFIED_USER;
+      }
+      return hasUserResultCodes.NO_SUCH_USER;
     }
     return hasUserResultCodes.UNKOWN_ERROR;
   };
@@ -131,18 +131,18 @@ export const signInResultTexts = [
 ];
 
 export const hasUserResultCodes = {
-    HAS_USER: 0,
-    NO_SUCH_USER: 1,
-    UNVERIFIED_USER: 2,
-    UNKOWN_ERROR: 3
-}
+  HAS_USER: 0,
+  NO_SUCH_USER: 1,
+  UNVERIFIED_USER: 2,
+  UNKOWN_ERROR: 3,
+};
 
 export const hasUserResultTexts = [
-    "",
-    "No such user",
-    "Email not verified",
-    "Unknown error occurred"
-]
+  "",
+  "No such user",
+  "Email not verified",
+  "Unknown error occurred",
+];
 
 export const useAuth = () => {
   return useContext(authCtx);

@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import NavigationBar from "../components/NavBar/NavigationBar";
-import { useAuth } from "../database/auth";
-import ProfileLink from "../components/ProfileComps/LinkComponent";
-import ProfileCard from "../components/ProfileComps/AvatarCard";
-import ListingsCard from "../components/ProfileComps/ListingCard";
+import NavigationBar from "../NavBar/NavigationBar";
+import { useAuth } from "../../database/auth";
+import ProfileLink from "./LinkComponent";
+import ProfileCard from "./AvatarCard";
+import ButtonComponent from "../Button";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -35,6 +36,7 @@ const ProfileNavBar = styled.div`
   height: 5vh;
   display: flex;
   flex-direction: row;
+  width: auto;
 `;
 
 const InformationDisplayContainer = styled.div`
@@ -42,13 +44,35 @@ const InformationDisplayContainer = styled.div`
   border-radius: 7px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
   height: 75vh;
+`;
+const CoinsContainer = styled.div`
+  border: 1px solid #c9c9c9;
+  border-radius: 7px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px;
+  align-items: center;
+  padding: 5px;
+`;
+const CoinTitle = styled.h1`
+  margin: 10px;
+`;
+const CoinsSubContainer = styled.div`
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 `;
+const StyledCoin = styled(CurrencyExchangeIcon)`
+  color: #2d3c4a;
+  margin-right: 10px;
+  transform: scale(1.5);
+  margin-left: 5px;
+`;
 
-function ProfilePage() {
+function PointsPage() {
   const { user } = useAuth();
   return (
     <MainContainer>
@@ -69,7 +93,20 @@ function ProfilePage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <ListingsCard></ListingsCard>
+            <CoinTitle>LoaNUS Coins</CoinTitle>
+            <CoinsContainer>
+              <CoinsSubContainer>
+                <StyledCoin></StyledCoin>
+                <h2>520 Coins</h2>
+              </CoinsSubContainer>
+
+              <ButtonComponent
+                size={"small"}
+                text={"Earn Coins"}
+                state={"primary"}
+                setHeight={"15px"}
+              ></ButtonComponent>
+            </CoinsContainer>
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>
@@ -77,4 +114,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default PointsPage;
