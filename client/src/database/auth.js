@@ -135,6 +135,8 @@ export const hasUserResultCodes = {
   NO_SUCH_USER: 1,
   UNVERIFIED_USER: 2,
   UNKNOWN_ERROR: 3,
+  EMAIL_NOT_VERIFIED: 4,
+  ALTERNATE_SIGN_IN: 5
 };
 
 export const hasUserResultTexts = [
