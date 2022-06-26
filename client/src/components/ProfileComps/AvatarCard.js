@@ -90,7 +90,7 @@ function AvatarCard(props) {
   return (
     <MainContainer>
       <Avatar src={photoURL} sx={{ width: 120, height: 120 }}>
-        {user.displayName[0]}
+        {!photoURL ? (user.displayName ? user.displayName[0] : 'U') : "" }
       </Avatar>
       <UserName>{user.displayName}</UserName>
       <Email>{user.email}</Email>
