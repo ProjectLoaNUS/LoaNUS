@@ -111,39 +111,44 @@ app.post("/api/login", async (req, res) => {
 });
 
 app.post("/api/signUpUser", async (req, res) => {
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
   const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
     email: req.body.email,
     emailToken: crypto.randomBytes(64).toString("hex"),
-    isVerified: false,
-    password: hashedPassword
+    isVerified: false
   });
+  const password = req.body.password;
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    newUser.password = hashedPassword;
+  }
   await newUser.save({}, (err) => {
     if (err) {
       return res.json({ status: "error", error: err });
     }
   });
 
-  const msg = {
-    to: req.body.email,
-    from: "yongbin0162@gmail.com",
-    subject: "LoaNUS - Verify your email",
-    text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
-    html: `<h1>Hello,</h1>
-    <p>Thanks for registering on our app.</p>
-    <p>Please click the link below to verify your account.</p>
-    <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
-  };
+  if (password) {  
+    const msg = {
+      to: req.body.email,
+      from: "yongbin0162@gmail.com",
+      subject: "LoaNUS - Verify your email",
+      text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
+      html: `<h1>Hello,</h1>
+      <p>Thanks for registering on our app.</p>
+      <p>Please click the link below to verify your account.</p>
+      <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
+    };
 
-  sgMail.send(msg, function (err, info) {
-    if (err) {
-      console.log("Email Not Sent");
-    } else {
-      console.log("Email Sent Success");
-    }
-  });
+    sgMail.send(msg, function (err, info) {
+      if (err) {
+        console.log("Email Not Sent");
+      } else {
+        console.log("Email Sent Success");
+      }
+    });
+  }
   return res.json({ status: "ok" });
 });
 
