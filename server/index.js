@@ -118,8 +118,7 @@ app.post("/api/signUpUser", async (req, res) => {
     email: req.body.email,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
-    password: hashedPassword,
-    image: "test",
+    password: hashedPassword
   });
   await newUser.save({}, (err) => {
     if (err) {
