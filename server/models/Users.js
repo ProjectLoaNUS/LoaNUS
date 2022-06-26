@@ -17,6 +17,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    data: Buffer,
+    contentType: String,
+    required: false,
+  },
   emailToken: String,
   isVerified: Boolean,
   itemsBorrowed: {

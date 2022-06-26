@@ -15,8 +15,9 @@ const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const { Router } = require("express");
+const { Router, response } = require("express");
 const PORT = process.env.PORT || 3001;
+
 require("dotenv").config();
 
 app.use(expressLayouts);
@@ -52,7 +53,7 @@ app.post("/api/hasUser", async (req, res) => {
   return res.json({
     status: "ok",
     hasUser: true,
-    isVerified: user.isVerified
+    isVerified: user.isVerified,
   });
 });
 
@@ -90,11 +91,16 @@ app.post("/api/login", async (req, res) => {
       });
     }
     if (result) {
-      return res.json({status: 'ok', user: {
-        displayName: givenUser.name,
-        age: givenUser.age,
-        email: givenUser.email
-      }});
+      return res.json({
+        status: "ok",
+        user: {
+          displayName: givenUser.name,
+          age: givenUser.age,
+          email: givenUser.email,
+          photodata: givenUser.image.data,
+          photoformat: givenUser.image.contentType,
+        },
+      });
     }
     return res.json({
       status: "error",
@@ -113,6 +119,7 @@ app.post("/api/signUpUser", async (req, res) => {
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
     password: hashedPassword,
+    image: "test",
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -183,26 +190,55 @@ app.get("/api/getItemImages", (req, res) => {
     }
   });
 });
-app.post("/api/item-upload", upload.single("image"), (request, response, next) => {
-  const obj = {
-    name: request.body.name,
-    desc: request.body.description,
-    image: {
-      data: request.file.buffer,
-      contentType: request.file.mimetype,
-    },
-  };
-  ItemModel.create(obj, (err, item) => {
-    if (err) {
-      console.log(err);
-    } else {
-      item.save();
+app.post(
+  "/api/item-upload",
+  upload.single("image"),
+  (request, response, next) => {
+    const obj = {
+      name: request.body.name,
+      desc: request.body.description,
+      image: {
+        data: request.file.buffer,
+        contentType: request.file.mimetype,
+      },
+    };
+    ItemModel.create(obj, (err, item) => {
+      if (err) {
+        console.log(err);
+      } else {
+        item.save();
+      }
+    });
+    response.send("Upload success");
+  }
+);
+
+//Upload profile picture
+app.post(
+  "/profile-upload",
+  upload.single("image"),
+  (request, response, next) => {
+    try {
+      UserModel.findOne({ name: request.body.username }, function (err, User) {
+        if (!User) {
+          console.log("error", "User not found");
+        }
+        const imageprop = {
+          data: request.file.buffer,
+          contentType: request.file.mimetype,
+        };
+
+        User.image = imageprop;
+        User.save();
+      });
+    } catch (error) {
+      console.log(error);
     }
-  });
-  response.send("Upload success");
-});
+  }
+);
 
 const items = require("./routes/items/index");
+
 app.use("/api", items);
 
 // Search function
