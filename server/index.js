@@ -40,6 +40,13 @@ mongoose.connect(
 sgMail.setApiKey(process.env.API_KEY);
 
 app.post("/api/hasUser", async (req, res) => {
+  const hasUserResultCodes = {
+    HAS_USER: 0,
+    NO_SUCH_USER: 1,
+    UNVERIFIED_USER: 2,
+    UNKNOWN_ERROR: 3,
+    ALTERNATE_SIGN_IN: 4
+  };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
     email: givenEmail,
@@ -48,6 +55,12 @@ app.post("/api/hasUser", async (req, res) => {
     return res.json({
       status: "ok",
       hasUser: false,
+    });
+  }
+  if (!user.password) {
+    return res.json({
+      status: "error",
+      statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
     });
   }
   return res.json({
@@ -64,6 +77,7 @@ app.post("/api/login", async (req, res) => {
     NO_SUCH_USER: 2,
     UNKNOWN: 3,
     EMAIL_NOT_VERIFIED: 4,
+    ALTERNATE_SIGN_IN: 5
   };
   const givenUser = await UserModel.findOne({
     email: req.body.email,
@@ -72,7 +86,14 @@ app.post("/api/login", async (req, res) => {
     return res.json({
       status: "error",
       errorCode: signInResultCodes.NO_SUCH_USER,
-      error: `User {givenUser.name} doesn't exist`,
+      error: `User ${givenUser.name} doesn't exist`,
+    });
+  }
+  if (!givenUser.password) {
+    return res.json({
+      status: "error",
+      errorCode: signInResultCodes.ALTERNATE_SIGN_IN,
+      error: `User account uses 3rd party log in method`,
     });
   }
   if (!givenUser.isVerified) {

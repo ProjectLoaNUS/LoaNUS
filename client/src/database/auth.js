@@ -99,6 +99,11 @@ function useAuthProvider() {
       }
       return hasUserResultCodes.NO_SUCH_USER;
     }
+    if (data.status === "error") {
+      if (data.statusCode === hasUserResultCodes.ALTERNATE_SIGN_IN) {
+        return hasUserResultCodes.ALTERNATE_SIGN_IN;
+      }
+    }
     return hasUserResultCodes.UNKNOWN_ERROR;
   };
 
@@ -135,8 +140,7 @@ export const hasUserResultCodes = {
   NO_SUCH_USER: 1,
   UNVERIFIED_USER: 2,
   UNKNOWN_ERROR: 3,
-  EMAIL_NOT_VERIFIED: 4,
-  ALTERNATE_SIGN_IN: 5
+  ALTERNATE_SIGN_IN: 4
 };
 
 export const hasUserResultTexts = [
@@ -144,6 +148,7 @@ export const hasUserResultTexts = [
   "No such user",
   "Email not verified",
   "Unknown error occurred",
+  "User uses 3rd party sign in method"
 ];
 
 export const useAuth = () => {
