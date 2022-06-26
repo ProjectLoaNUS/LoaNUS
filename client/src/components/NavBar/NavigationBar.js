@@ -26,7 +26,7 @@ function NavigationBar() {
   const { user } = useAuth();
   return (
       <MainContainer>
-        <AppBtn component={ Link } to="/home" color="primary" dark={true} iconStyles={iconStyles} />
+        <AppBtn component={ Link } to="/" color="primary" dark={true} iconStyles={iconStyles} />
         <SearchBar />
         <CreateBtn />
         { user ? <ProfileBtn /> : <SignInBtn url='/signin' /> }
