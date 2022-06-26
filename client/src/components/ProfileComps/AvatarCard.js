@@ -43,7 +43,7 @@ const HiddenInput = styled.input`
   display: none;
 `;
 
-function ProfileCard(props) {
+function AvatarCard(props) {
   const [profileimage, setProfileImage] = useState();
   const { user } = useAuth();
   const binary = Buffer.from(user.photodata);
@@ -111,4 +111,4 @@ function ProfileCard(props) {
     </MainContainer>
   );
 }
-export default ProfileCard;
+export default AvatarCard;

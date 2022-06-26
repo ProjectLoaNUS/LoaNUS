@@ -2,7 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../NavBar/NavigationBar";
 import { useAuth } from "../../database/auth";
 import ProfileLink from "./LinkComponent";
-import ProfileCard from "./AvatarCard";
+import AvatarCard from "./AvatarCard";
 import ButtonComponent from "../Button";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
@@ -79,7 +79,7 @@ function PointsPage() {
       <NavigationBar></NavigationBar>
       <BelowNavBarContainer>
         <PersonalInfoContainer>
-          <ProfileCard></ProfileCard>
+          <AvatarCard></AvatarCard>
         </PersonalInfoContainer>
         <SubContainer>
           <ProfileNavBar>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../NavBar/NavigationBar";
 import { useAuth } from "../../database/auth";
 import ProfileLink from "./LinkComponent";
-import ProfileCard from "./AvatarCard";
+import AvatarCard from "./AvatarCard";
 import ReviewsCard from "./ReviewsComp";
 
 const MainContainer = styled.div`
@@ -51,7 +51,7 @@ function ReviewsPage() {
       <NavigationBar></NavigationBar>
       <BelowNavBarContainer>
         <PersonalInfoContainer>
-          <ProfileCard></ProfileCard>
+          <AvatarCard></AvatarCard>
         </PersonalInfoContainer>
         <SubContainer>
           <ProfileNavBar>

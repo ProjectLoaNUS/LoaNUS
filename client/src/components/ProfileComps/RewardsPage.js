@@ -2,7 +2,7 @@ import styled from "styled-components";
 import NavigationBar from "../NavBar/NavigationBar";
 import { useAuth } from "../../database/auth";
 import ProfileLink from "./LinkComponent";
-import ProfileCard from "./AvatarCard";
+import AvatarCard from "./AvatarCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -54,7 +54,7 @@ function RewardsPage() {
       <NavigationBar></NavigationBar>
       <BelowNavBarContainer>
         <PersonalInfoContainer>
-          <ProfileCard></ProfileCard>
+          <AvatarCard></AvatarCard>
         </PersonalInfoContainer>
         <SubContainer>
           <ProfileNavBar>
