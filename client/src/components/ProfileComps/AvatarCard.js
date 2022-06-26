@@ -51,12 +51,12 @@ function AvatarCard(props) {
 
   useEffect(() => {
     if (user) {
-      if (user.photoURL) {
-        setPhotoURL(user.photoURL);
-      } else if (user.photodata && user.photoformat) {  
+      if (user.photodata && user.photoformat) {  
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
         setPhotoURL(URL.createObjectURL(blob));
+      } else if (user.photoURL) {
+        setPhotoURL(user.photoURL);
       }
     }
   }, [user]);
