@@ -6,6 +6,7 @@ import { useState } from "react";
 import ButtonComponent from "../Button";
 import axios from "axios";
 import { Buffer } from "buffer";
+import { BACKEND_URL } from "../../database/const";
 
 const MainContainer = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ function ProfileCard(props) {
     formData.append("image", profileimage);
     console.log(formData.get("image"));
     axios
-      .post("http://localhost:3001/profile-upload", formData, {
+      .post(`${BACKEND_URL}/profile-upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
