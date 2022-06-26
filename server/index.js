@@ -112,7 +112,7 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/signUpUser", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  var newUser = new UserModel({
+  const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
     email: req.body.email,
