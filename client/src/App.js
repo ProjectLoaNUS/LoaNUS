@@ -5,23 +5,39 @@ import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import NewItemPage from "./pages/NewItemPage";
 import SignInPage from "./pages/SignInPage";
-import RewardsPage from "./pages/RewardsPage";
 import SearchedListings from "./pages/ListingSearchPage";
 import { theme } from "./components/Theme";
 import { ThemeProvider } from "@mui/material";
-import { HOME, NEW_ITEM, PROFILE, REWARDS, SIGN_IN, SEARCH_LISTINGS } from "./pages/routes";
+import {
+  HOME,
+  NEW_ITEM,
+  PROFILE,
+  SIGN_IN,
+  SEARCH_LISTINGS,
+  PROFILE_POINTS,
+  PROFILE_REVIEWS,
+  PROFILE_REWARDS_CLAIMED,
+  PROFILE_REQUESTS,
+} from "./pages/routes";
+import PointsPage from "./components/ProfileComps/PointsPage";
+import ReviewsPage from "./components/ProfileComps/ReviewsPage";
+import RewardsPage from "./components/ProfileComps/RewardsPage";
+import RequestsPage from "./components/ProfileComps/RequestsPage";
 
 function App() {
   return (
     <div>
-      <ThemeProvider theme={ theme }>
+      <ThemeProvider theme={theme}>
         <Routes>
           <Route path={SIGN_IN} element={<SignInPage />} />
           <Route path={HOME} element={<HomePage />} />
           <Route path={PROFILE} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
-          <Route path={REWARDS} element={<RewardsPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />
+          <Route path={PROFILE_POINTS} element={<PointsPage />} />
+          <Route path={PROFILE_REVIEWS} element={<ReviewsPage />} />
+          <Route path={PROFILE_REWARDS_CLAIMED} element={<RewardsPage />} />
+          <Route path={PROFILE_REQUESTS} element={<RequestsPage />} />
         </Routes>
       </ThemeProvider>
     </div>

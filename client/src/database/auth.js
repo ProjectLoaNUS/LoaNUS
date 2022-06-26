@@ -15,7 +15,24 @@ function useAuthProvider() {
   const googleAuthProvider = new GoogleAuthProvider();
 
   const signInWithGoogle = () => {
-    return signInWithPopup(auth, googleAuthProvider).then((result) => {
+    return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
+      const req = fetch(`${BACKEND_URL}/api/signUpUser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: result.user.displayName,
+          age: "-1",
+          email: result.user.email
+        }),
+      })
+      .then(req => req.json())
+      .then(data => {
+        if (data.status === "error") {
+          console.log("Error occurred while adding 3rd party account user to database");
+        }
+      });
       setUser(result.user);
       setIsGoogleSignIn(true);
       localStorage.setItem('user', JSON.stringify(result.user));
@@ -91,15 +108,20 @@ function useAuthProvider() {
 
     const data = await req.json();
     if (data.status === "ok") {
-        if (data.hasUser) {
-            if (data.isVerified) {
-                return hasUserResultCodes.HAS_USER;
-            }
-            return hasUserResultCodes.UNVERIFIED_USER;
+      if (data.hasUser) {
+        if (data.isVerified) {
+          return hasUserResultCodes.HAS_USER;
         }
-        return hasUserResultCodes.NO_SUCH_USER;
+        return hasUserResultCodes.UNVERIFIED_USER;
+      }
+      return hasUserResultCodes.NO_SUCH_USER;
     }
-    return hasUserResultCodes.UNKOWN_ERROR;
+    if (data.status === "error") {
+      if (data.statusCode === hasUserResultCodes.ALTERNATE_SIGN_IN) {
+        return hasUserResultCodes.ALTERNATE_SIGN_IN;
+      }
+    }
+    return hasUserResultCodes.UNKNOWN_ERROR;
   };
 
   return {
@@ -131,18 +153,20 @@ export const signInResultTexts = [
 ];
 
 export const hasUserResultCodes = {
-    HAS_USER: 0,
-    NO_SUCH_USER: 1,
-    UNVERIFIED_USER: 2,
-    UNKOWN_ERROR: 3
-}
+  HAS_USER: 0,
+  NO_SUCH_USER: 1,
+  UNVERIFIED_USER: 2,
+  UNKNOWN_ERROR: 3,
+  ALTERNATE_SIGN_IN: 4
+};
 
 export const hasUserResultTexts = [
-    "",
-    "No such user",
-    "Email not verified",
-    "Unknown error occurred"
-]
+  "",
+  "No such user",
+  "Email not verified",
+  "Unknown error occurred",
+  "User uses 3rd party sign in method"
+];
 
 export const useAuth = () => {
   return useContext(authCtx);

@@ -1,10 +1,8 @@
 import styled from "styled-components";
-import NavigationBar from "../components/NavBar/NavigationBar";
-import { useAuth } from "../database/auth";
-import ProfileLink from "../components/ProfileComps/LinkComponent";
-import AvatarCard from "../components/ProfileComps/AvatarCard";
-import ListingsCard from "../components/ProfileComps/ListingCard";
-import Listings from "../components/ProfileComps/Listings";
+import NavigationBar from "../NavBar/NavigationBar";
+import { useAuth } from "../../database/auth";
+import ProfileLink from "./LinkComponent";
+import AvatarCard from "./AvatarCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -49,7 +47,7 @@ const InformationDisplayContainer = styled.div`
   align-items: center;
 `;
 
-function ProfilePage() {
+function RewardsPage() {
   const { user } = useAuth();
   return (
     <MainContainer>
@@ -70,7 +68,7 @@ function ProfilePage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <Listings />
+            <h2>You have not claimed any rewards</h2>
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>
@@ -78,4 +76,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default RewardsPage;

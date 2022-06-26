@@ -128,7 +128,7 @@ export default function AuthCard() {
         setSubmitErrHelperText(hasUserResultTexts[userStatus]);
         setIsSubmitErr(true);
         break;
-      case hasUserResultCodes.UNKOWN_ERROR:
+      case hasUserResultCodes.UNKNOWN_ERROR:
       default:
         setSubmitErrHelperText(hasUserResultTexts[userStatus]);
         setIsSubmitErr(true);

@@ -15,8 +15,9 @@ const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const { Router } = require("express");
+const { Router, response } = require("express");
 const PORT = process.env.PORT || 3001;
+
 require("dotenv").config();
 
 app.use(expressLayouts);
@@ -39,6 +40,13 @@ mongoose.connect(
 sgMail.setApiKey(process.env.API_KEY);
 
 app.post("/api/hasUser", async (req, res) => {
+  const hasUserResultCodes = {
+    HAS_USER: 0,
+    NO_SUCH_USER: 1,
+    UNVERIFIED_USER: 2,
+    UNKNOWN_ERROR: 3,
+    ALTERNATE_SIGN_IN: 4
+  };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
     email: givenEmail,
@@ -49,10 +57,16 @@ app.post("/api/hasUser", async (req, res) => {
       hasUser: false,
     });
   }
+  if (!user.password) {
+    return res.json({
+      status: "error",
+      statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
+    });
+  }
   return res.json({
     status: "ok",
     hasUser: true,
-    isVerified: user.isVerified
+    isVerified: user.isVerified,
   });
 });
 
@@ -63,22 +77,30 @@ app.post("/api/login", async (req, res) => {
     NO_SUCH_USER: 2,
     UNKNOWN: 3,
     EMAIL_NOT_VERIFIED: 4,
+    ALTERNATE_SIGN_IN: 5
   };
   const givenUser = await UserModel.findOne({
     email: req.body.email,
   });
+  if (!givenUser) {
+    return res.json({
+      status: "error",
+      errorCode: signInResultCodes.NO_SUCH_USER,
+      error: `User ${givenUser.name} doesn't exist`,
+    });
+  }
+  if (!givenUser.password) {
+    return res.json({
+      status: "error",
+      errorCode: signInResultCodes.ALTERNATE_SIGN_IN,
+      error: `User account uses 3rd party log in method`,
+    });
+  }
   if (!givenUser.isVerified) {
     return res.json({
       status: "error",
       errorCode: signInResultCodes.EMAIL_NOT_VERIFIED,
       error: `User yet to verify account`,
-    });
-  }
-  if (!givenUser) {
-    return res.json({
-      status: "error",
-      errorCode: signInResultCodes.NO_SUCH_USER,
-      error: `User {givenUser.name} doesn't exist`,
     });
   }
   await bcrypt.compare(req.body.password, givenUser.password, (err, result) => {
@@ -90,11 +112,16 @@ app.post("/api/login", async (req, res) => {
       });
     }
     if (result) {
-      return res.json({status: 'ok', user: {
-        displayName: givenUser.name,
-        age: givenUser.age,
-        email: givenUser.email
-      }});
+      return res.json({
+        status: "ok",
+        user: {
+          displayName: givenUser.name,
+          age: givenUser.age,
+          email: givenUser.email,
+          photodata: givenUser.image.data,
+          photoformat: givenUser.image.contentType,
+        },
+      });
     }
     return res.json({
       status: "error",
@@ -105,39 +132,47 @@ app.post("/api/login", async (req, res) => {
 });
 
 app.post("/api/signUpUser", async (req, res) => {
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  var newUser = new UserModel({
+  const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
-    email: req.body.email,
-    emailToken: crypto.randomBytes(64).toString("hex"),
-    isVerified: false,
-    password: hashedPassword,
+    email: req.body.email
   });
+  const password = req.body.password;
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    newUser.password = hashedPassword;
+    newUser.emailToken = crypto.randomBytes(64).toString("hex");
+    newUser.isVerified = false;
+  } else {
+    newUser.emailToken = null;
+    newUser.isVerified = true;
+  }
   await newUser.save({}, (err) => {
     if (err) {
       return res.json({ status: "error", error: err });
     }
   });
 
-  const msg = {
-    to: req.body.email,
-    from: "yongbin0162@gmail.com",
-    subject: "LoaNUS - Verify your email",
-    text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
-    html: `<h1>Hello,</h1>
-    <p>Thanks for registering on our app.</p>
-    <p>Please click the link below to verify your account.</p>
-    <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
-  };
+  if (password) {  
+    const msg = {
+      to: req.body.email,
+      from: "yongbin0162@gmail.com",
+      subject: "LoaNUS - Verify your email",
+      text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
+      html: `<h1>Hello,</h1>
+      <p>Thanks for registering on our app.</p>
+      <p>Please click the link below to verify your account.</p>
+      <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
+    };
 
-  sgMail.send(msg, function (err, info) {
-    if (err) {
-      console.log("Email Not Sent");
-    } else {
-      console.log("Email Sent Success");
-    }
-  });
+    sgMail.send(msg, function (err, info) {
+      if (err) {
+        console.log("Email Not Sent");
+      } else {
+        console.log("Email Sent Success");
+      }
+    });
+  }
   return res.json({ status: "ok" });
 });
 
@@ -183,26 +218,55 @@ app.get("/api/getItemImages", (req, res) => {
     }
   });
 });
-app.post("/api/item-upload", upload.single("image"), (request, response, next) => {
-  const obj = {
-    name: request.body.name,
-    desc: request.body.description,
-    image: {
-      data: request.file.buffer,
-      contentType: request.file.mimetype,
-    },
-  };
-  ItemModel.create(obj, (err, item) => {
-    if (err) {
-      console.log(err);
-    } else {
-      item.save();
+app.post(
+  "/api/item-upload",
+  upload.single("image"),
+  (request, response, next) => {
+    const obj = {
+      name: request.body.name,
+      desc: request.body.description,
+      image: {
+        data: request.file.buffer,
+        contentType: request.file.mimetype,
+      },
+    };
+    ItemModel.create(obj, (err, item) => {
+      if (err) {
+        console.log(err);
+      } else {
+        item.save();
+      }
+    });
+    response.send("Upload success");
+  }
+);
+
+//Upload profile picture
+app.post(
+  "/profile-upload",
+  upload.single("image"),
+  (request, response, next) => {
+    try {
+      UserModel.findOne({ name: request.body.username }, function (err, User) {
+        if (!User) {
+          console.log("error", "User not found");
+        }
+        const imageprop = {
+          data: request.file.buffer,
+          contentType: request.file.mimetype,
+        };
+
+        User.image = imageprop;
+        User.save();
+      });
+    } catch (error) {
+      console.log(error);
     }
-  });
-  response.send("Upload success");
-});
+  }
+);
 
 const items = require("./routes/items/index");
+
 app.use("/api", items);
 
 // Search function

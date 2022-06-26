@@ -1,10 +1,9 @@
 import styled from "styled-components";
-import NavigationBar from "../components/NavBar/NavigationBar";
-import { useAuth } from "../database/auth";
-import ProfileLink from "../components/ProfileComps/LinkComponent";
-import AvatarCard from "../components/ProfileComps/AvatarCard";
-import ListingsCard from "../components/ProfileComps/ListingCard";
-import Listings from "../components/ProfileComps/Listings";
+import NavigationBar from "../NavBar/NavigationBar";
+import { useAuth } from "../../database/auth";
+import ProfileLink from "./LinkComponent";
+import AvatarCard from "./AvatarCard";
+import ReviewsCard from "./ReviewsComp";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -43,13 +42,9 @@ const InformationDisplayContainer = styled.div`
   border-radius: 7px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
   height: 75vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
-function ProfilePage() {
+function ReviewsPage() {
   const { user } = useAuth();
   return (
     <MainContainer>
@@ -70,7 +65,7 @@ function ProfilePage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <Listings />
+            <ReviewsCard></ReviewsCard>
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>
@@ -78,4 +73,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default ReviewsPage;

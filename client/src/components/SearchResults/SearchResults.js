@@ -12,8 +12,8 @@ const PaddedGrid = styled(Grid)`
 `;
 const ItemGrid = styled(Grid)`
   .MuiCard-root {
-    height: 30vh;
-    width: 30vw;
+    height: 100%;
+    width: 100%;
   }
 `;
 
@@ -31,7 +31,7 @@ const SearchResults = (props) => {
   }
 
   return (
-    <PaddedGrid container rowSpacing={1}>
+    <PaddedGrid container spacing={1}>
         <ItemList
           CardContainer={ResultsGrid}
           texts={resultTexts}
