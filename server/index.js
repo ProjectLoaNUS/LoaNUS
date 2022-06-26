@@ -68,18 +68,18 @@ app.post("/api/login", async (req, res) => {
   const givenUser = await UserModel.findOne({
     email: req.body.email,
   });
-  if (!givenUser.isVerified) {
-    return res.json({
-      status: "error",
-      errorCode: signInResultCodes.EMAIL_NOT_VERIFIED,
-      error: `User yet to verify account`,
-    });
-  }
   if (!givenUser) {
     return res.json({
       status: "error",
       errorCode: signInResultCodes.NO_SUCH_USER,
       error: `User {givenUser.name} doesn't exist`,
+    });
+  }
+  if (!givenUser.isVerified) {
+    return res.json({
+      status: "error",
+      errorCode: signInResultCodes.EMAIL_NOT_VERIFIED,
+      error: `User yet to verify account`,
     });
   }
   await bcrypt.compare(req.body.password, givenUser.password, (err, result) => {
