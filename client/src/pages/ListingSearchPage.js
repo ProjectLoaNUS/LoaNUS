@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
-import ItemList from "../components/ItemList/ItemList";
 import { CentredDiv } from "../components/FlexDiv";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
