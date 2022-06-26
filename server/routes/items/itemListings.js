@@ -88,7 +88,7 @@ router.post("/getListingsTextsOfUser", async (req, res) => {
     return res.json({status: 'error'});
   }
   const listingIds = user.itemsListed;
-  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName']);
+  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName']);
   return res.json({status: 'ok', listingsTexts: listingsTexts});
 });
 router.post("/getListingsImgsOfUser", async (req, res) => {
