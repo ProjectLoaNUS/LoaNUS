@@ -99,7 +99,7 @@ function useAuthProvider() {
       }
       return hasUserResultCodes.NO_SUCH_USER;
     }
-    return hasUserResultCodes.UNKOWN_ERROR;
+    return hasUserResultCodes.UNKNOWN_ERROR;
   };
 
   return {
@@ -134,7 +134,7 @@ export const hasUserResultCodes = {
   HAS_USER: 0,
   NO_SUCH_USER: 1,
   UNVERIFIED_USER: 2,
-  UNKOWN_ERROR: 3,
+  UNKNOWN_ERROR: 3,
 };
 
 export const hasUserResultTexts = [
