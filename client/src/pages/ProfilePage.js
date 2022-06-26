@@ -4,6 +4,7 @@ import { useAuth } from "../database/auth";
 import ProfileLink from "../components/ProfileComps/LinkComponent";
 import AvatarCard from "../components/ProfileComps/AvatarCard";
 import ListingsCard from "../components/ProfileComps/ListingCard";
+import Listings from "../components/ProfileComps/Listings";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -69,7 +70,7 @@ function ProfilePage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <ListingsCard></ListingsCard>
+            <Listings />
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>
