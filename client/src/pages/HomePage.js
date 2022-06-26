@@ -6,6 +6,7 @@ import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
 import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
+import AboutLoanus from "../components/AboutLoanus";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -72,6 +73,7 @@ function HomePage() {
       <NavigationBar></NavigationBar>
       <BodyContainer>
         <RecentListings imageUrls={listingImgs} setImageUrls={setListingImgs} texts={listingTexts} setTexts={setListingTexts} />
+        <AboutLoanus />
       </BodyContainer>
     </MainContainer>
   );
