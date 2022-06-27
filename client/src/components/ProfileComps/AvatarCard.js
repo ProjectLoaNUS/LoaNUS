@@ -46,12 +46,12 @@ const HiddenInput = styled.input`
 function AvatarCard(props) {
   const [profileimage, setProfileImage] = useState();
   const [photoURL, setPhotoURL] = useState("");
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const hiddenFileInput = React.useRef(null);
 
   useEffect(() => {
     if (user) {
-      if (user.photodata && user.photoformat) {  
+      if (!user.photoURL && (user.photodata && user.photoformat)) {  
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
         setPhotoURL(URL.createObjectURL(blob));
@@ -64,11 +64,22 @@ function AvatarCard(props) {
   const handleClick = (event) => {
     hiddenFileInput.current.click();
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const url = URL.createObjectURL(profileimage);
+    setPhotoURL(url);
+    setUser(prevUser => {
+      let newUser = structuredClone(prevUser);
+      profileimage.arrayBuffer().then(buffer => {
+        newUser.photodata = buffer;
+      });
+      newUser.photoformat = profileimage.type;
+      localStorage.setItem("user", JSON.stringify(newUser));
+      newUser.photoURL = url;
+      return newUser;
+    });
     let formData = new FormData();
     formData.append("username", user.displayName);
     formData.append("image", profileimage);
-    console.log(formData.get("image"));
     axios
       .post(`${BACKEND_URL}/profile-upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -84,7 +95,6 @@ function AvatarCard(props) {
   const handleFileSubmitChange = (event) => {
     const fileUploaded = event.target.files[0];
     setProfileImage(fileUploaded);
-    console.log(profileimage);
   };
 
   return (
