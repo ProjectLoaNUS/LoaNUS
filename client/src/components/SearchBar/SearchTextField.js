@@ -14,6 +14,7 @@ import DetailsDialog from "../ItemDetails/DetailsDialog";
 import { Buffer } from 'buffer';
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
+import { CATEGORIES } from "../NewItem/ItemCategories";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -102,7 +103,7 @@ export default function SearchTextField() {
 
   const onClickResult = async (event, newValue, reason) => {
 
-    async function imgsToUrls(images) {
+    const imgsToUrls = async (images) => {
       let imgs = [];
       const bins = images.data;
       bins.forEach((bin, index) => {
@@ -112,6 +113,24 @@ export default function SearchTextField() {
         imgs[index] = url;
       });
       setClickResultImgs(imgs);
+    }
+
+    const processResult = async (rawResult) => {
+      let result = {
+        _id: rawResult._id,
+        title: rawResult.title,
+        description: rawResult.description,
+        location: rawResult.location,
+        telegram: rawResult.telegram,
+        userName: rawResult.userName,
+        borrwedBy: rawResult.borrowedBy
+      }
+      result.category = CATEGORIES[rawResult.category];
+      result.deadline = new Date(rawResult.deadline).toLocaleDateString({}, 
+        {year: 'numeric', month: 'short', day: 'numeric'});
+      result.date = new Date(rawResult.date).toLocaleDateString({}, 
+        {year: 'numeric', month: 'short', day: 'numeric'});
+      setClickResult(result);
     }
 
     if (reason === "selectOption") {
@@ -125,7 +144,7 @@ export default function SearchTextField() {
         })
         .then((res) => {
           imgsToUrls(res.data.result.images);
-          setClickResult(res.data.result);
+          processResult(res.data.result);
         })
         .catch((err) => console.log(err, "error occured"));
       setOpen(true);
