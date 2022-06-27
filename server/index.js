@@ -86,7 +86,7 @@ app.post("/api/login", async (req, res) => {
     return res.json({
       status: "error",
       errorCode: signInResultCodes.NO_SUCH_USER,
-      error: `User ${givenUser.name} doesn't exist`,
+      error: `User doesn't exist`,
     });
   }
   if (!givenUser.password) {
