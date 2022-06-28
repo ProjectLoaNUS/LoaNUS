@@ -45,38 +45,39 @@ const HiddenInput = styled.input`
 
 function AvatarCard(props) {
   const [profileimage, setProfileImage] = useState();
-  const [photoURL, setPhotoURL] = useState("");
   const { user, setUser } = useAuth();
   const hiddenFileInput = React.useRef(null);
 
   useEffect(() => {
     if (user) {
-      if (!user.photoURL && (user.photodata && user.photoformat)) {  
+      if (!user.photoURL && (user.photodata && user.photoformat)) {
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
-        setPhotoURL(URL.createObjectURL(blob));
-      } else if (user.photoURL) {
-        setPhotoURL(user.photoURL);
+        setUser(prevUser => {
+          let newUser = structuredClone(prevUser);
+          newUser.photoURL = URL.createObjectURL(blob);
+          return newUser;
+        })
       }
     }
   }, [user]);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     hiddenFileInput.current.click();
   };
   const handleSubmit = async () => {
-    const url = URL.createObjectURL(profileimage);
-    setPhotoURL(url);
-    setUser(prevUser => {
-      let newUser = structuredClone(prevUser);
-      profileimage.arrayBuffer().then(buffer => {
-        newUser.photodata = buffer;
-      });
+    profileimage.arrayBuffer().then(rawBuffer => {
+      const buffer = Buffer.from(rawBuffer);
+      let newUser = structuredClone(user);
+      newUser.photodata = buffer;
       newUser.photoformat = profileimage.type;
+      delete newUser.photourl;
       localStorage.setItem("user", JSON.stringify(newUser));
-      newUser.photoURL = url;
-      return newUser;
+      const blob = new Blob([buffer], {type: profileimage.type});
+      newUser.photoURL = URL.createObjectURL(blob);
+      setUser(newUser);
     });
+    
     let formData = new FormData();
     formData.append("username", user.displayName);
     formData.append("image", profileimage);
@@ -99,8 +100,8 @@ function AvatarCard(props) {
 
   return (
     <MainContainer>
-      <Avatar src={photoURL} sx={{ width: 120, height: 120 }}>
-        {!photoURL ? (user.displayName ? user.displayName[0] : 'U') : "" }
+      <Avatar src={user && user.photoURL} sx={{ width: 120, height: 120 }}>
+        {(user && !user.photoURL) ? (user.displayName ? user.displayName[0] : 'U') : "" }
       </Avatar>
       <UserName>{user.displayName}</UserName>
       <Email>{user.email}</Email>
