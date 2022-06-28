@@ -9,7 +9,7 @@ import { Buffer } from 'buffer';
 const PaddedGrid = styled(Grid)`
   height: 100%;
   width: 100%;
-  padding: 0 1rem;
+  padding: 1ch 1rem;
   overflow-y: auto;
 `;
 const ItemGrid = styled(Grid)`
