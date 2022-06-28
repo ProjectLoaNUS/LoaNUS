@@ -47,6 +47,7 @@ const InformationDisplayContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
 `;
 
 function ProfilePage() {
