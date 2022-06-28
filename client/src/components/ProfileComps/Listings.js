@@ -74,10 +74,10 @@ export default function Listings(props) {
     }, [user]);
 
     function ListingsGrid(props) {
-        const { children, key } = props;
+        const { children } = props;
     
         return (
-          <ItemGrid item key={key} alignItems="stretch" justifyContent="center" xl={4} xs={4}>
+          <ItemGrid item alignItems="stretch" justifyContent="center" xl={4} xs={4}>
             {children}
           </ItemGrid>
         );
