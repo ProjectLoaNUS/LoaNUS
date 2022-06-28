@@ -75,32 +75,37 @@ export default function DetailsDialog(props) {
     }
 
     const onClickBorrow = async (event) => {
-        const url = `${BACKEND_URL}/api/items/borrowItem`;
-        const req = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: user.email,
-                itemId: itemId
-            })
-        });
-        const data = await req.json();
-        if (data.status !== "ok") {
-            setIsBorrowError(true);
-            console.log(`Error occurred in backend while marking item ${itemId} as borrwed`);
+        if (user) {    
+            const url = `${BACKEND_URL}/api/items/borrowItem`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    itemId: itemId
+                })
+            });
+            const data = await req.json();
+            if (data.status !== "ok") {
+                setIsBorrowError(true);
+                console.log(`Error occurred in backend while marking item ${itemId} as borrwed`);
+            } else {
+                setIsBorrowError(false);
+                setIsBorrowed(true);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 5000);
+                setTimeout(() => {
+                    removeItem();
+                }, 7000);
+            }
+            setBorrowStatusTxt(BORROW_RES_TEXT[data.statusCode]);
         } else {
-            setIsBorrowError(false);
-            setIsBorrowed(true);
-            setTimeout(() => {
-                setOpen(false);
-            }, 5000);
-            setTimeout(() => {
-                removeItem();
-            }, 7000);
+            setIsBorrowError(true);
+            setBorrowStatusTxt("Please log in before borrowing");
         }
-        setBorrowStatusTxt(BORROW_RES_TEXT[data.statusCode]);
     }
 
     return (

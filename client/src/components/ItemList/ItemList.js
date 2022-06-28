@@ -29,7 +29,6 @@ export default function ItemList(props) {
                     function Item() {
                         return (
                             <ItemCard
-                                key={index}
                                 itemId={text._id}
                                 date={date}
                                 imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
@@ -47,7 +46,7 @@ export default function ItemList(props) {
                     if (CardContainer) {
                         return <CardContainer key={index}><Item/></CardContainer>
                     }
-                    return <Item/>
+                    return <Item key={index} />
                 }
             })) : 
             'Loading' }
