@@ -1,2 +1,2 @@
 export const BACKEND_URL =
-  "http://localhost:3001" || "https://loanus.herokuapp.com";
+  process.env.REACT_APP_BACKEND_URL || "https://loanus.herokuapp.com";
