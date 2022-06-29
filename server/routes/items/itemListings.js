@@ -61,6 +61,15 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
     });
     return response.json({status: 'ok'});
 });
+router.post("/rmListing", async (request, response) => {
+  const itemId = request.body.itemId;
+  if (itemId) {
+    await ItemListingsModel.deleteOne({ _id: itemId });
+    response.json({status: "ok"});
+  } else {
+    response.json({status: "error"});
+  }
+});
 router.get("/getListingsTexts", (req, res) => {
     ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy', 'borrowedBy'], null, (err, listings) => {
         if (err) {
