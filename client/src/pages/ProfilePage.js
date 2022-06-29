@@ -11,6 +11,11 @@ import {
   PROFILE_REVIEWS,
   PROFILE_REWARDS_CLAIMED
 } from "./routes";
+import { useLocation } from "react-router-dom";
+import Points from "../components/ProfileComps/Points";
+import Requests from "../components/ProfileComps/Requests";
+import Reviews from "../components/ProfileComps/Reviews";
+import Rewards from "../components/ProfileComps/Rewards";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -57,6 +62,25 @@ const InformationDisplayContainer = styled.div`
 
 function ProfilePage() {
   const { user } = useAuth();
+
+  function InformationDisplay() {
+    const location = useLocation();
+    const path = location.pathname;
+    switch(path) {
+      case PROFILE_POINTS:
+        return <Points />
+      case PROFILE_REQUESTS:
+        return <Requests />
+      case PROFILE_REVIEWS:
+        return <Reviews />
+      case PROFILE_REWARDS_CLAIMED:
+        return <Rewards />
+      case PROFILE:
+      default:
+        return <Listings />
+    }
+  }
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
@@ -76,7 +100,7 @@ function ProfilePage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <Listings />
+            <InformationDisplay />
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>

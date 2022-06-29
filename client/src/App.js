@@ -30,13 +30,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path={SIGN_IN} element={<SignInPage />} />
-          <Route path={PROFILE} element={<ProfilePage />} />
+          <Route path={`${PROFILE}/*`} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />
-          <Route path={PROFILE_POINTS} element={<PointsPage />} />
-          <Route path={PROFILE_REVIEWS} element={<ReviewsPage />} />
-          <Route path={PROFILE_REWARDS_CLAIMED} element={<RewardsPage />} />
-          <Route path={PROFILE_REQUESTS} element={<RequestsPage />} />
           <Route exact path={HOME} element={<HomePage />} />
         </Routes>
       </ThemeProvider>
