@@ -45,7 +45,7 @@ function a11yProps(index) {
     "aria-controls": `vertical-tabpanel-${index}`,
   };
 }
-function ReviewsCard() {
+function Reviews() {
   const [selectedTab, setSelectedTab] = useState(0);
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -66,4 +66,4 @@ function ReviewsCard() {
   );
 }
 
-export default ReviewsCard;
+export default Reviews;

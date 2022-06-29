@@ -3,7 +3,7 @@ import NavigationBar from "../NavBar/NavigationBar";
 import { useAuth } from "../../database/auth";
 import ProfileLink from "./LinkComponent";
 import AvatarCard from "./AvatarCard";
-import ReviewsCard from "./ReviewsComp";
+import Reviews from "./Reviews";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -65,7 +65,7 @@ function ReviewsPage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <ReviewsCard></ReviewsCard>
+            <Reviews />
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>
