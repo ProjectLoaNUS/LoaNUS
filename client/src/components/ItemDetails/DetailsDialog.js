@@ -5,7 +5,6 @@ import ImageList from "./ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { forwardRef, useState } from "react";
 import { theme } from "../Theme";
-import { BACKEND_URL } from "../../database/const";
 import { useAuth } from "../../database/auth";
 
 const DialogContainer = styled(DialogContent)`
@@ -36,33 +35,18 @@ const CentredButton = styled(Button)`
     align-self: center;
 `;
 
-const BORROW_RES_CODES = {
-    SUCCESS: 0,
-    BORROWED_BY_ANOTHER: 1,
-    ALR_BORROWED_BY_U: 2,
-    NO_SUCH_ITEM: 3,
-    NO_SUCH_USER: 4
-}
-const BORROW_RES_TEXT = [
-    "Item borrowed!",
-    "Already borrowed by another user",
-    "Already borrowed by you",
-    "Cannot find this item in database",
-    "Cannot authenticate you"
-]
-
 export default function DetailsDialog(props) {
-    const { itemId, date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen, removeItem } = props;
+    const { itemId, date, userName, title, isRequest, category, description, location, telegram, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
     const telegramUsername = telegram ? telegram.replace("@", "") : "";
     const { user } = useAuth();
-    const [ isBorrowed, setIsBorrowed ] = useState(false);
-    const [ isBorrowError, setIsBorrowError ] = useState(false);
-    const [ borrowStatusTxt, setBorrowStatusTxt ] = useState("");
+    const [ isBtnDisabled, setIsBtnDisabled ] = useState(false);
+    const [ isActionError, setIsActionError ] = useState(false);
+    const [ buttonHelperText, setButtonHelperText ] = useState("");
 
     const handleClose = () => {
-        setBorrowStatusTxt("");
-        setIsBorrowError(false);
-        setIsBorrowed(false);
+        setButtonHelperText("");
+        setIsActionError(false);
+        setIsBtnDisabled(false);
         setOpen(false);
     };
 
@@ -74,38 +58,13 @@ export default function DetailsDialog(props) {
         }
     }
 
-    const onClickBorrow = async (event) => {
-        if (user) {    
-            const url = `${BACKEND_URL}/api/items/borrowItem`;
-            const req = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: user.email,
-                    itemId: itemId
-                })
-            });
-            const data = await req.json();
-            if (data.status !== "ok") {
-                setIsBorrowError(true);
-                console.log(`Error occurred in backend while marking item ${itemId} as borrowed`);
-            } else {
-                setIsBorrowError(false);
-                setIsBorrowed(true);
-                setTimeout(() => {
-                    setOpen(false);
-                }, 5000);
-                setTimeout(() => {
-                    removeItem();
-                }, 7000);
-            }
-            setBorrowStatusTxt(BORROW_RES_TEXT[data.statusCode]);
-        } else {
-            setIsBorrowError(true);
-            setBorrowStatusTxt("Please log in before borrowing");
-        }
+    const setError = (isError, helperText) => {
+        setIsActionError(isError);
+        setButtonHelperText(helperText);
+    }
+
+    const setIsButtonEnabled = (isEnabled) => {
+        setIsBtnDisabled(!isEnabled);
     }
 
     return (
@@ -152,11 +111,11 @@ export default function DetailsDialog(props) {
                 <BoldedTypo variant="h6" align="left">Meet-up</BoldedTypo>
                 <Typography variant="body1" align="left">{location}</Typography>
                 <Link variant="body1" onClick={ onClickChat } color="secondary">Contact {telegram}</Link>
-                <CentredButton disabled={isBorrowed} variant="contained" color={isBorrowError ? "error" : "primary"} onClick={onClickBorrow}>Borrow it</CentredButton>
+                <CentredButton disabled={isBtnDisabled} variant="contained" color={isActionError ? "error" : "primary"} onClick={buttonAction(setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user)}>{buttonText}</CentredButton>
                 <TransitionGroup>
-                    { borrowStatusTxt &&
+                    { buttonHelperText &&
                         <Slide direction="right">
-                            <Typography variant="subtitle1" align="center" color={ isBorrowError ? "error" : "success.main" }>{borrowStatusTxt}</Typography>
+                            <Typography variant="subtitle1" align="center" color={ isActionError ? "error" : "success.main" }>{buttonHelperText}</Typography>
                         </Slide>
                     }
                 </TransitionGroup>

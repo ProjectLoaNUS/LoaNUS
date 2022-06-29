@@ -13,6 +13,7 @@ import { Buffer } from 'buffer';
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
+import { borrowAction } from "../ItemDetails/detailsDialogActions";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -200,7 +201,9 @@ export default function SearchTextField() {
         deadline={clickResult && clickResult.deadline}
         open={open}
         setOpen={setOpen}
-        removeItem={clickResult && removeResult} />
+        onActionDone={clickResult && removeResult}
+        buttonAction={borrowAction}
+        buttonText="Borrow It!" />
     </>
   );
 }

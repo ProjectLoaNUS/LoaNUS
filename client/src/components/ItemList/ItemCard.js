@@ -3,6 +3,7 @@ import styled from "styled-components";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
+import { borrowAction } from "../ItemDetails/detailsDialogActions";
 
 const ListCard = styled(Card)`
     display: flex;
@@ -88,7 +89,9 @@ export default function ItemCard(props) {
                 deadline={deadline}
                 open={open}
                 setOpen={setOpen}
-                removeItem={removeItem} />
+                onActionDone={removeItem}
+                buttonAction={borrowAction}
+                buttonText="Borrow It!" />
         </ListCard>
     );
 }
