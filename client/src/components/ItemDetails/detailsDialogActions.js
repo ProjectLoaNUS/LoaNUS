@@ -48,3 +48,42 @@ export const borrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone
         }
     }
 }
+
+export const isUserListingRelated = (user, listing) => {
+    if (listing && listing.listedBy) {
+        return user.id === listing.listedBy.id;
+    }
+    return false;
+}
+
+export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+    return async () => {
+        if (itemId) {    
+            const url = `${BACKEND_URL}/api/items/rmListing`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    itemId: itemId
+                })
+            });
+            const data = await req.json();
+            if (!data.status === "ok") {
+                setError(true, "Error while deleting listing");
+            } else {
+                setError(false, "Listing deleted");
+                setIsButtonEnabled(false);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 5000);
+                setTimeout(() => {
+                    onActionDone();
+                }, 7000);
+            }
+        } else {
+            setError(true, "Item listing is invalid");
+        }
+    }
+}
