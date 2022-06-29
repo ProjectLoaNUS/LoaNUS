@@ -15,10 +15,6 @@ const MainContainer = styled.div`
   flex-direction: column;
 `;
 
-const NoListingsText = styled.h2`
-  font-size: 20px;
-`;
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -39,12 +35,6 @@ function TabPanel(props) {
   );
 }
 
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
-}
 function Requests() {
   const [selectedTab, setSelectedTab] = useState(0);
   const handleChange = (event, newValue) => {

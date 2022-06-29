@@ -1,12 +1,5 @@
 import {FormControl, InputLabel, MenuItem, Select} from '@mui/material';
-import styled from 'styled-components';
 import { CATEGORIES } from './ItemCategories';
-
-const CategoryForm = styled(FormControl)`
-    & .MuiPopover-paper {
-
-    }
-`;
 
 export default function CategoryField(props) {
     const { category, setCategory } = props;

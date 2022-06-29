@@ -13,16 +13,8 @@ import {
   NEW_ITEM,
   PROFILE,
   SIGN_IN,
-  SEARCH_LISTINGS,
-  PROFILE_POINTS,
-  PROFILE_REVIEWS,
-  PROFILE_REWARDS_CLAIMED,
-  PROFILE_REQUESTS,
+  SEARCH_LISTINGS
 } from "./pages/routes";
-import PointsPage from "./components/ProfileComps/PointsPage";
-import ReviewsPage from "./components/ProfileComps/ReviewsPage";
-import RewardsPage from "./components/ProfileComps/RewardsPage";
-import RequestsPage from "./components/ProfileComps/RequestsPage";
 
 function App() {
   return (

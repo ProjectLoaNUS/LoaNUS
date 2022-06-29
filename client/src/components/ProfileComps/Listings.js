@@ -42,7 +42,7 @@ export default function Listings(props) {
     }
 
     useEffect(() => {
-      const imgs = fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
+      fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export default function Listings(props) {
           binsToImgUrls(data.listingsImgs);
         }
       });
-      const texts = fetch(`${BACKEND_URL}/api/items/getListingsTextsOfUser`, {
+      fetch(`${BACKEND_URL}/api/items/getListingsTextsOfUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

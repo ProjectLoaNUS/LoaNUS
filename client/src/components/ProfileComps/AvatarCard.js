@@ -60,7 +60,7 @@ function AvatarCard(props) {
         })
       }
     }
-  }, [user]);
+  }, [user, setUser]);
 
   const handleClick = () => {
     hiddenFileInput.current.click();

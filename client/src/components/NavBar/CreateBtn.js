@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { theme } from '../Theme';
 import { useAuth } from '../../database/auth';
 import { NEW_ITEM, SIGN_IN } from '../../pages/routes';
-import { useState } from 'react';
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};

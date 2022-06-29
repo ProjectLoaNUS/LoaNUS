@@ -35,13 +35,6 @@ const ListingActionArea = styled(CardActionArea)`
     height: 100%;
     width: 100%;
 `;
-const ListingActions = styled(CardActions)`
-    & .MuiTypography-root {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-`;
 
 export default function ItemCard(props) {
     const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline, removeItem } = props;

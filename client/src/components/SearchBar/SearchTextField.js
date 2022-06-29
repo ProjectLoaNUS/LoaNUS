@@ -1,12 +1,10 @@
-import { Autocomplete, FilledInput, FormControl, IconButton, InputAdornment, InputLabel, TextField } from "@mui/material";
-import { react, useState, useEffect } from "react";
+import { Autocomplete, IconButton, TextField } from "@mui/material";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import SearchResults from "../SearchResults/SearchResults";
-import { CentredGrowDiv } from "../FlexDiv";
 import { theme } from '../Theme';
 import { BACKEND_URL } from "../../database/const";
 import { SEARCH_LISTINGS } from "../../pages/routes";

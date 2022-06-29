@@ -16,7 +16,7 @@ function useAuthProvider() {
 
   const signInWithGoogle = () => {
     return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
-      const req = fetch(`${BACKEND_URL}/api/signUpUser`, {
+      fetch(`${BACKEND_URL}/api/signUpUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
