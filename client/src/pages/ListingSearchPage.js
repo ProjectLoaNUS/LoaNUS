@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import { CentredDiv } from "../components/FlexDiv";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchResults from "../components/SearchResults/SearchResults";

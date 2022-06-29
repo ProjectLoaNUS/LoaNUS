@@ -50,7 +50,7 @@ function HomePage() {
         }
       }
     }
-  }, []);
+  }, [user, setUser]);
 
   async function binsToImgUrls(bins) {
     let imgs = [];

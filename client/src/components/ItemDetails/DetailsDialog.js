@@ -90,7 +90,7 @@ export default function DetailsDialog(props) {
             const data = await req.json();
             if (data.status !== "ok") {
                 setIsBorrowError(true);
-                console.log(`Error occurred in backend while marking item ${itemId} as borrwed`);
+                console.log(`Error occurred in backend while marking item ${itemId} as borrowed`);
             } else {
                 setIsBorrowError(false);
                 setIsBorrowed(true);

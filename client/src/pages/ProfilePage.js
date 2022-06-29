@@ -1,10 +1,21 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
-import ProfileLink from "../components/ProfileComps/LinkComponent";
+import ProfileLink from "../components/ProfileComps/ProfileLink";
 import AvatarCard from "../components/ProfileComps/AvatarCard";
-import ListingsCard from "../components/ProfileComps/ListingCard";
 import Listings from "../components/ProfileComps/Listings";
+import {
+  PROFILE,
+  PROFILE_POINTS,
+  PROFILE_REQUESTS,
+  PROFILE_REVIEWS,
+  PROFILE_REWARDS_CLAIMED
+} from "./routes";
+import { useLocation } from "react-router-dom";
+import Points from "../components/ProfileComps/Points";
+import Requests from "../components/ProfileComps/Requests";
+import Reviews from "../components/ProfileComps/Reviews";
+import Rewards from "../components/ProfileComps/Rewards";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -45,12 +56,31 @@ const InformationDisplayContainer = styled.div`
   height: 75vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 `;
 
 function ProfilePage() {
   const { user } = useAuth();
+
+  function InformationDisplay() {
+    const location = useLocation();
+    const path = location.pathname;
+    switch(path) {
+      case PROFILE_POINTS:
+        return <Points />
+      case PROFILE_REQUESTS:
+        return <Requests />
+      case PROFILE_REVIEWS:
+        return <Reviews />
+      case PROFILE_REWARDS_CLAIMED:
+        return <Rewards />
+      case PROFILE:
+      default:
+        return <Listings />
+    }
+  }
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
@@ -60,17 +90,17 @@ function ProfilePage() {
         </PersonalInfoContainer>
         <SubContainer>
           <ProfileNavBar>
-            <ProfileLink link={"/profile"} text={"Listings"} />
-            <ProfileLink link={"/profile/points"} text={"Points"} />
-            <ProfileLink link={"/profile/reviews"} text={"Reviews"} />
-            <ProfileLink link={"/profile/requests"} text={"Requests"} />
+            <ProfileLink link={PROFILE} text={"Listings"} />
+            <ProfileLink link={PROFILE_POINTS} text={"Points"} />
+            <ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
+            <ProfileLink link={PROFILE_REQUESTS} text={"Requests"} />
             <ProfileLink
-              link={"/profile/rewards-claimed"}
+              link={PROFILE_REWARDS_CLAIMED}
               text={"Rewards Claimed"}
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <Listings />
+            <InformationDisplay />
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>

@@ -13,16 +13,8 @@ import {
   NEW_ITEM,
   PROFILE,
   SIGN_IN,
-  SEARCH_LISTINGS,
-  PROFILE_POINTS,
-  PROFILE_REVIEWS,
-  PROFILE_REWARDS_CLAIMED,
-  PROFILE_REQUESTS,
+  SEARCH_LISTINGS
 } from "./pages/routes";
-import PointsPage from "./components/ProfileComps/PointsPage";
-import ReviewsPage from "./components/ProfileComps/ReviewsPage";
-import RewardsPage from "./components/ProfileComps/RewardsPage";
-import RequestsPage from "./components/ProfileComps/RequestsPage";
 
 function App() {
   return (
@@ -30,14 +22,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path={SIGN_IN} element={<SignInPage />} />
-          <Route path={HOME} element={<HomePage />} />
-          <Route path={PROFILE} element={<ProfilePage />} />
+          <Route path={`${PROFILE}/*`} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />
-          <Route path={PROFILE_POINTS} element={<PointsPage />} />
-          <Route path={PROFILE_REVIEWS} element={<ReviewsPage />} />
-          <Route path={PROFILE_REWARDS_CLAIMED} element={<RewardsPage />} />
-          <Route path={PROFILE_REQUESTS} element={<RequestsPage />} />
+          <Route exact path={HOME} element={<HomePage />} />
         </Routes>
       </ThemeProvider>
     </div>

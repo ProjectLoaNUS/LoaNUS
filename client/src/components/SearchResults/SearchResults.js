@@ -3,10 +3,6 @@ import React from "react";
 import styled from "styled-components";
 import ItemList from "../ItemList/ItemList";
 
-const Container = styled.div`
-  height: 20vh;
-  width: 70vh;
-`;
 const PaddedGrid = styled(Grid)`
   padding: 0 1rem;
 `;
