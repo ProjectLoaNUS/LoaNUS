@@ -13,7 +13,8 @@ import { Buffer } from 'buffer';
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
-import { borrowAction } from "../ItemDetails/detailsDialogActions";
+import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import { useAuth } from "../../database/auth";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -64,11 +65,21 @@ export default function SearchTextField() {
   const [clickResult, setClickResult] = useState({});
   const [clickResultImgs, setClickResultImgs] = useState([]);
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const isOwner = isUserListingRelated(user, clickResult);
 
   const removeResult = () => {
     setSearchResults((prevResults) => {
       return prevResults.filter((result) => (result._id !== clickResult._id));
     });
+  }
+
+  const getResultAction = () => {
+    if (isOwner) {
+      return deleteListingAction;
+    } else {
+      return borrowAction;
+    }
   }
 
   useEffect(() => {
@@ -202,8 +213,8 @@ export default function SearchTextField() {
         open={open}
         setOpen={setOpen}
         onActionDone={clickResult && removeResult}
-        buttonAction={borrowAction}
-        buttonText="Borrow It!" />
+        buttonAction={getResultAction()}
+        buttonText={ isOwner ? "Delete Listing" : "Borrow It!" } />
     </>
   );
 }

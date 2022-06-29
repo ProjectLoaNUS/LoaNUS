@@ -3,7 +3,8 @@ import styled from "styled-components";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
-import { borrowAction } from "../ItemDetails/detailsDialogActions";
+import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import { useAuth } from "../../database/auth";
 
 const ListCard = styled(Card)`
     display: flex;
@@ -40,6 +41,8 @@ const ListingActionArea = styled(CardActionArea)`
 export default function ItemCard(props) {
     const { itemId, date, title, imagesUrl, owner, category, description, location, telegram, deadline, removeItem } = props;
     const [ open, setOpen ] = useState(false);
+    const { user } = useAuth();
+    const isOwner = isUserListingRelated(user, {listedBy: owner});
 
     const handleShowDetails = (event) => {
         setOpen(true);
@@ -52,6 +55,14 @@ export default function ItemCard(props) {
 
     const handleMouseDown = (event) => {
         event.stopPropagation();
+    }
+
+    const getItemCardAction = () => {
+        if (isOwner) {
+            return deleteListingAction;
+        } else {
+            return borrowAction;
+        }
     }
 
     return (
@@ -90,8 +101,8 @@ export default function ItemCard(props) {
                 open={open}
                 setOpen={setOpen}
                 onActionDone={removeItem}
-                buttonAction={borrowAction}
-                buttonText="Borrow It!" />
+                buttonAction={getItemCardAction()}
+                buttonText={isOwner ? "Delete Listing" : "Borrow It!"} />
         </ListCard>
     );
 }
