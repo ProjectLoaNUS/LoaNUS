@@ -38,7 +38,7 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 
 export default function ItemCard(props) {
-    const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline, removeItem } = props;
+    const { itemId, date, title, imagesUrl, owner, category, description, location, telegram, deadline, removeItem } = props;
     const [ open, setOpen ] = useState(false);
 
     const handleShowDetails = (event) => {
@@ -59,9 +59,9 @@ export default function ItemCard(props) {
             <ListingActionArea component="a" onClick={ handleShowDetails }>
                 <CardHeader 
                 avatar={
-                    <Avatar>{userName.charAt(0)}</Avatar>
+                    <Avatar>{owner && (owner.name && owner.name.charAt(0))}</Avatar>
                 }
-                title={userName}
+                title={owner && owner.name}
                 subheader={date} />
                     <ImageDiv>
                         <CardMedia 
@@ -79,7 +79,7 @@ export default function ItemCard(props) {
             <DetailsDialog
                 itemId={itemId}
                 date={date}
-                userName={userName}
+                userName={owner && owner.name}
                 title={title}
                 imageUrls={imagesUrl}
                 category={category}

@@ -31,7 +31,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
       location: request.body.location,
       telegram: request.body.telegram,
       date: request.body.date,
-      userName: request.body.userName
+      listedBy: JSON.parse(request.body.listedBy)
     };
     ItemListingsModel.create(obj, (err, listing) => {
       if (err) {
@@ -62,7 +62,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
     return response.json({status: 'ok'});
 });
 router.get("/getListingsTexts", (req, res) => {
-    ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName', 'borrowedBy'], null, (err, listings) => {
+    ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy', 'borrowedBy'], null, (err, listings) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
@@ -88,7 +88,7 @@ router.post("/getListingsTextsOfUser", async (req, res) => {
     return res.json({status: 'error'});
   }
   const listingIds = user.itemsListed;
-  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'userName']);
+  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy']);
   return res.json({status: 'ok', listingsTexts: listingsTexts});
 });
 router.post("/getListingsImgsOfUser", async (req, res) => {

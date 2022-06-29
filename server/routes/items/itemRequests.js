@@ -11,7 +11,7 @@ router.post("/addRequest", async (req, res) => {
       location: req.body.location,
       telegram: req.body.telegram,
       date: req.body.date,
-      userName: req.body.userName
+      listedBy: req.body.listedBy
     };
     ItemRequestsModel.create(obj, (err, request) => {
       if (err) {
@@ -44,7 +44,7 @@ router.post("/addRequest", async (req, res) => {
     });
 });
 router.get("/getRequests", (req, res) => {
-    ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
+    ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'telegram', 'date', 'listedBy'], null, (err, requests) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
@@ -61,7 +61,7 @@ router.post("/getRequestsOfUser", async (req, res) => {
     return res.json({status: 'error'});
   }
   const requestIds = user.itemsRequested;
-  let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'telegram', 'date', 'userName']);
+  let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'telegram', 'date', 'listedBy']);
   return res.json({status: 'ok', requests: requests});
 });
 

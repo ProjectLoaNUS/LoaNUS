@@ -121,8 +121,8 @@ export default function SearchTextField() {
         description: rawResult.description,
         location: rawResult.location,
         telegram: rawResult.telegram,
-        userName: rawResult.userName,
-        borrwedBy: rawResult.borrowedBy
+        listedBy: rawResult.listedBy,
+        borrowedBy: rawResult.borrowedBy
       }
       result.category = CATEGORIES[rawResult.category];
       result.deadline = new Date(rawResult.deadline).toLocaleDateString({}, 
@@ -191,7 +191,7 @@ export default function SearchTextField() {
       <DetailsDialog
         itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
-        userName={clickResult && clickResult.userName}
+        userName={clickResult && (clickResult.listedBy && clickResult.listedBy.name)}
         title={clickResult && clickResult.title}
         imageUrls={(clickResultImgs !== undefined && (clickResultImgs).length === 0) ? [NoImage] : (clickResultImgs || [Loading])}
         category={clickResult && clickResult.category}

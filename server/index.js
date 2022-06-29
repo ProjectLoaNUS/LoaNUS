@@ -115,6 +115,7 @@ app.post("/api/login", async (req, res) => {
       return res.json({
         status: "ok",
         user: {
+          id: "" + givenUser._id,
           displayName: givenUser.name,
           age: givenUser.age,
           email: givenUser.email,
@@ -277,11 +278,11 @@ app.get("/api/search", async (request, response) => {
     if (query.name) {
       let resultData;
       if (query.isFullSearch === "true") {
-        if (query.isImageOnly) {
+        if (query.isImageOnly === "true") {
           resultData = {
             images: 1
           };
-        } else if (query.isTextOnly) {
+        } else if (query.isTextOnly === "true") {
           resultData = {
             _id: 1,
             title: 1,
@@ -290,7 +291,7 @@ app.get("/api/search", async (request, response) => {
             location: 1,
             telegram: 1,
             date: 1,
-            userName: 1,
+            listedBy: 1,
             deadline: 1,
             borrowedBy: 1
           };
@@ -303,7 +304,7 @@ app.get("/api/search", async (request, response) => {
             location: 1,
             telegram: 1,
             date: 1,
-            userName: 1,
+            listedBy: 1,
             deadline: 1,
             images: 1,
             borrowedBy: 1
@@ -319,8 +320,9 @@ app.get("/api/search", async (request, response) => {
       results = await ItemListingsModel.aggregate([
         {
           $search: {
+            index: "listings",
             autocomplete: {
-              query: request.query.name,
+              query: `${query.name}`,
               path: "title",
               fuzzy: {
                 maxEdits: 2,

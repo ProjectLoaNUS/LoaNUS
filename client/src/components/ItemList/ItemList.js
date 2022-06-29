@@ -33,7 +33,7 @@ export default function ItemList(props) {
                                 date={date}
                                 imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
                                 title={text.title}
-                                userName={text.userName}
+                                owner={text.listedBy}
                                 deadline={deadline}
                                 category={category}
                                 description={text.description}
