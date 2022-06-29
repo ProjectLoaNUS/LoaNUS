@@ -56,7 +56,7 @@ const InformationDisplayContainer = styled.div`
   height: 75vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 `;
 

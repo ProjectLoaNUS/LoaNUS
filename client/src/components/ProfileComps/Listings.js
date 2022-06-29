@@ -10,6 +10,7 @@ const PaddedGrid = styled(Grid)`
   height: 100%;
   width: 100%;
   padding: 1ch 1rem;
+  margin-top: 0;
   overflow-y: auto;
 `;
 const ItemGrid = styled(Grid)`
