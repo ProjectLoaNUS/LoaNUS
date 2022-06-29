@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
-import ProfileLink from "../components/ProfileComps/LinkComponent";
+import ProfileLink from "../components/ProfileComps/ProfileLink";
 import AvatarCard from "../components/ProfileComps/AvatarCard";
 import Listings from "../components/ProfileComps/Listings";
 import {

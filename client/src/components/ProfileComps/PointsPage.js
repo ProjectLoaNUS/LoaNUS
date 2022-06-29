@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import NavigationBar from "../NavBar/NavigationBar";
 import { useAuth } from "../../database/auth";
-import ProfileLink from "./LinkComponent";
+import ProfileLink from "./ProfileLink";
 import AvatarCard from "./AvatarCard";
 import ButtonComponent from "../Button";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
