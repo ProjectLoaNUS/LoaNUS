@@ -3,8 +3,14 @@ import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
 import ProfileLink from "../components/ProfileComps/LinkComponent";
 import AvatarCard from "../components/ProfileComps/AvatarCard";
-import ListingsCard from "../components/ProfileComps/ListingCard";
 import Listings from "../components/ProfileComps/Listings";
+import {
+  PROFILE,
+  PROFILE_POINTS,
+  PROFILE_REQUESTS,
+  PROFILE_REVIEWS,
+  PROFILE_REWARDS_CLAIMED
+} from "./routes";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -60,12 +66,12 @@ function ProfilePage() {
         </PersonalInfoContainer>
         <SubContainer>
           <ProfileNavBar>
-            <ProfileLink link={"/profile"} text={"Listings"} />
-            <ProfileLink link={"/profile/points"} text={"Points"} />
-            <ProfileLink link={"/profile/reviews"} text={"Reviews"} />
-            <ProfileLink link={"/profile/requests"} text={"Requests"} />
+            <ProfileLink link={PROFILE} text={"Listings"} />
+            <ProfileLink link={PROFILE_POINTS} text={"Points"} />
+            <ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
+            <ProfileLink link={PROFILE_REQUESTS} text={"Requests"} />
             <ProfileLink
-              link={"/profile/rewards-claimed"}
+              link={PROFILE_REWARDS_CLAIMED}
               text={"Rewards Claimed"}
             />
           </ProfileNavBar>
