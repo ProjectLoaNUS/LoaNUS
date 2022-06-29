@@ -3,7 +3,7 @@ import NavigationBar from "../NavBar/NavigationBar";
 import { useAuth } from "../../database/auth";
 import ProfileLink from "./LinkComponent";
 import AvatarCard from "./AvatarCard";
-import RequestsCard from "./RequestsCard";
+import Requests from "./Requests";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -65,7 +65,7 @@ function RequestsPage() {
             />
           </ProfileNavBar>
           <InformationDisplayContainer>
-            <RequestsCard></RequestsCard>
+            <Requests />
           </InformationDisplayContainer>
         </SubContainer>
       </BelowNavBarContainer>

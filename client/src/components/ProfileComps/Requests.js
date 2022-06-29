@@ -45,7 +45,7 @@ function a11yProps(index) {
     "aria-controls": `vertical-tabpanel-${index}`,
   };
 }
-function RequestsCard() {
+function Requests() {
   const [selectedTab, setSelectedTab] = useState(0);
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -66,4 +66,4 @@ function RequestsCard() {
   );
 }
 
-export default RequestsCard;
+export default Requests;
