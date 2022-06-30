@@ -20,7 +20,7 @@ const filesToImgArray = (files) => {
         data: data,
         contentType: type
     }
-}
+};
 router.post("/addListing", upload.array("images", 4), (request, response, next) => {
     const obj = {
       images: filesToImgArray(request.files),
@@ -70,6 +70,7 @@ router.post("/rmListing", async (request, response) => {
     response.json({status: "error"});
   }
 });
+
 router.get("/getListingsTexts", (req, res) => {
     ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy', 'borrowedBy'], null, (err, listings) => {
         if (err) {
@@ -88,6 +89,7 @@ router.get("/getListingsImgs", (req, res) => {
         }
     });
 });
+
 router.post("/getListingsTextsOfUser", async (req, res) => {
   const email = req.body.email;
   const user = await UserModel.findOne({
@@ -112,6 +114,7 @@ router.post("/getListingsImgsOfUser", async (req, res) => {
   let listingsImgs = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['images']);
   return res.json({status: 'ok', listingsImgs: listingsImgs});
 });
+
 router.post("/borrowItem", async (req, res) => {
   const email = req.body.email;
   const itemId = req.body.itemId;
@@ -145,7 +148,8 @@ router.post("/borrowItem", async (req, res) => {
     return res.json({status: 'error', statusCode: 2});
   }
   return res.json({status: 'ok', statusCode: 0});
-})
+});
+
 router.post("/getBorrowedTextsOfUser", async (req, res) => {
   const userId = req.body.userId;
   const user = await UserModel.findOne({
@@ -169,6 +173,52 @@ router.post("/getBorrowedImgsOfUser", async (req, res) => {
   const borrowedIds = user.itemsBorrowed;
   let borrowedImgs = await ItemListingsModel.find({'_id': { $in: borrowedIds} }, ['images']);
   return res.json({status: 'ok', borrowedImgs: borrowedImgs});
+});
+
+router.post("/returnItem", async (req, res) => {
+  const RETURN_STATUS_CODES = {
+    SUCCESS: 0,
+    NO_SUCH_USER: 1,
+    NO_SUCH_ITEM: 2,
+    ITEM_NOT_LENT: 3,
+    WRONG_USER: 4,
+    WRONG_ITEM: 5
+  }
+
+  const userId = req.body.userId;
+  const itemId = req.body.itemId;
+  if (!userId) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_USER});
+  }
+  if (!itemId) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM});
+  }
+  const user = await UserModel.findOne({
+    _id: userId
+  });
+  const item = await ItemListingsModel.findOne({_id: itemId});
+  if (!user) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_USER});
+  }
+  if (!item) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM});
+  }
+  if (!item.borrowedBy) {
+    // Item is not marked as borrowed by anyone. Major error
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.ITEM_NOT_LENT});
+  }
+  if (item.borrowedBy !== userId) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.WRONG_USER});
+  }
+  const itemIndex = user.itemsBorrowed.indexOf(itemId);
+  if (itemIndex === -1) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.WRONG_ITEM});
+  }
+  user.itemsBorrowed.splice(itemIndex, 1);
+  user.save();
+  item.borrowedBy = undefined;
+  item.save();
+  return res.json({status: 'ok', statusCode: RETURN_STATUS_CODES.SUCCESS});
 });
 
 module.exports = router;
