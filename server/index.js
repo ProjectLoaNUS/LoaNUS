@@ -80,8 +80,10 @@ app.post("/api/login", async (req, res) => {
     ALTERNATE_SIGN_IN: 5
   };
   const givenUser = await UserModel.findOne({
-    email: req.body.email,
-  });
+    $and: [
+      { email: req.body.email },
+      { password: { $exists: true} }
+  ]});
   if (!givenUser) {
     return res.json({
       status: "error",
