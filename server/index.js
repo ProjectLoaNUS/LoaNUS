@@ -39,12 +39,16 @@ mongoose.connect(
 
 sgMail.setApiKey(process.env.API_KEY);
 
-const isThirdPartyUser = async (email) => {
+const getThirdPartyUser = async (email) => {
   const user = await UserModel.findOne({
     $and: [
       { email: email },
       { password: { $exists: false} }
   ]});
+  return user;
+}
+const isThirdPartyUser = async (email) => {
+  const user = await getThirdPartyUser(email);
   return !!user;
 }
 app.post("/api/hasUser", async (req, res) => {
@@ -144,57 +148,80 @@ app.post("/api/login", async (req, res) => {
     });
   });
 });
+app.post("/api/postAltLogin", async (req, res) => {
+  const email = req.body.email;
+  let user;
+  user = await getThirdPartyUser(email);
+  if (user) {
+    let trimmedUser = {
+      id: "" + user._id,
+      displayName: user.name,
+      age: user.age,
+      email: user.email
+    }
+    return res.json({status: "ok", user: trimmedUser});
+  } else {
+    user = await UserModel.create({
+      name: req.body.name,
+      age: req.body.age,
+      email: email,
+      points: 0,
+      emailToken: null,
+      isVerified: true
+    });
+    await user.save({}, (err) => {
+      if (err) {
+        return res.json({status: "error", error: err});
+      }
+    });
+    let trimmedUser = {
+      id: "" + user._id,
+      displayName: user.name,
+      age: user.age,
+      email: user.email
+    }
+    return res.json({status: "ok", user: trimmedUser});
+  }
+});
 
 app.post("/api/signUpUser", async (req, res) => {
   const password = req.body.password;
   const email = req.body.email;
   if (!password) {
-    const isUserThirdParty = await isThirdPartyUser(email);
-    if (isUserThirdParty) {
-      return res.json({status: "ok"});
-    }
+    return res.json({status: "error"});
   }
+  const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
     email: email,
-    points: 0
+    points: 0,
+    password: hashedPassword,
+    emailToken: crypto.randomBytes(64).toString("hex"),
+    isVerified: false
   });
-  if (password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    newUser.password = hashedPassword;
-    newUser.emailToken = crypto.randomBytes(64).toString("hex");
-    newUser.isVerified = false;
-  } else {
-    newUser.emailToken = null;
-    newUser.isVerified = true;
-  }
   await newUser.save({}, (err) => {
     if (err) {
       return res.json({ status: "error", error: err });
     }
   });
 
-  if (password) {  
-    const msg = {
-      to: req.body.email,
-      from: "yongbin0162@gmail.com",
-      subject: "LoaNUS - Verify your email",
-      text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
-      html: `<h1>Hello,</h1>
-      <p>Thanks for registering on our app.</p>
-      <p>Please click the link below to verify your account.</p>
-      <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
-    };
+  const msg = {
+    to: req.body.email,
+    from: "yongbin0162@gmail.com",
+    subject: "LoaNUS - Verify your email",
+    text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
+    html: `<h1>Hello,</h1>
+    <p>Thanks for registering on our app.</p>
+    <p>Please click the link below to verify your account.</p>
+    <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
+  };
 
-    sgMail.send(msg, function (err, info) {
-      if (err) {
-        console.log("Email Not Sent");
-      } else {
-        console.log("Email Sent Success");
-      }
-    });
-  }
+  sgMail.send(msg, function (err, info) {
+    if (err) {
+      console.log("Email Not Sent");
+    }
+  });
   return res.json({ status: "ok" });
 });
 
