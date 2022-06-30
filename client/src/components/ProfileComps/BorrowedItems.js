@@ -5,6 +5,7 @@ import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
 import { Buffer } from 'buffer';
+import { returnItemAction } from "../ItemDetails/detailsDialogActions";
 
 const PaddedGrid = styled(Grid)`
   height: 100%;
@@ -91,7 +92,9 @@ export default function BorrowedItems(props) {
           texts={borrowedTexts}
           setTexts={setBorrowedTexts}
           imageUrls={borrowedImgs}
-          setimageUrls={setBorrowedImgs} />
+          setimageUrls={setBorrowedImgs}
+          buttonText="Return It!"
+          onClickAction={returnItemAction} />
       </PaddedGrid>
     );
 }
