@@ -39,6 +39,14 @@ mongoose.connect(
 
 sgMail.setApiKey(process.env.API_KEY);
 
+const isThirdPartyUser = async (email) => {
+  const user = await UserModel.findOne({
+    $and: [
+      { email: email },
+      { password: { $exists: false} }
+  ]});
+  return !!user;
+}
 app.post("/api/hasUser", async (req, res) => {
   const hasUserResultCodes = {
     HAS_USER: 0,
@@ -54,12 +62,8 @@ app.post("/api/hasUser", async (req, res) => {
       { password: { $exists: true} }
   ]});
   if (!user) {
-    const thirdPartyUser = await UserModel.findOne({
-      $and: [
-        { email: givenEmail },
-        { password: { $exists: false} }
-    ]});
-    if (thirdPartyUser) {
+    const isUserThirdParty = await isThirdPartyUser(givenEmail);
+    if (isUserThirdParty) {
       return res.json({
         status: "error",
         statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
@@ -142,13 +146,20 @@ app.post("/api/login", async (req, res) => {
 });
 
 app.post("/api/signUpUser", async (req, res) => {
+  const password = req.body.password;
+  const email = req.body.email;
+  if (!password) {
+    const isUserThirdParty = await isThirdPartyUser(email);
+    if (isUserThirdParty) {
+      return res.json({status: "ok"});
+    }
+  }
   const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
-    email: req.body.email,
+    email: email,
     points: 0
   });
-  const password = req.body.password;
   if (password) {
     const hashedPassword = await bcrypt.hash(password, 10);
     newUser.password = hashedPassword;
