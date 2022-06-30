@@ -211,6 +211,7 @@ router.post("/returnItem", async (req, res) => {
   if (!itemId) {
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM});
   }
+
   const user = await UserModel.findOne({
     _id: userId
   });
@@ -221,6 +222,7 @@ router.post("/returnItem", async (req, res) => {
   if (!item) {
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM});
   }
+
   const owner = await UserModel.findOne({_id: item.listedBy.id});
   if (!owner) {
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.UNKNOWN_OWNER});
@@ -232,17 +234,29 @@ router.post("/returnItem", async (req, res) => {
   if (item.borrowedBy !== userId) {
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.WRONG_USER});
   }
+
   const itemIndex = user.itemsBorrowed.indexOf(itemId);
   if (itemIndex === -1) {
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.WRONG_ITEM});
   }
+
+  const deadline = new Date(item.deadline);
+  deadline.setHours(0, 0, 0, 0);
+  const dateNow = new Date();
+  dateNow.setHours(0, 0, 0, 0);
+  if (dateNow > deadline) {
+    const newPoints = user.points + POINTS_SYSTEM.ITEM_OVERDUE;
+    user.points = newPoints;
+  }
+  const newPoints = owner.points + POINTS_SYSTEM.LENT_ITEM;
+  owner.points = newPoints;
+  owner.save();
+
   user.itemsBorrowed.splice(itemIndex, 1);
   user.save();
   item.borrowedBy = undefined;
   item.save();
-  const newPoints = owner.points + POINTS_SYSTEM.LENT_ITEM;
-  owner.points = newPoints;
-  owner.save();
+  
   return res.json({status: 'ok', statusCode: RETURN_STATUS_CODES.SUCCESS});
 });
 
