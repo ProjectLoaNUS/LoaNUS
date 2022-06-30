@@ -91,3 +91,49 @@ export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onAct
         }
     }
 }
+
+export const returnItemAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+    return async () => {
+        const RETURN_STATUS_TEXTS = [
+            "Item returned",
+            "Cannot find you in database",
+            "Cannot find this item in database",
+            "Item not lent to anyone",
+            "Item lent to another user",
+            "You did not borrow this item"
+        ];
+
+        if (itemId && user.id) {    
+            const url = `${BACKEND_URL}/api/items/returnItem`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    itemId: itemId,
+                    userId: user.id
+                })
+            });
+            const data = await req.json();
+            if (!data.status === "ok") {
+                setError(true, RETURN_STATUS_TEXTS[data.statusCode]);
+            } else {
+                setError(false, RETURN_STATUS_TEXTS[data.statusCode]);
+                setIsButtonEnabled(false);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 5000);
+                if (onActionDone) {
+                    setTimeout(() => {
+                        onActionDone();
+                    }, 7000);
+                }
+            }
+        } else if (!itemId) {
+            setError(true, "Item listing is invalid");
+        } else {
+            setError(true, "User is invalid. Please logout and login again");
+        }
+    }
+}
