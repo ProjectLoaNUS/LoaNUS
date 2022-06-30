@@ -49,6 +49,7 @@ const ProfileNavBar = styled.div`
   height: 5vh;
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 `;
 
 const InformationDisplayContainer = styled.div`

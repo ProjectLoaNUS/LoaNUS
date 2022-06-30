@@ -4,10 +4,10 @@ import React from "react";
 
 const LinkContainer = styled.div`
   height: 5vh;
-  width: 10vw;
   //border: 2px solid green;
   display: flex;
   align-items: center;
+  justify-content: center;
 `;
 const StyledLink = styled(NavLink)`
   color: #2d3c4a;
