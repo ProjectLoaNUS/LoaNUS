@@ -39,7 +39,7 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 
 export default function ItemCard(props) {
-    const { itemId, date, title, imagesUrl, owner, category, description, location, telegram, deadline, removeItem } = props;
+    const { itemId, date, title, imagesUrl, owner, category, description, location, telegram, deadline, onActionDone, onClickAction } = props;
     const [ open, setOpen ] = useState(false);
     const { user } = useAuth();
     const isOwner = isUserListingRelated(user, {listedBy: owner});
@@ -100,8 +100,8 @@ export default function ItemCard(props) {
                 deadline={deadline}
                 open={open}
                 setOpen={setOpen}
-                onActionDone={removeItem}
-                buttonAction={getItemCardAction()}
+                onActionDone={onActionDone}
+                buttonAction={onClickAction || getItemCardAction()}
                 buttonText={isOwner ? "Delete Listing" : "Borrow It!"} />
         </ListCard>
     );
