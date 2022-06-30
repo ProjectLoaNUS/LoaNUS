@@ -242,6 +242,11 @@ app.get("/verify-email", async (req, res, next) => {
 });
 
 //Upload profile picture
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fieldsize: 1024 * 1024 * 3 },
+});
 app.post(
   "/profile-upload",
   upload.single("image"),
