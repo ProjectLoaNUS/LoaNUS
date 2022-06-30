@@ -214,55 +214,6 @@ app.get("/verify-email", async (req, res, next) => {
   res.render("verify-email");
 });
 
-const storage = multer.memoryStorage();
-
-const upload = multer({
-  storage: storage,
-  limits: { fieldsize: 1024 * 1024 * 3 },
-});
-app.get("/api/getItemTexts", (req, res) => {
-  ItemModel.find({}, ["name", "desc"], null, (err, items) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send("An error occurred", err);
-    } else {
-      res.json(items);
-    }
-  });
-});
-app.get("/api/getItemImages", (req, res) => {
-  ItemModel.find({}, ["image"], null, (err, items) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send("An error occurred", err);
-    } else {
-      res.json(items);
-    }
-  });
-});
-app.post(
-  "/api/item-upload",
-  upload.single("image"),
-  (request, response, next) => {
-    const obj = {
-      name: request.body.name,
-      desc: request.body.description,
-      image: {
-        data: request.file.buffer,
-        contentType: request.file.mimetype,
-      },
-    };
-    ItemModel.create(obj, (err, item) => {
-      if (err) {
-        console.log(err);
-      } else {
-        item.save();
-      }
-    });
-    response.send("Upload success");
-  }
-);
-
 //Upload profile picture
 app.post(
   "/profile-upload",
