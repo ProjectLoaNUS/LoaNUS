@@ -25,7 +25,7 @@ export const borrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    email: user.email,
+                    userId: user.id,
                     itemId: itemId
                 })
             });

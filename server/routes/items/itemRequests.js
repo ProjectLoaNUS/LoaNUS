@@ -24,7 +24,7 @@ router.post("/addRequest", async (req, res) => {
       } else {
         request.save().then(savedRequest => {
           UserModel.findOne({
-            email: req.body.email
+            _id: creator.id
           }, (err, user) => {
             if (err) {
               console.log(err);
@@ -57,9 +57,9 @@ router.get("/getRequests", (req, res) => {
     });
 });
 router.post("/getRequestsOfUser", async (req, res) => {
-  const email = req.body.email;
+  const userId = req.body.userId;
   const user = await UserModel.findOne({
-    email: email
+    _id: userId
   });
   if (!user) {
     return res.json({status: 'error'});

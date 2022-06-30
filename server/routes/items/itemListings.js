@@ -22,6 +22,10 @@ const filesToImgArray = (files) => {
     }
 };
 router.post("/addListing", upload.array("images", 4), (request, response, next) => {
+    if (!request.body.listedBy) {
+      return response.json({status: 'error'});
+    }
+    const owner = JSON.parse(request.body.listedBy);
     const obj = {
       images: filesToImgArray(request.files),
       deadline: request.body.deadline,
@@ -31,7 +35,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
       location: request.body.location,
       telegram: request.body.telegram,
       date: request.body.date,
-      listedBy: JSON.parse(request.body.listedBy)
+      listedBy: owner
     };
     ItemListingsModel.create(obj, (err, listing) => {
       if (err) {
@@ -39,7 +43,7 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
       } else {
         listing.save().then(savedListing => {
           UserModel.findOne({
-            email: request.body.email
+            _id: owner.id
           }, (err, user) => {
             if (err) {
               console.log(err);
@@ -91,9 +95,11 @@ router.get("/getListingsImgs", (req, res) => {
 });
 
 router.post("/getListingsTextsOfUser", async (req, res) => {
-  const email = req.body.email;
+  if (!req.body.userId) {
+    return res.json({status: 'error'});
+  }
   const user = await UserModel.findOne({
-    email: email
+    _id: req.body.userId
   });
   if (!user) {
     return res.json({status: 'error'});
@@ -103,9 +109,11 @@ router.post("/getListingsTextsOfUser", async (req, res) => {
   return res.json({status: 'ok', listingsTexts: listingsTexts});
 });
 router.post("/getListingsImgsOfUser", async (req, res) => {
-  const email = req.body.email;
+  if (!req.body.userId) {
+    return res.json({status: 'error'});
+  }
   const user = await UserModel.findOne({
-    email: email
+    _id: req.body.userId
   });
   if (!user) {
     return res.json({status: 'error'});
@@ -116,10 +124,16 @@ router.post("/getListingsImgsOfUser", async (req, res) => {
 });
 
 router.post("/borrowItem", async (req, res) => {
-  const email = req.body.email;
+  const userId = req.body.userId;
   const itemId = req.body.itemId;
+  if (!userId) {
+    return res.json({status: 'error', statusCode: 4});
+  }
+  if (!itemId) {
+    return res.json({status: 'error', statusCode: 3});
+  }
   const user = await UserModel.findOne({
-    email: email
+    _id: userId
   });
   const item = await ItemListingsModel.findOne({_id: itemId});
   if (!user) {
@@ -128,7 +142,6 @@ router.post("/borrowItem", async (req, res) => {
   if (!item) {
     return res.json({status: 'error', statusCode: 3});
   }
-  const userId = "" + user._id;
   if (item.borrowedBy) {
     // Item is already borrowed by someone. Major error
     return res.json({status: 'error', statusCode: 1});
