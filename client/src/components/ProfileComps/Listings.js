@@ -91,7 +91,7 @@ export default function Listings(props) {
           texts={listingTexts}
           setTexts={setListingTexts}
           imageUrls={listingImgs}
-          setimageUrls={setListingImgs} />
+          setImageUrls={setListingImgs} />
       </PaddedGrid>
     );
 }
