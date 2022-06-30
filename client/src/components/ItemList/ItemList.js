@@ -4,7 +4,7 @@ import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 
 export default function ItemList(props) {
-    const { CardContainer, imageUrls, setImageUrls, texts, setTexts, onActionDone, onClickAction } = props;
+    const { CardContainer, imageUrls, setImageUrls, texts, setTexts, buttonText, onActionDone, onClickAction } = props;
 
     return (
         <>
@@ -40,7 +40,8 @@ export default function ItemList(props) {
                                 location={text.location}
                                 telegram={text.telegram}
                                 onActionDone={onActionDone || removeItem}
-                                onClickAction={onClickAction} />
+                                onClickAction={onClickAction}
+                                buttonText={buttonText} />
                         );
                     }
 
