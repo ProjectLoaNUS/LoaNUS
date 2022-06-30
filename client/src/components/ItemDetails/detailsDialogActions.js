@@ -100,7 +100,8 @@ export const returnItemAction = (setError, setIsButtonEnabled, setOpen, onAction
             "Cannot find this item in database",
             "Item not lent to anyone",
             "Item lent to another user",
-            "You did not borrow this item"
+            "You did not borrow this item",
+            "Error identifying item owner"
         ];
 
         if (itemId && user.id) {    
