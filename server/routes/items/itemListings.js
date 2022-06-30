@@ -146,5 +146,29 @@ router.post("/borrowItem", async (req, res) => {
   }
   return res.json({status: 'ok', statusCode: 0});
 })
+router.post("/getBorrowedTextsOfUser", async (req, res) => {
+  const userId = req.body.userId;
+  const user = await UserModel.findOne({
+    _id: userId
+  });
+  if (!user) {
+    return res.json({status: 'error'});
+  }
+  const borrowedIds = user.itemsBorrowed;
+  let borrowedTexts = await ItemListingsModel.find({'_id': { $in: borrowedIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy']);
+  return res.json({status: 'ok', borrowedTexts: borrowedTexts});
+});
+router.post("/getBorrowedImgsOfUser", async (req, res) => {
+  const userId = req.body.userId;
+  const user = await UserModel.findOne({
+    _id: userId
+  });
+  if (!user) {
+    return res.json({status: 'error'});
+  }
+  const borrowedIds = user.itemsBorrowed;
+  let borrowedImgs = await ItemListingsModel.find({'_id': { $in: borrowedIds} }, ['images']);
+  return res.json({status: 'ok', borrowedImgs: borrowedImgs});
+});
 
 module.exports = router;
