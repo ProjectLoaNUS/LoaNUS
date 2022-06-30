@@ -49,18 +49,25 @@ app.post("/api/hasUser", async (req, res) => {
   };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
-    email: givenEmail,
-  });
+    $and: [
+      { email: givenEmail },
+      { password: { $exists: true} }
+  ]});
   if (!user) {
+    const thirdPartyUser = await UserModel.findOne({
+      $and: [
+        { email: givenEmail },
+        { password: { $exists: false} }
+    ]});
+    if (thirdPartyUser) {
+      return res.json({
+        status: "error",
+        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
+      });
+    }
     return res.json({
       status: "ok",
       hasUser: false,
-    });
-  }
-  if (!user.password) {
-    return res.json({
-      status: "error",
-      statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
     });
   }
   return res.json({
