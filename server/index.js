@@ -145,7 +145,8 @@ app.post("/api/signUpUser", async (req, res) => {
   const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
-    email: req.body.email
+    email: req.body.email,
+    points: 0
   });
   const password = req.body.password;
   if (password) {
