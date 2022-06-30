@@ -4,6 +4,10 @@ const ItemRequestsModel = require("../../models/ItemRequests");
 const UserModel = require("../../models/Users");
 
 router.post("/addRequest", async (req, res) => {
+    if(!request.body.listedBy) {
+      return res.json({status: 'error'});
+    }
+    const creator = JSON.parse(request.body.listedBy);
     const obj = {
       category: req.body.category,
       title: req.body.title,
@@ -11,7 +15,7 @@ router.post("/addRequest", async (req, res) => {
       location: req.body.location,
       telegram: req.body.telegram,
       date: req.body.date,
-      listedBy: req.body.listedBy
+      listedBy: creator
     };
     ItemRequestsModel.create(obj, (err, request) => {
       if (err) {
