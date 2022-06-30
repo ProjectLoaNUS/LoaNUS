@@ -3,6 +3,10 @@ const router = express.Router();
 const multer = require("multer");
 const ItemListingsModel = require("../../models/ItemListings");
 const UserModel = require("../../models/Users");
+const POINTS_SYSTEM = {
+  LENT_ITEM: 5,
+  ITEM_OVERDUE: -10
+}
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -195,7 +199,8 @@ router.post("/returnItem", async (req, res) => {
     NO_SUCH_ITEM: 2,
     ITEM_NOT_LENT: 3,
     WRONG_USER: 4,
-    WRONG_ITEM: 5
+    WRONG_ITEM: 5,
+    UNKNOWN_OWNER: 6
   }
 
   const userId = req.body.userId;
@@ -216,6 +221,10 @@ router.post("/returnItem", async (req, res) => {
   if (!item) {
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM});
   }
+  const owner = await UserModel.findOne({_id: item.listedBy.id});
+  if (!owner) {
+    return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.UNKNOWN_OWNER});
+  }
   if (!item.borrowedBy) {
     // Item is not marked as borrowed by anyone. Major error
     return res.json({status: 'error', statusCode: RETURN_STATUS_CODES.ITEM_NOT_LENT});
@@ -231,6 +240,9 @@ router.post("/returnItem", async (req, res) => {
   user.save();
   item.borrowedBy = undefined;
   item.save();
+  const newPoints = owner.points + POINTS_SYSTEM.LENT_ITEM;
+  owner.points = newPoints;
+  owner.save();
   return res.json({status: 'ok', statusCode: RETURN_STATUS_CODES.SUCCESS});
 });
 
