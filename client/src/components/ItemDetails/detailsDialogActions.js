@@ -39,9 +39,11 @@ export const borrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone
                 setTimeout(() => {
                     setOpen(false);
                 }, 5000);
-                setTimeout(() => {
-                    onActionDone();
-                }, 7000);
+                if (onActionDone) {
+                    setTimeout(() => {
+                        onActionDone();
+                    }, 7000);
+                }
             }
         } else {
             setError(true, "Please log in before borrowing");
@@ -78,9 +80,11 @@ export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onAct
                 setTimeout(() => {
                     setOpen(false);
                 }, 5000);
-                setTimeout(() => {
-                    onActionDone();
-                }, 7000);
+                if (onActionDone) {
+                    setTimeout(() => {
+                        onActionDone();
+                    }, 7000);
+                }
             }
         } else {
             setError(true, "Item listing is invalid");
