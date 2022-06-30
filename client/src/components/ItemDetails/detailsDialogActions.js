@@ -52,7 +52,7 @@ export const borrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone
 }
 
 export const isUserListingRelated = (user, listing) => {
-    if (listing && listing.listedBy) {
+    if (user && (listing && listing.listedBy)) {
         return user.id === listing.listedBy.id;
     }
     return false;
