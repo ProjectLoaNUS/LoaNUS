@@ -6,6 +6,7 @@ import AvatarCard from "../components/ProfileComps/AvatarCard";
 import Listings from "../components/ProfileComps/Listings";
 import {
   PROFILE,
+  PROFILE_BORROWED,
   PROFILE_POINTS,
   PROFILE_REQUESTS,
   PROFILE_REVIEWS,
@@ -16,6 +17,7 @@ import Points from "../components/ProfileComps/Points";
 import Requests from "../components/ProfileComps/Requests";
 import Reviews from "../components/ProfileComps/Reviews";
 import Rewards from "../components/ProfileComps/Rewards";
+import BorrowedItems from "../components/ProfileComps/BorrowedItems";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -67,6 +69,8 @@ function ProfilePage() {
     const location = useLocation();
     const path = location.pathname;
     switch(path) {
+      case PROFILE_BORROWED:
+        return <BorrowedItems />
       case PROFILE_POINTS:
         return <Points />
       case PROFILE_REQUESTS:
@@ -91,6 +95,7 @@ function ProfilePage() {
         <SubContainer>
           <ProfileNavBar>
             <ProfileLink link={PROFILE} text={"Listings"} />
+            <ProfileLink link={PROFILE_BORROWED} text="Items Borrowed" />
             <ProfileLink link={PROFILE_POINTS} text={"Points"} />
             <ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
             <ProfileLink link={PROFILE_REQUESTS} text={"Requests"} />
