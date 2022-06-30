@@ -270,6 +270,18 @@ app.post(
   }
 );
 
+app.post("/api/getPointsOfUser", async (req, res) => {
+  const userId = req.body.userId;
+  if (!userId) {
+    return res.json({status: "error"});
+  }
+  const user = await UserModel.findOne({ _id: userId }, ["points"]);
+  if (!user) {
+    return res.json({status: "error"});
+  }
+  return res.json({status: "ok", points: user.points});
+});
+
 const items = require("./routes/items/index");
 
 app.use("/api", items);
