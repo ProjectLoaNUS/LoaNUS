@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../database/auth";
 import { Container, Grid } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
+import { deleteRequestAction } from "../ItemDetails/detailsDialogActions";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -113,7 +114,8 @@ function Requests() {
             CardContainer={RequestsGrid}
             texts={requests}
             setTexts={setRequests}
-            buttonText="Delete Request" />
+            buttonText="Delete Request"
+            onClickAction={deleteRequestAction} />
         </PaddedGrid>
       </TabPanel>
       <TabPanel value={selectedTab} index={1}>
