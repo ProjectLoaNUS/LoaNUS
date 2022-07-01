@@ -74,12 +74,14 @@ export default function ItemCard(props) {
                 }
                 title={owner && owner.name}
                 subheader={date} />
+                {imagesUrl &&
                     <ImageDiv>
                         <CardMedia 
                         component="img"
                         image={imagesUrl[0]}
                         alt="Item request image" />
                     </ImageDiv>
+                }
                 <CardActions>
                     <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
                         <FavoriteBorderIcon />

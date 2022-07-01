@@ -20,10 +20,12 @@ export default function ItemList(props) {
                         setTexts(prevTexts => {
                             return prevTexts.filter(other => other !== text);
                         });
-                        setImageUrls(prevUrls => {
-                            const thisUrl = prevUrls[index];
-                            return prevUrls.filter(other => other !== thisUrl);
-                        });
+                        if (setImageUrls) {
+                            setImageUrls(prevUrls => {
+                                const thisUrl = prevUrls[index];
+                                return prevUrls.filter(other => other !== thisUrl);
+                            });
+                        }
                     }
 
                     function Item() {
@@ -31,7 +33,7 @@ export default function ItemList(props) {
                             <ItemCard
                                 itemId={text._id}
                                 date={date}
-                                imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
+                                imagesUrl={imageUrls && ( (imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading]) )}
                                 title={text.title}
                                 owner={text.listedBy}
                                 deadline={deadline}
