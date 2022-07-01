@@ -75,7 +75,7 @@ export default function DetailsDialog(props) {
           fullWidth={true}
           TransitionComponent={Transition}>
             <DialogTitle>
-                Item Listing
+                {imageUrls ? "Item Listing" : "Item Request"}
                 <IconButton
                   aria-label="close"
                   onClick={handleClose}
