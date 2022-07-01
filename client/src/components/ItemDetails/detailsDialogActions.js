@@ -73,9 +73,9 @@ export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onAct
             });
             const data = await req.json();
             if (!data.status === "ok") {
-                setError(true, "Error while deleting listing");
+                setError(true, "Error while deleting item listing");
             } else {
-                setError(false, "Listing deleted");
+                setError(false, "Item listing deleted");
                 setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
@@ -88,6 +88,40 @@ export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onAct
             }
         } else {
             setError(true, "Item listing is invalid");
+        }
+    }
+}
+
+export const deleteRequestAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+    return async () => {
+        if (itemId) {    
+            const url = `${BACKEND_URL}/api/items/rmRequest`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    itemId: itemId
+                })
+            });
+            const data = await req.json();
+            if (!data.status === "ok") {
+                setError(true, "Error while deleting item request");
+            } else {
+                setError(false, "Item request deleted");
+                setIsButtonEnabled(false);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 5000);
+                if (onActionDone) {
+                    setTimeout(() => {
+                        onActionDone();
+                    }, 7000);
+                }
+            }
+        } else {
+            setError(true, "Item request is invalid");
         }
     }
 }
