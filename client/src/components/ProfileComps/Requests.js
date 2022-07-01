@@ -112,7 +112,8 @@ function Requests() {
           <ItemList
             CardContainer={RequestsGrid}
             texts={requests}
-            setTexts={setRequests} />
+            setTexts={setRequests}
+            buttonText="Delete Request" />
         </PaddedGrid>
       </TabPanel>
       <TabPanel value={selectedTab} index={1}>
