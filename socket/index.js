@@ -1,8 +1,25 @@
-const io = require("socket.io")(8000, {
-  cors: {
-    origin: "http://localhost:3000",
-  },
-});
+import { createServer } from "http";
+import { Server } from "socket.io";
+
+const httpServer = createServer();
+const SOCKET_ORIGIN = process.env.SOCKET_ORIGIN;
+let io;
+if (SOCKET_ORIGIN) {
+  // Heroku deployment
+  io = new Server(httpServer, {
+    cors: {
+      origin: SOCKET_ORIGIN
+    }
+  });
+} else {
+  io = new Server(httpServer, {
+    cors: {
+      origin: "http://localhost:3000"
+    }
+  });
+  
+  httpServer.listen(8000);
+}
 
 let users = [];
 const addUser = (userId, socketId) => {
