@@ -4,10 +4,10 @@ const ItemRequestsModel = require("../../models/ItemRequests");
 const UserModel = require("../../models/Users");
 
 router.post("/addRequest", async (req, res) => {
-    if(!request.body.listedBy) {
+    const creator = req.body.listedBy;
+    if(!creator) {
       return res.json({status: 'error'});
     }
-    const creator = JSON.parse(request.body.listedBy);
     const obj = {
       category: req.body.category,
       title: req.body.title,
