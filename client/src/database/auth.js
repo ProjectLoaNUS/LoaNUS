@@ -16,7 +16,7 @@ function useAuthProvider() {
 
   const signInWithGoogle = () => {
     return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
-      fetch(`${BACKEND_URL}/api/signUpUser`, {
+      fetch(`${BACKEND_URL}/api/postAltLogin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,11 +31,14 @@ function useAuthProvider() {
       .then(data => {
         if (data.status === "error") {
           console.log("Error occurred while adding 3rd party account user to database");
+        } else {
+          let user = data.user;
+          user.photoURL = result.user.photoURL;
+          setUser(user);
+          localStorage.setItem('user', JSON.stringify(user));
         }
       });
-      setUser(result.user);
       setIsGoogleSignIn(true);
-      localStorage.setItem('user', JSON.stringify(result.user));
     });
   };
 

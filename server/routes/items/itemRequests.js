@@ -4,6 +4,10 @@ const ItemRequestsModel = require("../../models/ItemRequests");
 const UserModel = require("../../models/Users");
 
 router.post("/addRequest", async (req, res) => {
+    const creator = req.body.listedBy;
+    if(!creator) {
+      return res.json({status: 'error'});
+    }
     const obj = {
       category: req.body.category,
       title: req.body.title,
@@ -11,7 +15,7 @@ router.post("/addRequest", async (req, res) => {
       location: req.body.location,
       telegram: req.body.telegram,
       date: req.body.date,
-      userName: req.body.userName
+      listedBy: creator
     };
     ItemRequestsModel.create(obj, (err, request) => {
       if (err) {
@@ -20,7 +24,7 @@ router.post("/addRequest", async (req, res) => {
       } else {
         request.save().then(savedRequest => {
           UserModel.findOne({
-            email: req.body.email
+            _id: creator.id
           }, (err, user) => {
             if (err) {
               console.log(err);
@@ -43,8 +47,9 @@ router.post("/addRequest", async (req, res) => {
       }
     });
 });
+
 router.get("/getRequests", (req, res) => {
-    ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'telegram', 'date', 'userName'], null, (err, requests) => {
+    ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'telegram', 'date', 'listedBy'], null, (err, requests) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
@@ -53,16 +58,26 @@ router.get("/getRequests", (req, res) => {
     });
 });
 router.post("/getRequestsOfUser", async (req, res) => {
-  const email = req.body.email;
+  const userId = req.body.userId;
   const user = await UserModel.findOne({
-    email: email
+    _id: userId
   });
   if (!user) {
     return res.json({status: 'error'});
   }
   const requestIds = user.itemsRequested;
-  let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'telegram', 'date', 'userName']);
+  let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'telegram', 'date', 'listedBy']);
   return res.json({status: 'ok', requests: requests});
+});
+
+router.post("/rmRequest", async (request, response) => {
+  const itemId = request.body.itemId;
+  if (itemId) {
+    await ItemRequestsModel.deleteOne({ _id: itemId });
+    response.json({status: "ok"});
+  } else {
+    response.json({status: "error"});
+  }
 });
 
 module.exports = router;

@@ -33,9 +33,9 @@ const ItemListingsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  userName: {
-    type: String,
-    required: true
+  listedBy: {
+    id: String,
+    name: String
   },
   borrowedBy: {
     type: String,
