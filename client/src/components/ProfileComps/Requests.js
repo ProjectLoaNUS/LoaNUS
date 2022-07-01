@@ -4,7 +4,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { useState } from "react";
+import ItemList from "../ItemList/ItemList";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../database/auth";
+import { Grid } from "@mui/material";
+import { BACKEND_URL } from "../../database/const";
 
 const MainContainer = styled.div`
   height: auto;
@@ -13,6 +17,19 @@ const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+`;
+const PaddedGrid = styled(Grid)`
+  height: 100%;
+  width: 100%;
+  padding: 1ch 1rem;
+  margin-top: 0;
+  overflow-y: auto;
+`;
+const ItemGrid = styled(Grid)`
+  .MuiCard-root {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 function TabPanel(props) {
@@ -37,9 +54,41 @@ function TabPanel(props) {
 
 function Requests() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const { user } = useAuth();
+  const [ requests, setRequests ] = useState([]);
+
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
+
+  useEffect(() => {
+    fetch(`${BACKEND_URL}/api/items/getRequestsOfUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id
+      }),
+    })
+    .then(req => req.json())
+    .then(data => {
+      if (data.status === "ok") {
+        setRequests(data.requests);
+      }
+    });
+  }, [user]);
+
+  function RequestsGrid(props) {
+    const { children } = props;
+
+    return (
+      <ItemGrid item alignItems="stretch" justifyContent="center" xl={4} xs={4}>
+        {children}
+      </ItemGrid>
+    );
+  }
+
   return (
     <MainContainer>
       <Tabs variant="scrollable" value={selectedTab} onChange={handleChange}>
@@ -47,7 +96,12 @@ function Requests() {
         <Tab label="Requests for approval"></Tab>
       </Tabs>
       <TabPanel value={selectedTab} index={0}>
-        No Requests currently
+        <PaddedGrid container spacing={1}>
+          <ItemList
+            CardContainer={RequestsGrid}
+            texts={requests}
+            setTexts={setRequests} />
+        </PaddedGrid>
       </TabPanel>
       <TabPanel value={selectedTab} index={1}>
         No Requests currently
