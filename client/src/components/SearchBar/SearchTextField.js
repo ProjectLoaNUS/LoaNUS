@@ -13,6 +13,8 @@ import { Buffer } from 'buffer';
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
+import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import { useAuth } from "../../database/auth";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -63,11 +65,21 @@ export default function SearchTextField() {
   const [clickResult, setClickResult] = useState({});
   const [clickResultImgs, setClickResultImgs] = useState([]);
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const isOwner = isUserListingRelated(user, clickResult);
 
   const removeResult = () => {
     setSearchResults((prevResults) => {
       return prevResults.filter((result) => (result._id !== clickResult._id));
     });
+  }
+
+  const getResultAction = () => {
+    if (isOwner) {
+      return deleteListingAction;
+    } else {
+      return borrowAction;
+    }
   }
 
   useEffect(() => {
@@ -120,8 +132,8 @@ export default function SearchTextField() {
         description: rawResult.description,
         location: rawResult.location,
         telegram: rawResult.telegram,
-        userName: rawResult.userName,
-        borrwedBy: rawResult.borrowedBy
+        listedBy: rawResult.listedBy,
+        borrowedBy: rawResult.borrowedBy
       }
       result.category = CATEGORIES[rawResult.category];
       result.deadline = new Date(rawResult.deadline).toLocaleDateString({}, 
@@ -190,7 +202,7 @@ export default function SearchTextField() {
       <DetailsDialog
         itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
-        userName={clickResult && clickResult.userName}
+        userName={clickResult && (clickResult.listedBy && clickResult.listedBy.name)}
         title={clickResult && clickResult.title}
         imageUrls={(clickResultImgs !== undefined && (clickResultImgs).length === 0) ? [NoImage] : (clickResultImgs || [Loading])}
         category={clickResult && clickResult.category}
@@ -200,7 +212,9 @@ export default function SearchTextField() {
         deadline={clickResult && clickResult.deadline}
         open={open}
         setOpen={setOpen}
-        removeItem={clickResult && removeResult} />
+        onActionDone={clickResult && removeResult}
+        buttonAction={getResultAction()}
+        buttonText={ isOwner ? "Delete Listing" : "Borrow It!" } />
     </>
   );
 }

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
+import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import { useAuth } from "../../database/auth";
 
 const ListCard = styled(Card)`
     display: flex;
@@ -37,8 +39,10 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 
 export default function ItemCard(props) {
-    const { itemId, date, title, imagesUrl, userName, category, description, location, telegram, deadline, removeItem } = props;
+    const { itemId, date, title, imagesUrl, owner, category, description, location, telegram, deadline, buttonText, onActionDone, onClickAction } = props;
     const [ open, setOpen ] = useState(false);
+    const { user } = useAuth();
+    const isOwner = isUserListingRelated(user, {listedBy: owner});
 
     const handleShowDetails = (event) => {
         setOpen(true);
@@ -53,21 +57,31 @@ export default function ItemCard(props) {
         event.stopPropagation();
     }
 
+    const getItemCardAction = () => {
+        if (isOwner) {
+            return deleteListingAction;
+        } else {
+            return borrowAction;
+        }
+    }
+
     return (
         <ListCard>
             <ListingActionArea component="a" onClick={ handleShowDetails }>
                 <CardHeader 
                 avatar={
-                    <Avatar>{userName.charAt(0)}</Avatar>
+                    <Avatar>{owner && (owner.name && owner.name.charAt(0))}</Avatar>
                 }
-                title={userName}
+                title={owner && owner.name}
                 subheader={date} />
+                {imagesUrl &&
                     <ImageDiv>
                         <CardMedia 
                         component="img"
                         image={imagesUrl[0]}
-                        alt="Item request image" />
+                        alt="Item listing image" />
                     </ImageDiv>
+                }
                 <CardActions>
                     <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
                         <FavoriteBorderIcon />
@@ -78,7 +92,7 @@ export default function ItemCard(props) {
             <DetailsDialog
                 itemId={itemId}
                 date={date}
-                userName={userName}
+                userName={owner && owner.name}
                 title={title}
                 imageUrls={imagesUrl}
                 category={category}
@@ -88,7 +102,9 @@ export default function ItemCard(props) {
                 deadline={deadline}
                 open={open}
                 setOpen={setOpen}
-                removeItem={removeItem} />
+                onActionDone={onActionDone}
+                buttonAction={onClickAction || getItemCardAction()}
+                buttonText={buttonText || (isOwner ? "Delete Listing" : "Borrow It!")} />
         </ListCard>
     );
 }

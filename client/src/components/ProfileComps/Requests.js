@@ -4,22 +4,52 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { useState } from "react";
+import ItemList from "../ItemList/ItemList";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../database/auth";
+import { Container, Grid } from "@mui/material";
+import { BACKEND_URL } from "../../database/const";
+import { deleteRequestAction } from "../ItemDetails/detailsDialogActions";
 
 const MainContainer = styled.div`
-  height: auto;
-  width: auto;
+  min-height: 100%;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
+
+  & .MuiTabs-root {
+    flex: 0 0 auto;
+  }
+  & .MuiContainer-root {
+    flex: 1 1 auto;
+    padding: 0;
+
+    & .MuiBox-root {
+      padding: 0;
+    }
+  }
+`;
+const PaddedGrid = styled(Grid)`
+  height: 100%;
+  width: 100%;
+  padding: 1ch 1rem;
+  margin-top: 0;
+  overflow-y: auto;
+`;
+const ItemGrid = styled(Grid)`
+  .MuiCard-root {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Container
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
@@ -28,30 +58,69 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
-    </div>
+    </Container>
   );
 }
 
 function Requests() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const { user } = useAuth();
+  const [ requests, setRequests ] = useState([]);
+
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
+
+  useEffect(() => {
+    fetch(`${BACKEND_URL}/api/items/getRequestsOfUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id
+      }),
+    })
+    .then(req => req.json())
+    .then(data => {
+      if (data.status === "ok") {
+        setRequests(data.requests);
+      }
+    });
+  }, [user]);
+
+  function RequestsGrid(props) {
+    const { children } = props;
+
+    return (
+      <ItemGrid item alignItems="stretch" justifyContent="center" xl={4} xs={4}>
+        {children}
+      </ItemGrid>
+    );
+  }
+
   return (
     <MainContainer>
       <Tabs variant="scrollable" value={selectedTab} onChange={handleChange}>
         <Tab label="Your Requests"></Tab>
-        <Tab label="Requests for approval"></Tab>
+        {/*<Tab label="Requests for approval"></Tab>*/}
       </Tabs>
       <TabPanel value={selectedTab} index={0}>
-        No Requests currently
+        <PaddedGrid container spacing={1}>
+          <ItemList
+            CardContainer={RequestsGrid}
+            texts={requests}
+            setTexts={setRequests}
+            buttonText="Delete Request"
+            onClickAction={deleteRequestAction} />
+        </PaddedGrid>
       </TabPanel>
-      <TabPanel value={selectedTab} index={1}>
+      {/*<TabPanel value={selectedTab} index={1}>
         No Requests currently
-      </TabPanel>
+      </TabPanel>*/}
     </MainContainer>
   );
 }

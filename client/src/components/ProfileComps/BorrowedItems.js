@@ -5,6 +5,7 @@ import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
 import { Buffer } from 'buffer';
+import { returnItemAction } from "../ItemDetails/detailsDialogActions";
 
 const PaddedGrid = styled(Grid)`
   height: 100%;
@@ -20,10 +21,10 @@ const ItemGrid = styled(Grid)`
   }
 `;
 
-export default function Listings(props) {
+export default function BorrowedItems(props) {
     const { user } = useAuth();
-    const [ listingTexts, setListingTexts ] = useState([]);
-    const [ listingImgs, setListingImgs ] = useState([]);
+    const [ borrowedTexts, setBorrowedTexts ] = useState([]);
+    const [ borrowedImgs, setBorrowedImgs ] = useState([]);
 
     async function binsToImgUrls(bins) {
       let imgs = [];
@@ -38,11 +39,11 @@ export default function Listings(props) {
         });
         imgs[index] = urls;
       });
-      setListingImgs(imgs);
+      setBorrowedImgs(imgs);
     }
 
     useEffect(() => {
-      fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
+      fetch(`${BACKEND_URL}/api/items/getBorrowedImgsOfUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,10 +55,10 @@ export default function Listings(props) {
       .then(req => req.json())
       .then(data => {
         if (data.status === "ok") {
-          binsToImgUrls(data.listingsImgs);
+          binsToImgUrls(data.borrowedImgs);
         }
       });
-      fetch(`${BACKEND_URL}/api/items/getListingsTextsOfUser`, {
+      fetch(`${BACKEND_URL}/api/items/getBorrowedTextsOfUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,12 +70,12 @@ export default function Listings(props) {
       .then(req => req.json())
       .then(data => {
         if (data.status === "ok") {
-          setListingTexts(data.listingsTexts);
+          setBorrowedTexts(data.borrowedTexts);
         }
       });
     }, [user]);
 
-    function ListingsGrid(props) {
+    function BorrowedItemsGrid(props) {
         const { children } = props;
     
         return (
@@ -87,11 +88,13 @@ export default function Listings(props) {
     return (
       <PaddedGrid container spacing={1}>
         <ItemList
-          CardContainer={ListingsGrid}
-          texts={listingTexts}
-          setTexts={setListingTexts}
-          imageUrls={listingImgs}
-          setImageUrls={setListingImgs} />
+          CardContainer={BorrowedItemsGrid}
+          texts={borrowedTexts}
+          setTexts={setBorrowedTexts}
+          imageUrls={borrowedImgs}
+          setimageUrls={setBorrowedImgs}
+          buttonText="Return It!"
+          onClickAction={returnItemAction} />
       </PaddedGrid>
     );
 }

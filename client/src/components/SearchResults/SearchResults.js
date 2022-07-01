@@ -33,7 +33,7 @@ const SearchResults = (props) => {
           texts={resultTexts}
           setTexts={setResultTexts}
           imageUrls={resultImages}
-          setimageUrls={setResultImages} />
+          setImageUrls={setResultImages} />
     </PaddedGrid>
   );
 };

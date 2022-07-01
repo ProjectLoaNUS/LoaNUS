@@ -39,6 +39,18 @@ mongoose.connect(
 
 sgMail.setApiKey(process.env.API_KEY);
 
+const getThirdPartyUser = async (email) => {
+  const user = await UserModel.findOne({
+    $and: [
+      { email: email },
+      { password: { $exists: false} }
+  ]});
+  return user;
+}
+const isThirdPartyUser = async (email) => {
+  const user = await getThirdPartyUser(email);
+  return !!user;
+}
 app.post("/api/hasUser", async (req, res) => {
   const hasUserResultCodes = {
     HAS_USER: 0,
@@ -49,18 +61,21 @@ app.post("/api/hasUser", async (req, res) => {
   };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
-    email: givenEmail,
-  });
+    $and: [
+      { email: givenEmail },
+      { password: { $exists: true} }
+  ]});
   if (!user) {
+    const isUserThirdParty = await isThirdPartyUser(givenEmail);
+    if (isUserThirdParty) {
+      return res.json({
+        status: "error",
+        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
+      });
+    }
     return res.json({
       status: "ok",
       hasUser: false,
-    });
-  }
-  if (!user.password) {
-    return res.json({
-      status: "error",
-      statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
     });
   }
   return res.json({
@@ -80,8 +95,10 @@ app.post("/api/login", async (req, res) => {
     ALTERNATE_SIGN_IN: 5
   };
   const givenUser = await UserModel.findOne({
-    email: req.body.email,
-  });
+    $and: [
+      { email: req.body.email },
+      { password: { $exists: true} }
+  ]});
   if (!givenUser) {
     return res.json({
       status: "error",
@@ -115,6 +132,7 @@ app.post("/api/login", async (req, res) => {
       return res.json({
         status: "ok",
         user: {
+          id: "" + givenUser._id,
           displayName: givenUser.name,
           age: givenUser.age,
           email: givenUser.email,
@@ -130,49 +148,80 @@ app.post("/api/login", async (req, res) => {
     });
   });
 });
+app.post("/api/postAltLogin", async (req, res) => {
+  const email = req.body.email;
+  let user;
+  user = await getThirdPartyUser(email);
+  if (user) {
+    let trimmedUser = {
+      id: "" + user._id,
+      displayName: user.name,
+      age: user.age,
+      email: user.email
+    }
+    return res.json({status: "ok", user: trimmedUser});
+  } else {
+    user = await UserModel.create({
+      name: req.body.name,
+      age: req.body.age,
+      email: email,
+      points: 0,
+      emailToken: null,
+      isVerified: true
+    });
+    await user.save({}, (err) => {
+      if (err) {
+        return res.json({status: "error", error: err});
+      }
+    });
+    let trimmedUser = {
+      id: "" + user._id,
+      displayName: user.name,
+      age: user.age,
+      email: user.email
+    }
+    return res.json({status: "ok", user: trimmedUser});
+  }
+});
 
 app.post("/api/signUpUser", async (req, res) => {
+  const password = req.body.password;
+  const email = req.body.email;
+  if (!password) {
+    return res.json({status: "error"});
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await UserModel.create({
     name: req.body.name,
     age: req.body.age,
-    email: req.body.email
+    email: email,
+    points: 0,
+    password: hashedPassword,
+    emailToken: crypto.randomBytes(64).toString("hex"),
+    isVerified: false
   });
-  const password = req.body.password;
-  if (password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    newUser.password = hashedPassword;
-    newUser.emailToken = crypto.randomBytes(64).toString("hex");
-    newUser.isVerified = false;
-  } else {
-    newUser.emailToken = null;
-    newUser.isVerified = true;
-  }
   await newUser.save({}, (err) => {
     if (err) {
       return res.json({ status: "error", error: err });
     }
   });
 
-  if (password) {  
-    const msg = {
-      to: req.body.email,
-      from: "yongbin0162@gmail.com",
-      subject: "LoaNUS - Verify your email",
-      text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
-      html: `<h1>Hello,</h1>
-      <p>Thanks for registering on our app.</p>
-      <p>Please click the link below to verify your account.</p>
-      <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
-    };
+  const msg = {
+    to: req.body.email,
+    from: "yongbin0162@gmail.com",
+    subject: "LoaNUS - Verify your email",
+    text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. http://${req.headers.host}/verify-email?token=${newUser.emailToken}`,
+    html: `<h1>Hello,</h1>
+    <p>Thanks for registering on our app.</p>
+    <p>Please click the link below to verify your account.</p>
+    <a href="http://${req.headers.host}/verify-email?token=${newUser.emailToken}">Verify your account</a>`,
+  };
 
-    sgMail.send(msg, function (err, info) {
-      if (err) {
-        console.log("Email Not Sent");
-      } else {
-        console.log("Email Sent Success");
-      }
-    });
-  }
+  sgMail.send(msg, function (err, info) {
+    if (err) {
+      console.log("Email Not Sent");
+    }
+  });
   return res.json({ status: "ok" });
 });
 
@@ -192,56 +241,12 @@ app.get("/verify-email", async (req, res, next) => {
   res.render("verify-email");
 });
 
+//Upload profile picture
 const storage = multer.memoryStorage();
-
 const upload = multer({
   storage: storage,
   limits: { fieldsize: 1024 * 1024 * 3 },
 });
-app.get("/api/getItemTexts", (req, res) => {
-  ItemModel.find({}, ["name", "desc"], null, (err, items) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send("An error occurred", err);
-    } else {
-      res.json(items);
-    }
-  });
-});
-app.get("/api/getItemImages", (req, res) => {
-  ItemModel.find({}, ["image"], null, (err, items) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send("An error occurred", err);
-    } else {
-      res.json(items);
-    }
-  });
-});
-app.post(
-  "/api/item-upload",
-  upload.single("image"),
-  (request, response, next) => {
-    const obj = {
-      name: request.body.name,
-      desc: request.body.description,
-      image: {
-        data: request.file.buffer,
-        contentType: request.file.mimetype,
-      },
-    };
-    ItemModel.create(obj, (err, item) => {
-      if (err) {
-        console.log(err);
-      } else {
-        item.save();
-      }
-    });
-    response.send("Upload success");
-  }
-);
-
-//Upload profile picture
 app.post(
   "/profile-upload",
   upload.single("image"),
@@ -265,6 +270,18 @@ app.post(
   }
 );
 
+app.post("/api/getPointsOfUser", async (req, res) => {
+  const userId = req.body.userId;
+  if (!userId) {
+    return res.json({status: "error"});
+  }
+  const user = await UserModel.findOne({ _id: userId }, ["points"]);
+  if (!user) {
+    return res.json({status: "error"});
+  }
+  return res.json({status: "ok", points: user.points});
+});
+
 const items = require("./routes/items/index");
 
 app.use("/api", items);
@@ -277,11 +294,11 @@ app.get("/api/search", async (request, response) => {
     if (query.name) {
       let resultData;
       if (query.isFullSearch === "true") {
-        if (query.isImageOnly) {
+        if (query.isImageOnly === "true") {
           resultData = {
             images: 1
           };
-        } else if (query.isTextOnly) {
+        } else if (query.isTextOnly === "true") {
           resultData = {
             _id: 1,
             title: 1,
@@ -290,7 +307,7 @@ app.get("/api/search", async (request, response) => {
             location: 1,
             telegram: 1,
             date: 1,
-            userName: 1,
+            listedBy: 1,
             deadline: 1,
             borrowedBy: 1
           };
@@ -303,7 +320,7 @@ app.get("/api/search", async (request, response) => {
             location: 1,
             telegram: 1,
             date: 1,
-            userName: 1,
+            listedBy: 1,
             deadline: 1,
             images: 1,
             borrowedBy: 1
@@ -319,8 +336,9 @@ app.get("/api/search", async (request, response) => {
       results = await ItemListingsModel.aggregate([
         {
           $search: {
+            index: "listings",
             autocomplete: {
-              query: request.query.name,
+              query: `${query.name}`,
               path: "title",
               fuzzy: {
                 maxEdits: 2,

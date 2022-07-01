@@ -35,6 +35,10 @@ const UserSchema = new mongoose.Schema({
   itemsRequested: {
     type: [String],
     required: false
+  },
+  points: {
+    type: Number,
+    required: true
   }
 });
 
