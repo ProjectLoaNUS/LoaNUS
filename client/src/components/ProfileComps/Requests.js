@@ -7,16 +7,28 @@ import Box from "@mui/material/Box";
 import ItemList from "../ItemList/ItemList";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../database/auth";
-import { Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 
 const MainContainer = styled.div`
-  height: auto;
-  width: auto;
+  min-height: 100%;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
+
+  & .MuiTabs-root {
+    flex: 0 0 auto;
+  }
+  & .MuiContainer-root {
+    flex: 1 1 auto;
+    padding: 0;
+
+    & .MuiBox-root {
+      padding: 0;
+    }
+  }
 `;
 const PaddedGrid = styled(Grid)`
   height: 100%;
@@ -36,7 +48,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Container
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
@@ -48,7 +60,7 @@ function TabPanel(props) {
           {children}
         </Box>
       )}
-    </div>
+    </Container>
   );
 }
 
