@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import NewItemPage from "./pages/NewItemPage";
 import SignInPage from "./pages/SignInPage";
+import ChatPage from "./pages/ChatPage";
 import SearchedListings from "./pages/ListingSearchPage";
 import { theme } from "./components/Theme";
 import { ThemeProvider } from "@mui/material";
@@ -13,7 +14,8 @@ import {
   NEW_ITEM,
   PROFILE,
   SIGN_IN,
-  SEARCH_LISTINGS
+  SEARCH_LISTINGS,
+  CHAT,
 } from "./pages/routes";
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path={SIGN_IN} element={<SignInPage />} />
+          <Route path={CHAT} element={<ChatPage />} />
           <Route path={`${PROFILE}/*`} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />

@@ -1,6 +1,7 @@
 export const HOME = "/";
 export const SIGN_IN = "/signin";
 export const PROFILE = "/profile";
+export const CHAT = "/chat";
 export const NEW_ITEM = "/new-item";
 export const SEARCH_LISTINGS = "/search-items";
 export const PROFILE_LISTINGS = "/profile/listings";

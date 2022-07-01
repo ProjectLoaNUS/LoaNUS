@@ -10,6 +10,8 @@ const UserModel = require("./models/Users");
 const ItemModel = require("./models/Items");
 const ItemListingsModel = require("./models/ItemListings");
 const cors = require("cors");
+const conversationRoute = require("./routes/conversations");
+const messageRoute = require("./routes/messsages");
 const { request } = require("http");
 const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
@@ -57,7 +59,7 @@ app.post("/api/hasUser", async (req, res) => {
     NO_SUCH_USER: 1,
     UNVERIFIED_USER: 2,
     UNKNOWN_ERROR: 3,
-    ALTERNATE_SIGN_IN: 4
+    ALTERNATE_SIGN_IN: 4,
   };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
@@ -92,7 +94,7 @@ app.post("/api/login", async (req, res) => {
     NO_SUCH_USER: 2,
     UNKNOWN: 3,
     EMAIL_NOT_VERIFIED: 4,
-    ALTERNATE_SIGN_IN: 5
+    ALTERNATE_SIGN_IN: 5,
   };
   const givenUser = await UserModel.findOne({
     $and: [
@@ -138,6 +140,7 @@ app.post("/api/login", async (req, res) => {
           email: givenUser.email,
           photodata: givenUser.image.data,
           photoformat: givenUser.image.contentType,
+          id: givenUser._id,
         },
       });
     }
@@ -224,6 +227,38 @@ app.post("/api/signUpUser", async (req, res) => {
   });
   return res.json({ status: "ok" });
 });
+//get one user
+app.get("/user", async (req, res) => {
+  const userId = req.query.userId;
+  const username = req.query.username;
+  try {
+    const user = userId
+      ? await UserModel.findById(userId)
+      : await UserModel.findOne({ name: username });
+    res.json({
+      user: {
+        displayName: user.name,
+        age: user.age,
+        email: user.email,
+        photodata: user.image.data,
+        photoformat: user.image.contentType,
+        id: user._id,
+      },
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+//get all users
+app.get("/allusers", async (req, res) => {
+  try {
+    const filter = {};
+    const all = await UserModel.find(filter);
+    res.json(all);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 // Email verification route
 app.get("/verify-email", async (req, res, next) => {
@@ -296,7 +331,7 @@ app.get("/api/search", async (request, response) => {
       if (query.isFullSearch === "true") {
         if (query.isImageOnly === "true") {
           resultData = {
-            images: 1
+            images: 1,
           };
         } else if (query.isTextOnly === "true") {
           resultData = {
@@ -309,7 +344,7 @@ app.get("/api/search", async (request, response) => {
             date: 1,
             listedBy: 1,
             deadline: 1,
-            borrowedBy: 1
+            borrowedBy: 1,
           };
         } else {
           resultData = {
@@ -323,15 +358,15 @@ app.get("/api/search", async (request, response) => {
             listedBy: 1,
             deadline: 1,
             images: 1,
-            borrowedBy: 1
+            borrowedBy: 1,
           };
         }
       } else {
         resultData = {
           title: 1,
           borrowedBy: 1,
-          _id: 1
-        }
+          _id: 1,
+        };
       }
       results = await ItemListingsModel.aggregate([
         {
@@ -351,17 +386,17 @@ app.get("/api/search", async (request, response) => {
           $limit: 15,
         },
         {
-          $project: resultData
+          $project: resultData,
         },
       ]);
       if (results) {
-        return response.json({status: 'ok', results: results});
+        return response.json({ status: "ok", results: results });
       }
     }
-    response.json({status: 'error'});
+    response.json({ status: "error" });
   } catch (error) {
     console.log(error);
-    response.json({status: 'error'});
+    response.json({ status: "error" });
   }
 });
 // Search function
@@ -369,20 +404,25 @@ app.get("/api/search-exact", async (request, response) => {
   try {
     const query = request.query;
     if (!query.id) {
-      return response.json({status: 'error'});
+      return response.json({ status: "error" });
     }
     const result = await ItemListingsModel.findOne({
       _id: query.id,
     });
     if (result) {
-      return response.json({status: 'ok', result: result});
+      return response.json({ status: "ok", result: result });
     }
-    response.json({status: 'error'});
+    response.json({ status: "error" });
   } catch (error) {
     console.log(error);
-    response.json({status: 'error'});
+    response.json({ status: "error" });
   }
 });
+
+// Chat Function
+
+app.use("/api/conversations", conversationRoute);
+app.use("/api/messages", messageRoute);
 
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);
