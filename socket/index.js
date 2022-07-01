@@ -1,25 +1,21 @@
-import { createServer } from "http";
 import { Server } from "socket.io";
+import express from "express";
 
-const httpServer = createServer();
-const SOCKET_ORIGIN = process.env.SOCKET_ORIGIN;
-let io;
-if (SOCKET_ORIGIN) {
-  // Heroku deployment
-  io = new Server(httpServer, {
-    cors: {
-      origin: SOCKET_ORIGIN
-    }
-  });
-} else {
-  io = new Server(httpServer, {
-    cors: {
-      origin: "http://localhost:3000"
-    }
-  });
-  
-  httpServer.listen(8000);
-}
+const port = process.env.PORT || 8000;
+const app = express();
+const httpServer = app.listen(port, () => {
+  console.log('socket-io app is running on port' + port);
+});
+const SOCKET_ORIGIN = process.env.SOCKET_ORIGIN || "http://localhost:3000";
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", SOCKET_ORIGIN);
+  next();
+});
+const io = new Server(httpServer, {
+  cors: {
+    origin: SOCKET_ORIGIN
+  }
+});
 
 let users = [];
 const addUser = (userId, socketId) => {
