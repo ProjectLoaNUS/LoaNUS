@@ -47,6 +47,7 @@ router.post("/addRequest", async (req, res) => {
       }
     });
 });
+
 router.get("/getRequests", (req, res) => {
     ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'telegram', 'date', 'listedBy'], null, (err, requests) => {
         if (err) {
@@ -67,6 +68,16 @@ router.post("/getRequestsOfUser", async (req, res) => {
   const requestIds = user.itemsRequested;
   let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'telegram', 'date', 'listedBy']);
   return res.json({status: 'ok', requests: requests});
+});
+
+router.post("/rmRequest", async (request, response) => {
+  const itemId = request.body.itemId;
+  if (itemId) {
+    await ItemRequestsModel.deleteOne({ _id: itemId });
+    response.json({status: "ok"});
+  } else {
+    response.json({status: "error"});
+  }
 });
 
 module.exports = router;
