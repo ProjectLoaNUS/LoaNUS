@@ -97,13 +97,13 @@ function ProfilePage() {
           <ProfileNavBar>
             <ProfileLink link={PROFILE} text={"Listings"} />
             <ProfileLink link={PROFILE_BORROWED} text="Items Borrowed" />
-            <ProfileLink link={PROFILE_POINTS} text={"Points"} />
-            <ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
             <ProfileLink link={PROFILE_REQUESTS} text={"Requests"} />
+            <ProfileLink link={PROFILE_POINTS} text={"Points"} />
+            {/*<ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
             <ProfileLink
               link={PROFILE_REWARDS_CLAIMED}
               text={"Rewards Claimed"}
-            />
+            />*/}
           </ProfileNavBar>
           <InformationDisplayContainer>
             <InformationDisplay />

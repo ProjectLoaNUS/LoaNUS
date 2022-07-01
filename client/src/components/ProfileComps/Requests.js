@@ -106,7 +106,7 @@ function Requests() {
     <MainContainer>
       <Tabs variant="scrollable" value={selectedTab} onChange={handleChange}>
         <Tab label="Your Requests"></Tab>
-        <Tab label="Requests for approval"></Tab>
+        {/*<Tab label="Requests for approval"></Tab>*/}
       </Tabs>
       <TabPanel value={selectedTab} index={0}>
         <PaddedGrid container spacing={1}>
@@ -118,9 +118,9 @@ function Requests() {
             onClickAction={deleteRequestAction} />
         </PaddedGrid>
       </TabPanel>
-      <TabPanel value={selectedTab} index={1}>
+      {/*<TabPanel value={selectedTab} index={1}>
         No Requests currently
-      </TabPanel>
+      </TabPanel>*/}
     </MainContainer>
   );
 }
