@@ -7,7 +7,8 @@ export default function ReturnDateField(props) {
     const { returnDate, setReturnDate, isDateError, setIsDateError } = props;
 
     const handleChangeDate = (newDate) => {
-        const dateNow = new Date().setHours(0, 0, 0, 0);
+        const dateNow = new Date();
+        dateNow.setHours(0, 0, 0, 0);
         if (newDate < dateNow) {
             setIsDateError(true);
         } else {

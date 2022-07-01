@@ -1,6 +1,9 @@
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ButtonComponent from "../Button";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../../database/const";
+import { useAuth } from "../../database/auth";
 
 const CoinsContainer = styled.div`
     border: 1px solid #c9c9c9;
@@ -30,6 +33,28 @@ const StyledCoin = styled(CurrencyExchangeIcon)`
 `;
 
 export default function Points() {
+    const [ points, setPoints ] = useState(-1);
+    const { user } = useAuth();
+
+    useEffect(() => {
+        fetch(`${BACKEND_URL}/api/getPointsOfUser`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user.id
+            }),
+        })
+        .then(req => req.json())
+        .then(data => {
+            if (data.status === "ok" && data.points !== undefined) {
+                setPoints(data.points);
+            } else {
+                console.log("Error fetching user's points from backend");
+            }
+        });
+    }, []);
 
     return (
         <>
@@ -37,7 +62,7 @@ export default function Points() {
             <CoinsContainer>
                 <CoinsSubContainer>
                 <StyledCoin></StyledCoin>
-                <h2>520 Coins</h2>
+                <h2>{ points > -1 ? points : "..." } Coins</h2>
                 </CoinsSubContainer>
 
                 <ButtonComponent

@@ -4,7 +4,7 @@ import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 
 export default function ItemList(props) {
-    const { CardContainer, imageUrls, setImageUrls, texts, setTexts } = props;
+    const { CardContainer, imageUrls, setImageUrls, texts, setTexts, buttonText, onActionDone, onClickAction } = props;
 
     return (
         <>
@@ -20,10 +20,12 @@ export default function ItemList(props) {
                         setTexts(prevTexts => {
                             return prevTexts.filter(other => other !== text);
                         });
-                        setImageUrls(prevUrls => {
-                            const thisUrl = prevUrls[index];
-                            return prevUrls.filter(other => other !== thisUrl);
-                        });
+                        if (setImageUrls) {
+                            setImageUrls(prevUrls => {
+                                const thisUrl = prevUrls[index];
+                                return prevUrls.filter(other => other !== thisUrl);
+                            });
+                        }
                     }
 
                     function Item() {
@@ -31,15 +33,17 @@ export default function ItemList(props) {
                             <ItemCard
                                 itemId={text._id}
                                 date={date}
-                                imagesUrl={(imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading])}
+                                imagesUrl={imageUrls && ( (imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading]) )}
                                 title={text.title}
-                                userName={text.userName}
+                                owner={text.listedBy}
                                 deadline={deadline}
                                 category={category}
                                 description={text.description}
                                 location={text.location}
                                 telegram={text.telegram}
-                                removeItem={removeItem} />
+                                onActionDone={onActionDone || removeItem}
+                                onClickAction={onClickAction}
+                                buttonText={buttonText} />
                         );
                     }
 

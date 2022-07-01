@@ -93,6 +93,10 @@ export default function NewItemCard() {
     const onSubmitItem = async (event) => {
         event.preventDefault();
         const date = new Date().toISOString();
+        const thisUser = {
+            id: user.id,
+            name: user.displayName
+        };
 
         let object = {
             method: "POST"
@@ -106,8 +110,7 @@ export default function NewItemCard() {
                 location: location,
                 telegram: telegramHandle,
                 date: date,
-                userName: user.displayName,
-                email: user.email
+                listedBy: thisUser
             });
         } else {
             const itemData = new FormData();
@@ -121,8 +124,7 @@ export default function NewItemCard() {
             itemData.append("location", location);
             itemData.append("telegram", telegramHandle);
             itemData.append("date", date);
-            itemData.append("userName", user.displayName);
-            itemData.append("email", user.email);
+            itemData.append("listedBy", JSON.stringify(thisUser));
             object["body"] = itemData;
         }
         const apiEndpoint = isRequest ? 
