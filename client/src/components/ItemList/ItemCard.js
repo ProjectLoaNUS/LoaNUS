@@ -79,7 +79,7 @@ export default function ItemCard(props) {
                         <CardMedia 
                         component="img"
                         image={imagesUrl[0]}
-                        alt="Item request image" />
+                        alt="Item listing image" />
                     </ImageDiv>
                 }
                 <CardActions>
