@@ -4,7 +4,7 @@ import express from "express";
 const port = process.env.PORT || 8000;
 const app = express();
 const httpServer = app.listen(port, () => {
-  console.log('socket-io app is running on port' + port);
+  console.log('socket-io app is running on port ' + port);
 });
 const SOCKET_ORIGIN = process.env.SOCKET_ORIGIN || "http://localhost:3000";
 app.use(function(req, res, next) {
