@@ -6,14 +6,14 @@ const app = express();
 const httpServer = app.listen(port, () => {
   console.log('socket-io app is running on port ' + port);
 });
-const SOCKET_ORIGIN = process.env.SOCKET_ORIGIN || "http://localhost:3000";
+const SOCKET_ORIGINS = process.env.SOCKET_ORIGIN || "[\"http://localhost:3000\"]";
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", SOCKET_ORIGIN);
   next();
 });
 const io = new Server(httpServer, {
   cors: {
-    origin: SOCKET_ORIGIN
+    origin: JSON.parse(SOCKET_ORIGINS)
   }
 });
 
