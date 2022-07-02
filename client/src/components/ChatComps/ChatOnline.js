@@ -7,6 +7,7 @@ import axios from "axios";
 import { current } from "@reduxjs/toolkit";
 const MainOnlineContainer = styled.div`
   flex: 3;
+  overflow-y: auto;
 `;
 const OnlineContainer = styled.div`
   display: flex;
