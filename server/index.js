@@ -259,6 +259,15 @@ app.get("/allusers", async (req, res) => {
     console.log(err);
   }
 });
+app.post("/api/getNamesOfUsers", async (req, res) => {
+  const users = req.body.users;
+  if (!users) {
+    return res.json({status: "error"});
+  }
+  const userDetails = await UserModel.find({'_id': { $in: users.map(user => user.userId)} }, 
+      ["_id", "name"]);
+  return res.json({status: "ok", userDetails: userDetails});
+})
 
 // Email verification route
 app.get("/verify-email", async (req, res, next) => {

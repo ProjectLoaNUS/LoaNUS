@@ -98,7 +98,7 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [newmessage, setNewMessage] = useState("");
   const [arrivalmessage, setArrivalMessage] = useState(null);
-  const [onlineusers, setOnlineUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const scrollRef = useRef();
   useEffect(() => {
@@ -134,7 +134,19 @@ function ChatPage() {
   useEffect(() => {
     socket.current.emit("addUser", user?.id);
     socket.current.on("getUsers", (users) => {
-      setOnlineUsers(users);
+      fetch(`${BACKEND_URL}/api/getNamesOfUsers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          users: users
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        setOnlineUsers(data.userDetails);
+      });
     });
   }, [user]);
 
@@ -144,7 +156,6 @@ function ChatPage() {
         const res = await axios.get(
           `${BACKEND_URL}/api/conversations/` + user.id
         );
-        console.log(res.data);
         setConversations(res.data);
       } catch (err) {
         console.log(err);
@@ -236,7 +247,7 @@ function ChatPage() {
             )}
           </ChatBoxWrapper>
         </ChatBoxContainer>
-        <ChatOnline currentId={user?.id} setCurrentChat={setCurrentChat} />
+        <ChatOnline currentId={user?.id} setCurrentChat={setCurrentChat} onlineUsers={onlineUsers} />
       </ChatContainer>
     </>
   );

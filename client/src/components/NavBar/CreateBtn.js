@@ -19,7 +19,7 @@ export default function CreateBtn() {
         if (user) {
             navigate(NEW_ITEM);
         } else {
-            navigate(SIGN_IN, {state: {open: true}});
+            navigate(SIGN_IN, {state: {open: true, message: "Sign in before requesting or listing an item"}});
         }
     }
 
