@@ -59,7 +59,7 @@ function SignInPage() {
           <Typography variant="h3">LoaNUS</Typography>
         </FlexBox>
         <AuthCard />
-        <NotSignedInToast open={state && state.open} />
+        <NotSignedInToast open={state && state.open} message={state && state.message} />
       </BodyContainer>
     </ContainerStyle>
   );
