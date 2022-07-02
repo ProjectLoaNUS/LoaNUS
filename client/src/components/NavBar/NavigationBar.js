@@ -7,6 +7,7 @@ import CreateBtn from "./CreateBtn";
 import SearchBar from "../SearchBar/SearchBar";
 import { theme } from "../Theme";
 import AppBtn from "./AppBtn/AppBtn";
+import ChatBtn from "./ChatBtn";
 
 const MainContainer = styled.nav`
   background-color: ${theme.palette.primary.main};
@@ -29,6 +30,7 @@ function NavigationBar() {
         <AppBtn component={ Link } to="/" color="primary" dark={true} iconStyles={iconStyles} />
         <SearchBar />
         <CreateBtn />
+        <ChatBtn />
         { user ? <ProfileBtn /> : <SignInBtn url='/signin' /> }
       </MainContainer>
   );
