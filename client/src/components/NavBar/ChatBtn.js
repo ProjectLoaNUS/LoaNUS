@@ -19,7 +19,7 @@ export default function ChatBtn() {
         if (user) {
             navigate(CHAT);
         } else {
-            navigate(SIGN_IN, {state: {open: true}});
+            navigate(SIGN_IN, {state: {open: true, message: "Sign in before chatting with other users"}});
         }
     }
 
