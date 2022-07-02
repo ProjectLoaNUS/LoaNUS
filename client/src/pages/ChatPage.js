@@ -12,6 +12,8 @@ import ButtonComponent from "../components/Button";
 import { Avatar } from "@mui/material";
 import { io } from "socket.io-client";
 import { CollectionsBookmarkOutlined } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { SIGN_IN } from "./routes";
 
 const ChatContainer = styled.div`
   height: calc(100vh - 10vh);
@@ -20,16 +22,21 @@ const ChatContainer = styled.div`
 //ChatMenu
 const ChatMenuContainer = styled.div`
   flex: 3.5;
-`;
-const MenuWrapper = styled.div`
   padding: 10px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+const MenuWrapper = styled.div`
+  flex: 1 1 auto;
+  overflow-y: auto;
 `;
 const ChatMenuInput = styled.input`
   width: 90%;
   padding: 10px 0;
   border: none;
   border-bottom: 1px solid gray;
+  flex: 0 0 auto;
 `;
 //Chatbox
 const ChatBoxContainer = styled.div`
@@ -101,6 +108,8 @@ function ChatPage() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const scrollRef = useRef();
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!user) {
       const storedUser = localStorage.getItem("user");
@@ -110,6 +119,8 @@ function ChatPage() {
         } catch (err) {
           console.log(err);
         }
+      } else {
+        navigate(SIGN_IN, {state: {open: true, message: "Sign in before chatting with other users"}});
       }
     }
   }, [user, setUser]);
@@ -211,10 +222,10 @@ function ChatPage() {
       <NavigationBar></NavigationBar>
       <ChatContainer>
         <ChatMenuContainer>
+          <ChatMenuInput placeholder="Search for friends" />
           <MenuWrapper>
-            <ChatMenuInput placeholder="Search for friends" />
-            {conversations.map((conv) => (
-              <div onClick={() => setCurrentChat(conv)}>
+            {conversations.map((conv, index) => (
+              <div key={index} onClick={() => setCurrentChat(conv)}>
                 <Conversation conversation={conv} currentuser={user} />
               </div>
             ))}

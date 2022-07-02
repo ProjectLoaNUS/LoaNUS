@@ -2,14 +2,23 @@ const router = require("express").Router();
 const Conversation = require("../models/Conversation");
 
 //new conv
-
 router.post("/", async (req, res) => {
-  const newConversation = new Conversation({
-    members: [req.body.senderId, req.body.receiverId],
-  });
+  if (!req.body.senderId) {
+    return res.status(500).json({error: "Invalid sender"});
+  }
+  if (!req.body.receiverId) {
+    return res.status(500).json({error: "Invalid receiver"});
+  }
+  const users = [req.body.senderId, req.body.receiverId];
+  let conversation = await Conversation.findOne({ members: { $all: users } });
+  if (!conversation) {
+    conversation = new Conversation({
+      members: users,
+    });
+  }
 
   try {
-    const savedConversation = await newConversation.save();
+    const savedConversation = await conversation.save();
     res.status(200).json(savedConversation);
   } catch (err) {
     res.status(500).json(err);
