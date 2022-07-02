@@ -144,7 +144,6 @@ function ChatPage() {
         const res = await axios.get(
           `${BACKEND_URL}/api/conversations/` + user.id
         );
-        console.log(res.data);
         setConversations(res.data);
       } catch (err) {
         console.log(err);
