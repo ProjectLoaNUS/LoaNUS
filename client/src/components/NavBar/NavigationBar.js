@@ -8,6 +8,7 @@ import SearchBar from "../SearchBar/SearchBar";
 import { theme } from "../Theme";
 import AppBtn from "./AppBtn/AppBtn";
 import ChatBtn from "./ChatBtn";
+import { Stack } from "@mui/material";
 
 const MainContainer = styled.nav`
   background-color: ${theme.palette.primary.main};
@@ -17,6 +18,7 @@ const MainContainer = styled.nav`
   align-items: center;
   justify-content: space-between;
   padding: 0ex 1ex;
+  gap: 1ex;
 `;
 
 const iconStyles = {
@@ -29,9 +31,15 @@ function NavigationBar() {
       <MainContainer>
         <AppBtn component={ Link } to="/" color="primary" dark={true} iconStyles={iconStyles} />
         <SearchBar />
-        <CreateBtn />
-        <ChatBtn />
-        { user ? <ProfileBtn /> : <SignInBtn url='/signin' /> }
+        { user ?
+          <Stack direction="row">
+            <CreateBtn />
+            <ChatBtn />
+            <ProfileBtn />
+          </Stack>
+        :
+          <SignInBtn url='/signin' />
+        }
       </MainContainer>
   );
 }
