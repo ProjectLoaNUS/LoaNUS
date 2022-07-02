@@ -3,7 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useState } from "react";
 
 export default function NotSignedInToast(props) {
-    const { open } = props;
+    const { open, message } = props;
     const [ isOpen, setIsOpen ] = useState(open);
 
     const handleClose = (event, reason) => {
@@ -18,7 +18,7 @@ export default function NotSignedInToast(props) {
             open={isOpen}
             autoHideDuration={6000}
             onClose={handleClose}
-            message="Sign in before requesting or listing an item"
+            message={message || "Please sign in to continue"}
             action={
                 <IconButton aria-label="close" color="inherit" size="small" onClick={handleClose}>
                     <CloseIcon fontSize="small" />
