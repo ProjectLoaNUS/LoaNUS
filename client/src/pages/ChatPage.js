@@ -20,16 +20,21 @@ const ChatContainer = styled.div`
 //ChatMenu
 const ChatMenuContainer = styled.div`
   flex: 3.5;
-`;
-const MenuWrapper = styled.div`
   padding: 10px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+const MenuWrapper = styled.div`
+  flex: 1 1 auto;
+  overflow-y: auto;
 `;
 const ChatMenuInput = styled.input`
   width: 90%;
   padding: 10px 0;
   border: none;
   border-bottom: 1px solid gray;
+  flex: 0 0 auto;
 `;
 //Chatbox
 const ChatBoxContainer = styled.div`
@@ -211,10 +216,10 @@ function ChatPage() {
       <NavigationBar></NavigationBar>
       <ChatContainer>
         <ChatMenuContainer>
+          <ChatMenuInput placeholder="Search for friends" />
           <MenuWrapper>
-            <ChatMenuInput placeholder="Search for friends" />
-            {conversations.map((conv) => (
-              <div onClick={() => setCurrentChat(conv)}>
+            {conversations.map((conv, index) => (
+              <div key={index} onClick={() => setCurrentChat(conv)}>
                 <Conversation conversation={conv} currentuser={user} />
               </div>
             ))}
