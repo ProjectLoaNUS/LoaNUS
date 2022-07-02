@@ -1,10 +1,8 @@
 import React from "react";
-import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 
-import { useAuth } from "../../database/auth";
 import axios from "axios";
 import { current } from "@reduxjs/toolkit";
 const MainOnlineContainer = styled.div`
@@ -32,15 +30,7 @@ const OnlineIcon = styled.div`
 `;
 const Name = styled.span``;
 
-function ChatOnline({ currentId, setCurrentChat }) {
-  const [friends, setFriends] = useState([]);
-  useEffect(() => {
-    const getFriends = async () => {
-      const res = await axios.get(`${BACKEND_URL}/allusers`);
-      setFriends(res.data);
-    };
-    getFriends();
-  }, []);
+function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
   const HandleClick = async (otherId) => {
     let convoUsers = {
       senderId: currentId,
@@ -58,17 +48,17 @@ function ChatOnline({ currentId, setCurrentChat }) {
   };
   return (
     <MainOnlineContainer>
-      {friends.map((f) => (
+      {onlineUsers && onlineUsers.map((user) => (
         <OnlineContainer
           onClick={() => {
-            HandleClick(f._id);
+            HandleClick(user._id);
           }}
         >
           <ImageContainer>
             <Avatar></Avatar>
             <OnlineIcon></OnlineIcon>
           </ImageContainer>
-          <Name>{f.name}</Name>
+          <Name>{user.name}</Name>
         </OnlineContainer>
       ))}
     </MainOnlineContainer>
