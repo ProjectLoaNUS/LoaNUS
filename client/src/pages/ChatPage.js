@@ -140,7 +140,7 @@ function ChatPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          users: users
+          users: users.filter(otherUser => otherUser.userId !== user.id)
         })
       })
       .then(res => res.json())
