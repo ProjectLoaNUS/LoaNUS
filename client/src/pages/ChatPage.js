@@ -12,6 +12,8 @@ import ButtonComponent from "../components/Button";
 import { Avatar } from "@mui/material";
 import { io } from "socket.io-client";
 import { CollectionsBookmarkOutlined } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { SIGN_IN } from "./routes";
 
 const ChatContainer = styled.div`
   height: calc(100vh - 10vh);
@@ -106,6 +108,8 @@ function ChatPage() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const scrollRef = useRef();
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!user) {
       const storedUser = localStorage.getItem("user");
@@ -115,6 +119,8 @@ function ChatPage() {
         } catch (err) {
           console.log(err);
         }
+      } else {
+        navigate(SIGN_IN, {state: {open: true, message: "Sign in before chatting with other users"}});
       }
     }
   }, [user, setUser]);
