@@ -202,7 +202,7 @@ export default function SearchTextField() {
       <DetailsDialog
         itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
-        userName={clickResult && (clickResult.listedBy && clickResult.listedBy.name)}
+        owner={clickResult && clickResult.listedBy}
         title={clickResult && clickResult.title}
         imageUrls={(clickResultImgs !== undefined && (clickResultImgs).length === 0) ? [NoImage] : (clickResultImgs || [Loading])}
         category={clickResult && clickResult.category}

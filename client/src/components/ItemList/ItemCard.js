@@ -117,7 +117,7 @@ export default function ItemCard(props) {
       <DetailsDialog
         itemId={itemId}
         date={date}
-        userName={owner && owner.name}
+        owner={owner}
         title={title}
         imageUrls={imagesUrl}
         category={category}

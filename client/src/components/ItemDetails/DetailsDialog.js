@@ -37,7 +37,7 @@ const CentredButton = styled(Button)`
 `;
 
 export default function DetailsDialog(props) {
-    const { itemId, date, userName, title, category, description, location, telegram, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
+    const { itemId, date, owner, title, category, description, location, telegram, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
     const { user } = useAuth();
     const [ isBtnDisabled, setIsBtnDisabled ] = useState(false);
     const [ isActionError, setIsActionError ] = useState(false);
@@ -62,7 +62,7 @@ export default function DetailsDialog(props) {
               handleClose={handleClose}
               title={title}
               date={date}
-              userName={userName}
+              userName={owner && owner.name}
               category={category}
               description={description}
               deadline={deadline}
