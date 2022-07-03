@@ -15,15 +15,20 @@ import { CollectionsBookmarkOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
 
+const PageContainer = styled.div`
+  height: 100vh;
+`;
 const ChatContainer = styled.div`
-  height: calc(100vh - 10vh);
+  height: 90vh;
+  height: calc(100% - 10vh);
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
 `;
 //ChatMenu
 const ChatMenuContainer = styled.div`
   flex: 3.5;
   padding: 10px;
-  height: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -41,6 +46,7 @@ const ChatMenuInput = styled.input`
 //Chatbox
 const ChatBoxContainer = styled.div`
   flex: 5.5;
+  padding-bottom: 1ch;
 `;
 const NoConversationDisplay = styled.span`
   position: absolute;
@@ -218,7 +224,7 @@ function ChatPage() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   return (
-    <>
+    <PageContainer>
       <NavigationBar></NavigationBar>
       <ChatContainer>
         <ChatMenuContainer>
@@ -264,7 +270,7 @@ function ChatPage() {
         </ChatBoxContainer>
         <ChatOnline currentId={user?.id} setCurrentChat={setCurrentChat} onlineUsers={onlineUsers} />
       </ChatContainer>
-    </>
+    </PageContainer>
   );
 }
 
