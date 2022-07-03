@@ -70,7 +70,7 @@ export default function DetailsDialog(props) {
                   handleClose={handleClose}
                   title={title}
                   date={date}
-                  userName={owner && owner.name}
+                  owner={owner}
                   category={category}
                   description={description}
                   deadline={deadline}
