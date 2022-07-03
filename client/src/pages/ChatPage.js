@@ -175,10 +175,12 @@ function ChatPage() {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get(
+        axios.get(
           `${BACKEND_URL}/api/conversations/` + user.id
-        );
-        setConversations(res.data);
+        )
+        .then(res => {
+          setConversations(res.data);
+        });
       } catch (err) {
         console.log(err);
       }
@@ -189,10 +191,12 @@ function ChatPage() {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(
+        axios.get(
           `${BACKEND_URL}/api/messages/` + currentChat?._id
-        );
-        setMessages(res.data);
+        )
+        .then(res => {
+          setMessages(res.data);
+        });
       } catch (err) {
         console.log(err);
       }

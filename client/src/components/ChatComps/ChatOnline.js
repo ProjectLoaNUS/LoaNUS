@@ -38,11 +38,13 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
       receiverId: otherId,
     };
     try {
-      const res = await axios.post(
+      axios.post(
         `${BACKEND_URL}/api/conversations`,
         convoUsers
-      );
-      setCurrentChat(res.data);
+      )
+      .then(res => {
+        setCurrentChat(res.data);
+      });
     } catch (err) {
       console.log(err);
     }
