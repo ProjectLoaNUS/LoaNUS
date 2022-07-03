@@ -22,7 +22,6 @@ export default function ChatView(props) {
     const [ messages, setMessages ] = useState([]);
     const [ arrivalMessage, setArrivalMessage ] = useState(null);
     const socket = useRef();
-    const scrollRef = useRef(null);
 
     const openSocket = async () => {
         socket.current = io(SOCKET_URL);
@@ -64,10 +63,6 @@ export default function ChatView(props) {
           setMessages((prev) => [...prev, arrivalMessage]);
     }, [arrivalMessage, chat]);
 
-    useEffect(() => {
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
-
     return (
         <>
             <DialogTitle align="center">
@@ -97,12 +92,11 @@ export default function ChatView(props) {
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
-            <DialogContainer ref={scrollRef}>
+            <DialogContainer>
                 <ChatBox
                   currentChat={chat}
                   messages={messages}
                   setMessages={setMessages}
-                  scrollRef={scrollRef}
                   socket={socket}
                   user={user} />
             </DialogContainer>
