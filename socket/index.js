@@ -45,6 +45,8 @@ io.on("connection", (socket) => {
         senderId,
         text,
       });
+    } else {
+      console.log(`Error: Invalid receiver ID ${receiverId}`);
     }
   });
   //When disconnect
