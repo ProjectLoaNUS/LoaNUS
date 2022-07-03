@@ -33,10 +33,6 @@ export default function ChatView(props) {
           });
         });
         socket.current.emit("addUser", user?.id);
-    
-        return () => {
-          socket.current.disconnect();
-        }
     };
 
     const fetchMessages = async () => {
@@ -53,8 +49,12 @@ export default function ChatView(props) {
     };
 
     useEffect(() => {
-        fetchMessages();
         openSocket();
+        fetchMessages();
+    
+        return () => {
+          socket.current.disconnect();
+        }
     }, []);
 
     useEffect(() => {
