@@ -38,7 +38,7 @@ export default function DetailsView(props) {
         handleClose,
         title,
         date,
-        userName,
+        owner,
         category,
         description,
         deadline,
@@ -57,6 +57,7 @@ export default function DetailsView(props) {
         user,
         openChat
     } = props;
+    const isOwner = owner.id === user.id;
 
     const setError = (isError, helperText) => {
         setIsActionError(isError);
@@ -89,7 +90,7 @@ export default function DetailsView(props) {
                 {imageUrls && <ImageList imageUrls={imageUrls} />}
                 <Row>
                     <Typography variant="body1" align="left">{date} by</Typography>
-                    <ContrastTypo variant="body1" align="left"> {userName}</ContrastTypo>
+                    <ContrastTypo variant="body1" align="left"> {owner && owner.name}</ContrastTypo>
                 </Row>
                 <Row>
                     <Typography variant="body1" align="left">In</Typography>
@@ -106,12 +107,14 @@ export default function DetailsView(props) {
                 <BoldedTypo variant="h6" align="left">Meet-up</BoldedTypo>
                 <Typography variant="body1" align="left">{location}</Typography>
                 <ButtonGroup>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={openChat}>
-                        Chat
-                    </Button>
+                    { !isOwner &&
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={openChat}>
+                            Chat
+                        </Button>
+                    }
                     <Button
                       disabled={isBtnDisabled}
                       variant="contained"
