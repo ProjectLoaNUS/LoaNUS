@@ -110,7 +110,6 @@ function ChatPage() {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
   const [arrivalmessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
@@ -227,8 +226,6 @@ function ChatPage() {
             currentChat={currentChat}
             messages={messages}
             setMessages={setMessages}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
             scrollRef={scrollRef}
             socket={socket}
             user={user} />

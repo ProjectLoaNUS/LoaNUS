@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ButtonComponent from "../Button";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
+import { useState } from "react";
 
 const ChatBoxWrapper = styled.div`
     display: flex;
@@ -36,7 +37,8 @@ const NoConversationDisplay = styled.span`
 `;
 
 export default function ChatBox(props) {
-    const { currentChat, messages, setMessages, newMessage, setNewMessage, scrollRef, socket, user } = props;
+    const { currentChat, messages, setMessages, scrollRef, socket, user } = props;
+    const [ newMessage, setNewMessage ] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
