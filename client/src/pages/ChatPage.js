@@ -14,16 +14,22 @@ import { io } from "socket.io-client";
 import { CollectionsBookmarkOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
+import ChatBox from "../components/ChatComps/ChatBox";
 
+const PageContainer = styled.div`
+  height: 100vh;
+`;
 const ChatContainer = styled.div`
-  height: calc(100vh - 10vh);
+  height: 90vh;
+  height: calc(100% - 10vh);
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
 `;
 //ChatMenu
 const ChatMenuContainer = styled.div`
   flex: 3.5;
   padding: 10px;
-  height: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -41,6 +47,7 @@ const ChatMenuInput = styled.input`
 //Chatbox
 const ChatBoxContainer = styled.div`
   flex: 5.5;
+  padding-bottom: 1ch;
 `;
 const NoConversationDisplay = styled.span`
   position: absolute;
@@ -103,11 +110,9 @@ function ChatPage() {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [newmessage, setNewMessage] = useState("");
   const [arrivalmessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
-  const scrollRef = useRef();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -168,10 +173,12 @@ function ChatPage() {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get(
+        axios.get(
           `${BACKEND_URL}/api/conversations/` + user.id
-        );
-        setConversations(res.data);
+        )
+        .then(res => {
+          setConversations(res.data);
+        });
       } catch (err) {
         console.log(err);
       }
@@ -182,43 +189,21 @@ function ChatPage() {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(
+        axios.get(
           `${BACKEND_URL}/api/messages/` + currentChat?._id
-        );
-        setMessages(res.data);
+        )
+        .then(res => {
+          setMessages(res.data);
+        });
       } catch (err) {
         console.log(err);
       }
     };
     getMessages();
   }, [currentChat]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const message = {
-      sender: user.id,
-      text: newmessage,
-      conversationId: currentChat._id,
-    };
-    const receiverId = currentChat.members.find((member) => member !== user.id);
-    socket.current.emit("sendMessage", {
-      senderId: user.id,
-      receiverId,
-      text: newmessage,
-    });
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/messages`, message);
-      setMessages([...messages, res.data]);
-      setNewMessage("");
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
   return (
-    <>
+    <PageContainer>
       <NavigationBar></NavigationBar>
       <ChatContainer>
         <ChatMenuContainer>
@@ -232,39 +217,16 @@ function ChatPage() {
           </MenuWrapper>
         </ChatMenuContainer>
         <ChatBoxContainer>
-          <ChatBoxWrapper>
-            {currentChat ? (
-              <>
-                <ChatTop>
-                  {messages.map((m) => (
-                    <div ref={scrollRef}>
-                      <Message message={m} own={m.sender === user.id} />
-                    </div>
-                  ))}
-                </ChatTop>
-                <ChatBottom>
-                  <TextBox
-                    value={newmessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Write Something"
-                  ></TextBox>
-                  <ButtonComponent
-                    state="primary"
-                    text={"Send"}
-                    onClick={handleSubmit}
-                  ></ButtonComponent>
-                </ChatBottom>{" "}
-              </>
-            ) : (
-              <NoConversationDisplay>
-                Open a conversation to start a chat
-              </NoConversationDisplay>
-            )}
-          </ChatBoxWrapper>
+          <ChatBox
+            currentChat={currentChat}
+            messages={messages}
+            setMessages={setMessages}
+            socket={socket}
+            user={user} />
         </ChatBoxContainer>
         <ChatOnline currentId={user?.id} setCurrentChat={setCurrentChat} onlineUsers={onlineUsers} />
       </ChatContainer>
-    </>
+    </PageContainer>
   );
 }
 

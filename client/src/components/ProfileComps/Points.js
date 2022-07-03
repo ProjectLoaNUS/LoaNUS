@@ -33,7 +33,7 @@ const StyledCoin = styled(CurrencyExchangeIcon)`
 `;
 
 export default function Points() {
-    const [ points, setPoints ] = useState(-1);
+    const [ points, setPoints ] = useState(null);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -54,7 +54,7 @@ export default function Points() {
                 console.log("Error fetching user's points from backend");
             }
         });
-    }, []);
+    }, [user]);
 
     return (
         <>
@@ -62,7 +62,7 @@ export default function Points() {
             <CoinsContainer>
                 <CoinsSubContainer>
                 <StyledCoin></StyledCoin>
-                <h2>{ points > -1 ? points : "..." } Coins</h2>
+                <h2>{ points !== null ? points : "..." } Coins</h2>
                 </CoinsSubContainer>
 
                 <ButtonComponent

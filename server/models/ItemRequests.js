@@ -17,10 +17,6 @@ const ItemRequestsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  telegram: {
-    type: String,
-    required: true,
-  },
   date: {
     type: String,
     required: true

@@ -31,8 +31,7 @@ export const borrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone
             });
             const data = await req.json();
             if (data.status !== "ok") {
-                setError(true, "");
-                console.log(`Error occurred in backend while marking item ${itemId} as borrowed`);
+                setError(true, BORROW_RES_TEXT[data.statusCode]);
             } else {
                 setError(false, BORROW_RES_TEXT[data.statusCode]);
                 setIsButtonEnabled(false);

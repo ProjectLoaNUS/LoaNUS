@@ -37,7 +37,6 @@ router.post("/addListing", upload.array("images", 4), (request, response, next) 
       title: request.body.title,
       description: request.body.description,
       location: request.body.location,
-      telegram: request.body.telegram,
       date: request.body.date,
       listedBy: owner
     };
@@ -80,7 +79,7 @@ router.post("/rmListing", async (request, response) => {
 });
 
 router.get("/getListingsTexts", (req, res) => {
-    ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy', 'borrowedBy'], null, (err, listings) => {
+    ItemListingsModel.find({}, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'date', 'listedBy', 'borrowedBy'], null, (err, listings) => {
         if (err) {
           res.status(500).send("An error occurred", err);
         } else {
@@ -109,7 +108,7 @@ router.post("/getListingsTextsOfUser", async (req, res) => {
     return res.json({status: 'error'});
   }
   const listingIds = user.itemsListed;
-  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy']);
+  let listingsTexts = await ItemListingsModel.find({'_id': { $in: listingIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'date', 'listedBy']);
   return res.json({status: 'ok', listingsTexts: listingsTexts});
 });
 router.post("/getListingsImgsOfUser", async (req, res) => {
@@ -176,7 +175,7 @@ router.post("/getBorrowedTextsOfUser", async (req, res) => {
     return res.json({status: 'error'});
   }
   const borrowedIds = user.itemsBorrowed;
-  let borrowedTexts = await ItemListingsModel.find({'_id': { $in: borrowedIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'telegram', 'date', 'listedBy']);
+  let borrowedTexts = await ItemListingsModel.find({'_id': { $in: borrowedIds} }, ['_id', 'category', 'title', 'deadline', 'description', 'location', 'date', 'listedBy']);
   return res.json({status: 'ok', borrowedTexts: borrowedTexts});
 });
 router.post("/getBorrowedImgsOfUser", async (req, res) => {

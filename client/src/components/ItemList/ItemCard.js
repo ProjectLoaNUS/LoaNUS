@@ -57,7 +57,6 @@ export default function ItemCard(props) {
     category,
     description,
     location,
-    telegram,
     deadline,
     buttonText,
     onActionDone,
@@ -117,13 +116,12 @@ export default function ItemCard(props) {
       <DetailsDialog
         itemId={itemId}
         date={date}
-        userName={owner && owner.name}
+        owner={owner}
         title={title}
         imageUrls={imagesUrl}
         category={category}
         description={description}
         location={location}
-        telegram={telegram}
         deadline={deadline}
         open={open}
         setOpen={setOpen}

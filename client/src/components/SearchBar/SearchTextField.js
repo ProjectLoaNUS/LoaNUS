@@ -131,7 +131,6 @@ export default function SearchTextField() {
         title: rawResult.title,
         description: rawResult.description,
         location: rawResult.location,
-        telegram: rawResult.telegram,
         listedBy: rawResult.listedBy,
         borrowedBy: rawResult.borrowedBy
       }
@@ -202,13 +201,12 @@ export default function SearchTextField() {
       <DetailsDialog
         itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
-        userName={clickResult && (clickResult.listedBy && clickResult.listedBy.name)}
+        owner={clickResult && clickResult.listedBy}
         title={clickResult && clickResult.title}
         imageUrls={(clickResultImgs !== undefined && (clickResultImgs).length === 0) ? [NoImage] : (clickResultImgs || [Loading])}
         category={clickResult && clickResult.category}
         description={clickResult && clickResult.description}
         location={clickResult && clickResult.location}
-        telegram={clickResult && clickResult.telegram}
         deadline={clickResult && clickResult.deadline}
         open={open}
         setOpen={setOpen}
