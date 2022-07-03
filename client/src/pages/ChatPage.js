@@ -113,7 +113,6 @@ function ChatPage() {
   const [arrivalmessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
-  const scrollRef = useRef();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -203,10 +202,6 @@ function ChatPage() {
     getMessages();
   }, [currentChat]);
 
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   return (
     <PageContainer>
       <NavigationBar></NavigationBar>
@@ -226,7 +221,6 @@ function ChatPage() {
             currentChat={currentChat}
             messages={messages}
             setMessages={setMessages}
-            scrollRef={scrollRef}
             socket={socket}
             user={user} />
         </ChatBoxContainer>

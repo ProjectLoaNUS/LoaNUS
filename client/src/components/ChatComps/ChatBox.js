@@ -3,7 +3,7 @@ import styled from "styled-components";
 import ButtonComponent from "../Button";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ChatBoxWrapper = styled.div`
     display: flex;
@@ -37,8 +37,9 @@ const NoConversationDisplay = styled.span`
 `;
 
 export default function ChatBox(props) {
-    const { currentChat, messages, setMessages, scrollRef, socket, user } = props;
+    const { currentChat, messages, setMessages, socket, user } = props;
     const [ newMessage, setNewMessage ] = useState("");
+    const chatRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -64,6 +65,10 @@ export default function ChatBox(props) {
         }
     };
 
+    useEffect(() => {
+        chatRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     return (
         <>
             <ChatBoxWrapper>
@@ -71,7 +76,7 @@ export default function ChatBox(props) {
                     <>
                         <ChatTop>
                             {messages.map((m, index) => (
-                                <div key={index} ref={scrollRef}>
+                                <div key={index} ref={chatRef}>
                                     <Message message={m} own={m.sender === user.id} />
                                 </div>
                             ))}
