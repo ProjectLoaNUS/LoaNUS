@@ -33,6 +33,7 @@ export default function ChatView(props) {
             createdAt: Date.now(),
           });
         });
+        socket.current.emit("addUser", user?.id);
     
         return () => {
           socket.current.disconnect();
