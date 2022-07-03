@@ -16,9 +16,6 @@ const DialogContainer = styled(DialogContent)`
 const GrowUp = styled(Grow)`
     transform-origin: bottom center;
 `;
-const Transition = forwardRef(function Transition(props, ref) {
-    return <GrowUp ref={ref} {...props} />;
-});
 const Row = styled.div`
     display: flex;
     flex-direction: row;
