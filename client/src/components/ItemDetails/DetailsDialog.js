@@ -32,6 +32,7 @@ export default function DetailsDialog(props) {
         setButtonHelperText("");
         setIsActionError(false);
         setIsBtnDisabled(false);
+        setIsDetailsView(true);
         setOpen(false);
     };
 
