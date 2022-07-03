@@ -1,40 +1,18 @@
-import { Button, Dialog, DialogContent, DialogTitle, Grow, IconButton, Link, Slide, Typography } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, Grow } from "@mui/material";
 import styled from "styled-components";
-import ImageList from "./ImageList";
-import { TransitionGroup } from "react-transition-group";
-import { forwardRef, useState } from "react";
-import { theme } from "../Theme";
+import { forwardRef, useEffect, useState } from "react";
 import { useAuth } from "../../database/auth";
 import DetailsView from "./DetailsView";
+import ChatView from "./ChatView";
+import axios from "axios";
+import { BACKEND_URL } from "../../database/const";
 
-const DialogContainer = styled(DialogContent)`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5ch;
-    align-items: stretch;
-    padding: 1rem;
-`;
 const GrowUp = styled(Grow)`
     transform-origin: bottom center;
 `;
 const Transition = forwardRef(function Transition(props, ref) {
     return <GrowUp ref={ref} {...props} />;
 });
-const Row = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-const ContrastTypo = styled(Typography)`
-    white-space: pre-wrap;
-    color: ${theme.palette.secondary.main};
-`;
-const BoldedTypo = styled(Typography)`
-    font-weight: bold;
-`;
-const CentredButton = styled(Button)`
-    align-self: center;
-`;
 
 export default function DetailsDialog(props) {
     const { itemId, date, owner, title, category, description, location, telegram, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
@@ -42,6 +20,8 @@ export default function DetailsDialog(props) {
     const [ isBtnDisabled, setIsBtnDisabled ] = useState(false);
     const [ isActionError, setIsActionError ] = useState(false);
     const [ buttonHelperText, setButtonHelperText ] = useState("");
+    const [ isDetailsView, setIsDetailsView ] = useState(true);
+    const [ chat, setChat ] = useState(null);
 
     const handleClose = () => {
         setButtonHelperText("");
@@ -50,6 +30,28 @@ export default function DetailsDialog(props) {
         setOpen(false);
     };
 
+    const fetchChat = async () => {
+        let convoUsers = {
+          senderId: user.id,
+          receiverId: owner.id,
+        };
+        try {
+          axios.post(
+            `${BACKEND_URL}/api/conversations`,
+            convoUsers
+          )
+          .then(res => {
+            setChat(res.data);
+          });
+        } catch (err) {
+          console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchChat();
+    }, []);
+
     return (
         <Dialog
           open={open}
@@ -57,29 +59,39 @@ export default function DetailsDialog(props) {
           scroll="paper"
           fullWidth={true}
           TransitionComponent={Transition}>
-            <DetailsView
-              imageUrls={imageUrls}
-              handleClose={handleClose}
-              title={title}
-              date={date}
-              userName={owner && owner.name}
-              category={category}
-              description={description}
-              deadline={deadline}
-              location={location}
-              telegram={telegram}
-              buttonAction={buttonAction}
-              onActionDone={onActionDone}
-              buttonText={buttonText}
-              buttonHelperText={buttonHelperText}
-              setButtonHelperText={setButtonHelperText}
-              isActionError={isActionError}
-              setIsActionError={setIsActionError}
-              isBtnDisabled={isBtnDisabled}
-              setIsBtnDisabled={setIsBtnDisabled}
-              setOpen={setOpen}
-              itemId={itemId}
-              user={user} />
+            { isDetailsView ? 
+                <DetailsView
+                  imageUrls={imageUrls}
+                  handleClose={handleClose}
+                  title={title}
+                  date={date}
+                  userName={owner && owner.name}
+                  category={category}
+                  description={description}
+                  deadline={deadline}
+                  location={location}
+                  telegram={telegram}
+                  buttonAction={buttonAction}
+                  onActionDone={onActionDone}
+                  buttonText={buttonText}
+                  buttonHelperText={buttonHelperText}
+                  setButtonHelperText={setButtonHelperText}
+                  isActionError={isActionError}
+                  setIsActionError={setIsActionError}
+                  isBtnDisabled={isBtnDisabled}
+                  setIsBtnDisabled={setIsBtnDisabled}
+                  setOpen={setOpen}
+                  itemId={itemId}
+                  user={user}
+                  openChat={() => setIsDetailsView(false)} />
+            :
+                <ChatView
+                  user={user}
+                  owner={owner}
+                  chat={chat}
+                  backToDetails={() => setIsDetailsView(true)}
+                  handleClose={handleClose} />
+            }
         </Dialog>
     );
 }

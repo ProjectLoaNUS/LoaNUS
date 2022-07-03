@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { theme } from "../Theme";
 import ImageList from "./ImageList";
 import { TransitionGroup } from "react-transition-group";
-import { forwardRef } from "react";
+import { CentredDiv } from "../FlexDiv";
 
 const DialogContainer = styled(DialogContent)`
     display: flex;
@@ -27,8 +27,8 @@ const ContrastTypo = styled(Typography)`
 const BoldedTypo = styled(Typography)`
     font-weight: bold;
 `;
-const CentredButton = styled(Button)`
-    align-self: center;
+const ButtonGroup = styled(CentredDiv)`
+    gap: 1rem;
 `;
 
 export default function DetailsView(props) {
@@ -54,7 +54,8 @@ export default function DetailsView(props) {
         setIsBtnDisabled,
         setOpen,
         itemId,
-        user
+        user,
+        openChat
     } = props;
     const telegramUsername = telegram ? telegram.replace("@", "") : "";
 
@@ -114,7 +115,21 @@ export default function DetailsView(props) {
                 <BoldedTypo variant="h6" align="left">Meet-up</BoldedTypo>
                 <Typography variant="body1" align="left">{location}</Typography>
                 <Link variant="body1" onClick={ onClickChat } color="secondary">Contact {telegram}</Link>
-                <CentredButton disabled={isBtnDisabled} variant="contained" color={isActionError ? "error" : "primary"} onClick={buttonAction(setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user)}>{buttonText}</CentredButton>
+                <ButtonGroup>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={openChat}>
+                        Chat
+                    </Button>
+                    <Button
+                      disabled={isBtnDisabled}
+                      variant="contained"
+                      color={isActionError ? "error" : "primary"}
+                      onClick={buttonAction(setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user)}>
+                        {buttonText}
+                    </Button>
+                </ButtonGroup>
                 <TransitionGroup>
                     { buttonHelperText &&
                         <Slide direction="right">
