@@ -13,6 +13,11 @@ const GrowUp = styled(Grow)`
 const Transition = forwardRef(function Transition(props, ref) {
     return <GrowUp ref={ref} {...props} />;
 });
+const StyledDialog = styled(Dialog)`
+    & .MuiDialog-paper {
+        overflow-y: hidden;
+    }
+`;
 
 export default function DetailsDialog(props) {
     const { itemId, date, owner, title, category, description, location, telegram, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
@@ -53,10 +58,9 @@ export default function DetailsDialog(props) {
     }, []);
 
     return (
-        <Dialog
+        <StyledDialog
           open={open}
           onClose={handleClose}
-          scroll="paper"
           fullWidth={true}
           TransitionComponent={Transition}>
             { isDetailsView ? 
@@ -92,6 +96,6 @@ export default function DetailsDialog(props) {
                   backToDetails={() => setIsDetailsView(true)}
                   handleClose={handleClose} />
             }
-        </Dialog>
+        </StyledDialog>
     );
 }

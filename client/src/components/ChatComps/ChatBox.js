@@ -11,13 +11,15 @@ const ChatBoxWrapper = styled.div`
     justify-content: space-between;
     height: 100%;
     position: relative;
+    overflow-y: auto;
 `;
 const ChatTop = styled.div`
-    height: 100%;
+    flex: 1 1 auto;
     overflow-y: scroll;
     padding-right: 10px;
 `;
 const ChatBottom = styled.div`
+    flex: 0 0 auto;
     margin-top: 5px;
     display: flex;
     align-items: center;

@@ -12,6 +12,7 @@ const DialogContainer = styled(DialogContent)`
     gap: 0.5ch;
     align-items: stretch;
     padding: 1rem;
+    overflow-y: auto;
 `;
 const GrowUp = styled(Grow)`
     transform-origin: bottom center;
