@@ -259,7 +259,7 @@ function ChatPage() {
                     text={"Send"}
                     onClick={handleSubmit}
                   ></ButtonComponent>
-                </ChatBottom>{" "}
+                </ChatBottom>
               </>
             ) : (
               <NoConversationDisplay>
