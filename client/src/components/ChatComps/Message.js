@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { format } from "timeago.js";
+import { theme } from "../Theme";
 
 const MessageContainer = styled.div.attrs((props) => ({
   className: props.className,
@@ -26,13 +27,15 @@ const Text = styled.p.attrs((props) => ({
   className: props.className,
 }))`
   &.own {
-    background-color: gray;
+    border: 1px solid ${theme.palette.primary.main};
+    background-color:  ${theme.palette.primary.contrastText};
+    color: ${theme.palette.primary.main};
   }
   margin-left: 10px;
   padding: 10px;
   border-radius: 15px;
-  background-color: #eb8736;
-  color: #2d3c4a;
+  background-color: ${theme.palette.primary.main};
+  color: ${theme.palette.primary.contrastText};
   max-width: 280px;
 `;
 
