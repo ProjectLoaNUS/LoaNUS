@@ -57,7 +57,6 @@ export default function ItemCard(props) {
     category,
     description,
     location,
-    telegram,
     deadline,
     buttonText,
     onActionDone,
@@ -123,7 +122,6 @@ export default function ItemCard(props) {
         category={category}
         description={description}
         location={location}
-        telegram={telegram}
         deadline={deadline}
         open={open}
         setOpen={setOpen}

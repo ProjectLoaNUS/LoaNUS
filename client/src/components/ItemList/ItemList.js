@@ -40,7 +40,6 @@ export default function ItemList(props) {
                                 category={category}
                                 description={text.description}
                                 location={text.location}
-                                telegram={text.telegram}
                                 onActionDone={onActionDone || removeItem}
                                 onClickAction={onClickAction}
                                 buttonText={buttonText} />

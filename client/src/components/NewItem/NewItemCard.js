@@ -5,7 +5,6 @@ import DescriptionField from "./DescriptionField";
 import ItemTypeChip from "./ItemTypeChip";
 import LocationField from "./LocationField";
 import ReturnDateField from "./ReturnDateField";
-import TelegramField from "./TelegramField";
 import TitleField from "./TitleField";
 import { TransitionGroup } from 'react-transition-group';
 import { CentredDiv } from "../FlexDiv";
@@ -66,7 +65,6 @@ export default function NewItemCard() {
     const [ location, setLocation ] = useState("");
     const [ returnDate, setReturnDate ] = useState(new Date());
     const [ isDateError, setIsDateError ] = useState(false);
-    const [ telegramHandle, setTelegramHandle ] = useState("");
     const [ submitResultText, setSubmitResultText ] = useState("");
     const [ isSubmitError, setIsSubmitError ] = useState(false);
 
@@ -83,7 +81,6 @@ export default function NewItemCard() {
         setTitle("");
         setDescription("");
         setLocation("");
-        setTelegramHandle("");
         if (!isRequest) {    
             setImages([]);
             setReturnDate(new Date());
@@ -108,7 +105,6 @@ export default function NewItemCard() {
                 title: title,
                 description: description,
                 location: location,
-                telegram: telegramHandle,
                 date: date,
                 listedBy: thisUser
             });
@@ -122,7 +118,6 @@ export default function NewItemCard() {
             itemData.append("title", title);
             itemData.append("description", description);
             itemData.append("location", location);
-            itemData.append("telegram", telegramHandle);
             itemData.append("date", date);
             itemData.append("listedBy", JSON.stringify(thisUser));
             object["body"] = itemData;
@@ -172,7 +167,6 @@ export default function NewItemCard() {
             <TitleField title={title} setTitle={setTitle} />
             <DescriptionField description={description} setDescription={setDescription} />
             <LocationField location={location} setLocation={setLocation} />
-            <TelegramField telegram={telegramHandle} setTelegramHandle={setTelegramHandle} />
             <TransitionGroup>
                 { !isRequest && 
                     ( <GrowDown timeout={750}>

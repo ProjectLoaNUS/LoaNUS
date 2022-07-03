@@ -20,7 +20,7 @@ const StyledDialog = styled(Dialog)`
 `;
 
 export default function DetailsDialog(props) {
-    const { itemId, date, owner, title, category, description, location, telegram, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
+    const { itemId, date, owner, title, category, description, location, imageUrls, deadline, open, setOpen, onActionDone, buttonAction, buttonText } = props;
     const { user } = useAuth();
     const [ isBtnDisabled, setIsBtnDisabled ] = useState(false);
     const [ isActionError, setIsActionError ] = useState(false);
@@ -75,7 +75,6 @@ export default function DetailsDialog(props) {
                   description={description}
                   deadline={deadline}
                   location={location}
-                  telegram={telegram}
                   buttonAction={buttonAction}
                   onActionDone={onActionDone}
                   buttonText={buttonText}

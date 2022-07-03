@@ -43,7 +43,6 @@ export default function DetailsView(props) {
         description,
         deadline,
         location,
-        telegram,
         buttonAction,
         onActionDone,
         buttonText,
@@ -58,15 +57,6 @@ export default function DetailsView(props) {
         user,
         openChat
     } = props;
-    const telegramUsername = telegram ? telegram.replace("@", "") : "";
-
-    const onClickChat = () => {
-        const telegramUrl = "https://t.me/" + telegramUsername;
-        const chatOnTelegram = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
-        if (chatOnTelegram) {
-            chatOnTelegram.opener = null;
-        }
-    }
 
     const setError = (isError, helperText) => {
         setIsActionError(isError);
@@ -115,7 +105,6 @@ export default function DetailsView(props) {
                 )}
                 <BoldedTypo variant="h6" align="left">Meet-up</BoldedTypo>
                 <Typography variant="body1" align="left">{location}</Typography>
-                <Link variant="body1" onClick={ onClickChat } color="secondary">Contact {telegram}</Link>
                 <ButtonGroup>
                     <Button
                       variant="outlined"

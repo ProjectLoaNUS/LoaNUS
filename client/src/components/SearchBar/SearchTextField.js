@@ -131,7 +131,6 @@ export default function SearchTextField() {
         title: rawResult.title,
         description: rawResult.description,
         location: rawResult.location,
-        telegram: rawResult.telegram,
         listedBy: rawResult.listedBy,
         borrowedBy: rawResult.borrowedBy
       }
@@ -208,7 +207,6 @@ export default function SearchTextField() {
         category={clickResult && clickResult.category}
         description={clickResult && clickResult.description}
         location={clickResult && clickResult.location}
-        telegram={clickResult && clickResult.telegram}
         deadline={clickResult && clickResult.deadline}
         open={open}
         setOpen={setOpen}
