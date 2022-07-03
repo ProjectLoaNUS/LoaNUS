@@ -49,8 +49,9 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
   };
   return (
     <MainOnlineContainer>
-      {onlineUsers && onlineUsers.map((user) => (
+      {onlineUsers && onlineUsers.map((user, index) => (
         <OnlineContainer
+          key={index}
           onClick={() => {
             HandleClick(user._id);
           }}
