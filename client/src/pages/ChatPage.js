@@ -14,6 +14,7 @@ import { io } from "socket.io-client";
 import { CollectionsBookmarkOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
+import ChatBox from "../components/ChatComps/ChatBox";
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -109,7 +110,7 @@ function ChatPage() {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [newmessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState("");
   const [arrivalmessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
@@ -202,14 +203,14 @@ function ChatPage() {
     e.preventDefault();
     const message = {
       sender: user.id,
-      text: newmessage,
+      text: newMessage,
       conversationId: currentChat._id,
     };
     const receiverId = currentChat.members.find((member) => member !== user.id);
     socket.current.emit("sendMessage", {
       senderId: user.id,
       receiverId,
-      text: newmessage,
+      text: newMessage,
     });
     try {
       const res = await axios.post(`${BACKEND_URL}/api/messages`, message);
@@ -238,35 +239,15 @@ function ChatPage() {
           </MenuWrapper>
         </ChatMenuContainer>
         <ChatBoxContainer>
-          <ChatBoxWrapper>
-            {currentChat ? (
-              <>
-                <ChatTop>
-                  {messages.map((m) => (
-                    <div ref={scrollRef}>
-                      <Message message={m} own={m.sender === user.id} />
-                    </div>
-                  ))}
-                </ChatTop>
-                <ChatBottom>
-                  <TextBox
-                    value={newmessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Write Something"
-                  ></TextBox>
-                  <ButtonComponent
-                    state="primary"
-                    text={"Send"}
-                    onClick={handleSubmit}
-                  ></ButtonComponent>
-                </ChatBottom>
-              </>
-            ) : (
-              <NoConversationDisplay>
-                Open a conversation to start a chat
-              </NoConversationDisplay>
-            )}
-          </ChatBoxWrapper>
+          <ChatBox
+            currentChat={currentChat}
+            messages={messages}
+            setMessages={setMessages}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+            scrollRef={scrollRef}
+            socket={socket}
+            user={user} />
         </ChatBoxContainer>
         <ChatOnline currentId={user?.id} setCurrentChat={setCurrentChat} onlineUsers={onlineUsers} />
       </ChatContainer>
