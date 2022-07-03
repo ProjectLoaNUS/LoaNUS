@@ -199,31 +199,11 @@ function ChatPage() {
     };
     getMessages();
   }, [currentChat]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const message = {
-      sender: user.id,
-      text: newMessage,
-      conversationId: currentChat._id,
-    };
-    const receiverId = currentChat.members.find((member) => member !== user.id);
-    socket.current.emit("sendMessage", {
-      senderId: user.id,
-      receiverId,
-      text: newMessage,
-    });
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/messages`, message);
-      setMessages([...messages, res.data]);
-      setNewMessage("");
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
   return (
     <PageContainer>
       <NavigationBar></NavigationBar>
