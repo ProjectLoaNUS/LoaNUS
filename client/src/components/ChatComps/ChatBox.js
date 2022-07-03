@@ -15,7 +15,7 @@ const ChatBoxWrapper = styled.div`
 `;
 const ChatTop = styled.div`
     flex: 1 1 auto;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-right: 10px;
 `;
 const ChatBottom = styled.div`
