@@ -26,20 +26,26 @@ const UserSchema = new mongoose.Schema({
   isVerified: Boolean,
   itemsBorrowed: {
     type: [String],
-    required: false
+    required: false,
   },
   itemsListed: {
     type: [String],
-    required: false
+    required: false,
   },
   itemsRequested: {
     type: [String],
-    required: false
+    required: false,
   },
   points: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
+  followers: {
+    type: Array,
+  },
+  following: {
+    type: Array,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);
