@@ -424,6 +424,7 @@ app.get("/api/search-exact", async (request, response) => {
 app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);
 });
+require("./routes/socket")(app, server);
