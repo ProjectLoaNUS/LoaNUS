@@ -1,23 +1,16 @@
 const express = require("express");
-//const { MongoClient } = require("mongodb");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const mongoose = require("mongoose");
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
 const UserModel = require("./models/Users");
-const ItemModel = require("./models/Items");
 const ItemListingsModel = require("./models/ItemListings");
 const cors = require("cors");
 const conversationRoute = require("./routes/conversations");
 const messageRoute = require("./routes/messsages");
-const { request } = require("http");
 const sgMail = require("@sendgrid/mail");
-const ejs = require("ejs");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const { Router, response } = require("express");
 const PORT = process.env.PORT || 3001;
 
 require("dotenv").config();
