@@ -50,14 +50,14 @@ function AvatarCard(props) {
 
   useEffect(() => {
     if (user) {
-      if (!user.photoURL && (user.photodata && user.photoformat)) {
+      if (!user.photoURL && user.photodata && user.photoformat) {
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
-        setUser(prevUser => {
+        setUser((prevUser) => {
           let newUser = structuredClone(prevUser);
           newUser.photoURL = URL.createObjectURL(blob);
           return newUser;
-        })
+        });
       }
     }
   }, [user, setUser]);
@@ -66,18 +66,18 @@ function AvatarCard(props) {
     hiddenFileInput.current.click();
   };
   const handleSubmit = async () => {
-    profileimage.arrayBuffer().then(rawBuffer => {
+    profileimage.arrayBuffer().then((rawBuffer) => {
       const buffer = Buffer.from(rawBuffer);
       let newUser = structuredClone(user);
       newUser.photodata = buffer;
       newUser.photoformat = profileimage.type;
       delete newUser.photourl;
       localStorage.setItem("user", JSON.stringify(newUser));
-      const blob = new Blob([buffer], {type: profileimage.type});
+      const blob = new Blob([buffer], { type: profileimage.type });
       newUser.photoURL = URL.createObjectURL(blob);
       setUser(newUser);
     });
-    
+
     let formData = new FormData();
     formData.append("username", user.displayName);
     formData.append("image", profileimage);
@@ -101,7 +101,11 @@ function AvatarCard(props) {
   return (
     <MainContainer>
       <Avatar src={user && user.photoURL} sx={{ width: 120, height: 120 }}>
-        {(user && !user.photoURL) ? (user.displayName ? user.displayName[0] : 'U') : "" }
+        {user && !user.photoURL
+          ? user.displayName
+            ? user.displayName[0]
+            : "U"
+          : ""}
       </Avatar>
       <UserName>{user.displayName}</UserName>
       <Email>{user.email}</Email>
