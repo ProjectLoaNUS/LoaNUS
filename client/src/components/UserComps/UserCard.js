@@ -4,8 +4,10 @@ import { Card, CardContent, CardActions, Avatar } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import ButtonComponent from "../Button";
 import { useAuth } from "../../database/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Buffer } from "buffer";
+import axios from "axios";
+import { BACKEND_URL } from "../../database/const";
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
@@ -29,10 +31,13 @@ const Ratings = styled.div`
   justify-content: center;
 `;
 function Usercard(props) {
+  const { user } = useAuth();
+  const [followed, setFollowed] = useState(false);
+
   let userimage;
   let url;
-  if (props.user.image) {
-    userimage = props.user.image;
+  if (props.otheruser.image) {
+    userimage = props.otheruser.image;
     const bin = userimage.data;
     const ctype = userimage.contentType;
     const binary = Buffer.from(bin, "base64");
@@ -41,10 +46,6 @@ function Usercard(props) {
     });
     url = URL.createObjectURL(blob);
   }
-
-  console.log(props.user);
-  console.log(userimage);
-  console.log(userimage?.data);
 
   /* function binToImgUrl(image) {
     const bin = image.data;
@@ -58,25 +59,68 @@ function Usercard(props) {
   }
   let urlimage = binToImgUrl(userimage);*/
 
-  const handleClick = () => {};
+  const handleFollow = async (otheruser) => {
+    let friends = {
+      follower: user.id,
+      followed: otheruser._id,
+    };
+    try {
+      console.log(friends);
+      axios
+        .post(`${BACKEND_URL}/api/follow/followuser`, friends)
+        .then((res) => {
+          setFollowed(true);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleUnfollow = async (otheruser) => {
+    let friends = {
+      follower: user.id,
+      unfollowed: otheruser._id,
+    };
+    try {
+      console.log(friends);
+      axios
+        .post(`${BACKEND_URL}/api/follow/unfollowuser`, friends)
+        .then((res) => {
+          setFollowed(false);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <StyledCard variant="outlined">
       <Avatar src={url || null} sx={{ width: 140, height: 140 }}>
-        {props.user && !url ? (props.user.name ? props.user.name[0] : "U") : ""}
+        {props.otheruser && !url
+          ? props.otheruser.name
+            ? props.otheruser.name[0]
+            : "U"
+          : ""}
       </Avatar>
       <StyledContent>
-        <UserName>{props.user.name}</UserName>
+        <UserName>{props.otheruser.name}</UserName>
         <Ratings>
           4.5
           <StarRateIcon></StarRateIcon>
         </Ratings>
       </StyledContent>
       <CardActions>
-        <ButtonComponent
-          state="primary"
-          text="Follow"
-          onClick={handleClick}
-        ></ButtonComponent>
+        {followed ? (
+          <ButtonComponent
+            state="primary"
+            text="Unfollow"
+            onClick={() => handleUnfollow(props.otheruser)}
+          ></ButtonComponent>
+        ) : (
+          <ButtonComponent
+            state="primary"
+            text="Follow"
+            onClick={() => handleFollow(props.otheruser)}
+          ></ButtonComponent>
+        )}
       </CardActions>
     </StyledCard>
   );

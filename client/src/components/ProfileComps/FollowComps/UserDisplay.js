@@ -14,7 +14,7 @@ function UserDisplay(props) {
   return (
     <MainContainer>
       {props.users.map((user) => (
-        <UserCard user={user} />
+        <UserCard otheruser={user} />
       ))}
     </MainContainer>
   );

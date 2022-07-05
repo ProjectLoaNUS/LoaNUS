@@ -12,6 +12,7 @@ const ItemListingsModel = require("./models/ItemListings");
 const cors = require("cors");
 const conversationRoute = require("./routes/conversations");
 const messageRoute = require("./routes/messsages");
+const followingRoute = require("./routes/following");
 const { request } = require("http");
 const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
@@ -467,6 +468,7 @@ app.get("/api/searchUser", async (request, response) => {
 
 app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
+app.use("/api/follow", followingRoute);
 
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);

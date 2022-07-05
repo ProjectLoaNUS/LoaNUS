@@ -6,6 +6,8 @@ import { Container, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import SearchUserField from "./UserSearch";
+import FollowerDisplay from "./FollowersDisplay";
+import FollowingDisplay from "./FollowingDisplay";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -49,10 +51,10 @@ function Follow() {
         <SearchUserField></SearchUserField>
       </TabPanel>
       <TabPanel value={selectedTab} index={1}>
-        <div>Followers</div>
+        <FollowerDisplay></FollowerDisplay>
       </TabPanel>
       <TabPanel value={selectedTab} index={2}>
-        <div>Following</div>
+        <FollowingDisplay></FollowingDisplay>
       </TabPanel>
     </MainContainer>
   );
