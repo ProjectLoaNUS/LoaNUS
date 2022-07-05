@@ -55,8 +55,8 @@ export default function DetailsDialog(props) {
     };
 
     useEffect(() => {
-        open && fetchChat();
-    }, [open]);
+        (open && owner) && fetchChat();
+    }, [open, owner]);
 
     return (
         <StyledDialog
