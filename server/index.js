@@ -43,16 +43,14 @@ sgMail.setApiKey(process.env.API_KEY);
 
 const getThirdPartyUser = async (email) => {
   const user = await UserModel.findOne({
-    $and: [
-      { email: email },
-      { password: { $exists: false} }
-  ]});
+    $and: [{ email: email }, { password: { $exists: false } }],
+  });
   return user;
-}
+};
 const isThirdPartyUser = async (email) => {
   const user = await getThirdPartyUser(email);
   return !!user;
-}
+};
 app.post("/api/hasUser", async (req, res) => {
   const hasUserResultCodes = {
     HAS_USER: 0,
@@ -63,16 +61,14 @@ app.post("/api/hasUser", async (req, res) => {
   };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
-    $and: [
-      { email: givenEmail },
-      { password: { $exists: true} }
-  ]});
+    $and: [{ email: givenEmail }, { password: { $exists: true } }],
+  });
   if (!user) {
     const isUserThirdParty = await isThirdPartyUser(givenEmail);
     if (isUserThirdParty) {
       return res.json({
         status: "error",
-        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
+        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN,
       });
     }
     return res.json({
@@ -97,10 +93,8 @@ app.post("/api/login", async (req, res) => {
     ALTERNATE_SIGN_IN: 5,
   };
   const givenUser = await UserModel.findOne({
-    $and: [
-      { email: req.body.email },
-      { password: { $exists: true} }
-  ]});
+    $and: [{ email: req.body.email }, { password: { $exists: true } }],
+  });
   if (!givenUser) {
     return res.json({
       status: "error",
@@ -160,9 +154,9 @@ app.post("/api/postAltLogin", async (req, res) => {
       id: "" + user._id,
       displayName: user.name,
       age: user.age,
-      email: user.email
-    }
-    return res.json({status: "ok", user: trimmedUser});
+      email: user.email,
+    };
+    return res.json({ status: "ok", user: trimmedUser });
   } else {
     user = await UserModel.create({
       name: req.body.name,
@@ -170,20 +164,20 @@ app.post("/api/postAltLogin", async (req, res) => {
       email: email,
       points: 0,
       emailToken: null,
-      isVerified: true
+      isVerified: true,
     });
     await user.save({}, (err) => {
       if (err) {
-        return res.json({status: "error", error: err});
+        return res.json({ status: "error", error: err });
       }
     });
     let trimmedUser = {
       id: "" + user._id,
       displayName: user.name,
       age: user.age,
-      email: user.email
-    }
-    return res.json({status: "ok", user: trimmedUser});
+      email: user.email,
+    };
+    return res.json({ status: "ok", user: trimmedUser });
   }
 });
 
@@ -191,7 +185,7 @@ app.post("/api/signUpUser", async (req, res) => {
   const password = req.body.password;
   const email = req.body.email;
   if (!password) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await UserModel.create({
@@ -201,7 +195,7 @@ app.post("/api/signUpUser", async (req, res) => {
     points: 0,
     password: hashedPassword,
     emailToken: crypto.randomBytes(64).toString("hex"),
-    isVerified: false
+    isVerified: false,
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -262,12 +256,14 @@ app.get("/allusers", async (req, res) => {
 app.post("/api/getNamesOfUsers", async (req, res) => {
   const users = req.body.users;
   if (!users) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
-  const userDetails = await UserModel.find({'_id': { $in: users.map(user => user.userId)} }, 
-      ["_id", "name"]);
-  return res.json({status: "ok", userDetails: userDetails});
-})
+  const userDetails = await UserModel.find(
+    { _id: { $in: users.map((user) => user.userId) } },
+    ["_id", "name"]
+  );
+  return res.json({ status: "ok", userDetails: userDetails });
+});
 
 // Email verification route
 app.get("/verify-email", async (req, res, next) => {
@@ -317,13 +313,13 @@ app.post(
 app.post("/api/getPointsOfUser", async (req, res) => {
   const userId = req.body.userId;
   if (!userId) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
   const user = await UserModel.findOne({ _id: userId }, ["points"]);
   if (!user) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
-  return res.json({status: "ok", points: user.points});
+  return res.json({ status: "ok", points: user.points });
 });
 
 const items = require("./routes/items/index");
@@ -419,6 +415,47 @@ app.get("/api/search-exact", async (request, response) => {
     if (result) {
       return response.json({ status: "ok", result: result });
     }
+    response.json({ status: "error" });
+  } catch (error) {
+    console.log(error);
+    response.json({ status: "error" });
+  }
+});
+//UserSearch
+app.get("/api/searchUser", async (request, response) => {
+  try {
+    const query = request.query;
+    let results;
+
+    results = await UserModel.aggregate([
+      {
+        $search: {
+          index: "users",
+          autocomplete: {
+            query: `${query.name}`,
+            path: "name",
+            fuzzy: {
+              maxEdits: 2,
+            },
+            tokenOrder: "sequential",
+          },
+        },
+      },
+      {
+        $limit: 15,
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          image: 1,
+        },
+      },
+    ]);
+    if (results) {
+      return response.json({ status: "ok", results: results });
+    }
+
     response.json({ status: "error" });
   } catch (error) {
     console.log(error);

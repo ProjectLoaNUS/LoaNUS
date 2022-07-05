@@ -7,10 +7,11 @@ import Listings from "../components/ProfileComps/Listings";
 import {
   PROFILE,
   PROFILE_BORROWED,
+  PROFILE_FOLLOW,
   PROFILE_POINTS,
   PROFILE_REQUESTS,
   PROFILE_REVIEWS,
-  PROFILE_REWARDS_CLAIMED
+  PROFILE_REWARDS_CLAIMED,
 } from "./routes";
 import { useLocation } from "react-router-dom";
 import Points from "../components/ProfileComps/Points";
@@ -18,6 +19,7 @@ import Requests from "../components/ProfileComps/Requests";
 import Reviews from "../components/ProfileComps/Reviews";
 import Rewards from "../components/ProfileComps/Rewards";
 import BorrowedItems from "../components/ProfileComps/BorrowedItems";
+import Follow from "../components/ProfileComps/FollowComps/Follow";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -69,20 +71,22 @@ function ProfilePage() {
   function InformationDisplay() {
     const location = useLocation();
     const path = location.pathname;
-    switch(path) {
+    switch (path) {
       case PROFILE_BORROWED:
-        return <BorrowedItems />
+        return <BorrowedItems />;
       case PROFILE_POINTS:
-        return <Points />
+        return <Points />;
       case PROFILE_REQUESTS:
-        return <Requests />
+        return <Requests />;
+      case PROFILE_FOLLOW:
+        return <Follow />;
       case PROFILE_REVIEWS:
-        return <Reviews />
+        return <Reviews />;
       case PROFILE_REWARDS_CLAIMED:
-        return <Rewards />
+        return <Rewards />;
       case PROFILE:
       default:
-        return <Listings />
+        return <Listings />;
     }
   }
 
@@ -99,6 +103,7 @@ function ProfilePage() {
             <ProfileLink link={PROFILE_BORROWED} text="Items Borrowed" />
             <ProfileLink link={PROFILE_REQUESTS} text={"Requests"} />
             <ProfileLink link={PROFILE_POINTS} text={"Points"} />
+            <ProfileLink link={PROFILE_FOLLOW} text={"Followers/Following"} />
             {/*<ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
             <ProfileLink
               link={PROFILE_REWARDS_CLAIMED}

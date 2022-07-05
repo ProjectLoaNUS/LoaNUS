@@ -4,6 +4,8 @@ import { Card, CardContent, CardActions, Avatar } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import ButtonComponent from "../Button";
 import { useAuth } from "../../database/auth";
+import { useState } from "react";
+import { Buffer } from "buffer";
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
@@ -26,20 +28,35 @@ const Ratings = styled.div`
   align-items: center;
   justify-content: center;
 `;
-function Usercard() {
-  const { user, setUser } = useAuth();
+function Usercard(props) {
+  const [image, setImage] = useState("");
+  const userimage = props.user.image;
+  console.log(userimage);
+
+  /*async function binToImgUrl(image) {
+    const bin = image.data;
+    const ctype = image.contentType;
+    const binary = Buffer.from(bin, "base64");
+    const blob = new Blob([binary.buffer], {
+      type: ctype,
+    });
+    const url = URL.createObjectURL(blob);
+    return url;
+  }
+  let urlimage = binToImgUrl(userimage);
+  setImage(urlimage);*/
   const handleClick = () => {};
   return (
     <StyledCard variant="outlined">
-      <Avatar src={user && user.photoURL} sx={{ width: 140, height: 140 }}>
-        {user && !user.photoURL
-          ? user.displayName
-            ? user.displayName[0]
+      <Avatar src={image} sx={{ width: 140, height: 140 }}>
+        {props.user && !image
+          ? props.user.name
+            ? props.user.name[0]
             : "U"
           : ""}
       </Avatar>
       <StyledContent>
-        <UserName>{user.displayName}</UserName>
+        <UserName>{props.user.name}</UserName>
         <Ratings>
           4.5
           <StarRateIcon></StarRateIcon>
