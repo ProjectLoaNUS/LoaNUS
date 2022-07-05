@@ -57,7 +57,7 @@ export default function DetailsView(props) {
         user,
         openChat
     } = props;
-    const isOwner = owner.id === user.id;
+    const isOwner = owner && (owner.id === user.id);
 
     const setError = (isError, helperText) => {
         setIsActionError(isError);
