@@ -28,7 +28,7 @@ function Conversation({ conversation, currentuser }) {
 
     const getUser = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/user?userId=` + friendId);
+        const res = await axios.get(`${BACKEND_URL}/api/user/getUserDetails?userId=` + friendId);
         setUser(res.data);
       } catch (err) {
         console.log(err);

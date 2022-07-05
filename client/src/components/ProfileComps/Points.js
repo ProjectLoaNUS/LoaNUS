@@ -37,7 +37,7 @@ export default function Points() {
     const { user } = useAuth();
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/getPointsOfUser`, {
+        fetch(`${BACKEND_URL}/api/user/getPoints`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

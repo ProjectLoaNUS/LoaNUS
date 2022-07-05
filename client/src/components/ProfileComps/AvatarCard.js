@@ -82,7 +82,7 @@ function AvatarCard(props) {
     formData.append("username", user.displayName);
     formData.append("image", profileimage);
     axios
-      .post(`${BACKEND_URL}/profile-upload`, formData, {
+      .post(`${BACKEND_URL}/api/user/setProfilePic`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {

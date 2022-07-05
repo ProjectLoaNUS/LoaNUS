@@ -154,7 +154,7 @@ function ChatPage() {
   useEffect(() => {
     socket.current.emit("addUser", user?.id);
     socket.current.on("getUsers", (users) => {
-      fetch(`${BACKEND_URL}/api/getNamesOfUsers`, {
+      fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
