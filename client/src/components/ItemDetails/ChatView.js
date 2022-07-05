@@ -50,12 +50,15 @@ export default function ChatView(props) {
 
     useEffect(() => {
         openSocket();
-        fetchMessages();
     
         return () => {
           socket.current.disconnect();
         }
     }, []);
+
+    useEffect(() => {
+        fetchMessages();
+    }, [chat]);
 
     useEffect(() => {
         arrivalMessage &&
