@@ -29,11 +29,24 @@ const Ratings = styled.div`
   justify-content: center;
 `;
 function Usercard(props) {
-  const [image, setImage] = useState("");
-  const userimage = props.user.image;
-  console.log(userimage);
+  let userimage;
+  let url;
+  if (props.user.image) {
+    userimage = props.user.image;
+    const bin = userimage.data;
+    const ctype = userimage.contentType;
+    const binary = Buffer.from(bin, "base64");
+    const blob = new Blob([binary.buffer], {
+      type: ctype,
+    });
+    url = URL.createObjectURL(blob);
+  }
 
-  /*async function binToImgUrl(image) {
+  console.log(props.user);
+  console.log(userimage);
+  console.log(userimage?.data);
+
+  /* function binToImgUrl(image) {
     const bin = image.data;
     const ctype = image.contentType;
     const binary = Buffer.from(bin, "base64");
@@ -43,17 +56,13 @@ function Usercard(props) {
     const url = URL.createObjectURL(blob);
     return url;
   }
-  let urlimage = binToImgUrl(userimage);
-  setImage(urlimage);*/
+  let urlimage = binToImgUrl(userimage);*/
+
   const handleClick = () => {};
   return (
     <StyledCard variant="outlined">
-      <Avatar src={image} sx={{ width: 140, height: 140 }}>
-        {props.user && !image
-          ? props.user.name
-            ? props.user.name[0]
-            : "U"
-          : ""}
+      <Avatar src={url || null} sx={{ width: 140, height: 140 }}>
+        {props.user && !url ? (props.user.name ? props.user.name[0] : "U") : ""}
       </Avatar>
       <StyledContent>
         <UserName>{props.user.name}</UserName>
