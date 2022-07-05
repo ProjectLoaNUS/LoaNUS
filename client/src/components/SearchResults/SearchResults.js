@@ -17,10 +17,10 @@ const SearchResults = (props) => {
   const { resultTexts, setResultTexts, resultImages, setResultImages } = props;
 
   function ResultsGrid(props) {
-    const { children, key } = props;
+    const { children } = props;
 
     return (
-      <ItemGrid item key={key} alignItems="stretch" justifyContent="center" xs={4}>
+      <ItemGrid item alignItems="stretch" justifyContent="center" xs={4}>
         {children}
       </ItemGrid>
     );
