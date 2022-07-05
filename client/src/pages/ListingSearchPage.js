@@ -19,7 +19,7 @@ function SearchedListings() {
   const { state } = useLocation();
 
   useEffect(() => {
-    const url = `${BACKEND_URL}/api/search`;
+    const url = `${BACKEND_URL}/api/items/search`;
     const query = state ? (state.queryText || "") : "";
     if (query) {
       // Images of search result items

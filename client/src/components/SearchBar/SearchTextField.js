@@ -87,7 +87,7 @@ export default function SearchTextField() {
       setSearchResults([]);
     } else {
       (async () => {
-        const url = `${BACKEND_URL}/api/search`;
+        const url = `${BACKEND_URL}/api/items/search`;
         axios
           .get(url, {
             params: {
@@ -146,7 +146,7 @@ export default function SearchTextField() {
       event.defaultMuiPrevented = true;
 
       axios
-        .get(`${BACKEND_URL}/api/search-exact`, {
+        .get(`${BACKEND_URL}/api/items/search-exact`, {
           params: {
             id: newValue._id
           },
