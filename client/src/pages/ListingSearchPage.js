@@ -32,7 +32,7 @@ function SearchedListings() {
           },
         })
         .then((res) => {
-          binsToImgUrls(res.data.results);
+          setSearchResultsImage(res.data.results);
         })
         .catch((err) => console.log(err, "error occured"));
       // Text details(title, description, etc) of search result items
@@ -51,27 +51,14 @@ function SearchedListings() {
     }
   }, [state]);
 
-  async function binsToImgUrls(bins) {
-    let imgs = [];
-    bins.forEach((bin, index) => {
-      const datas = bin.images.data;
-      let urls = [];
-      datas.forEach((data, i) => {
-        const binary = Buffer.from(data, 'base64');
-        const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
-        const url = URL.createObjectURL(blob);
-        urls[i] = url;
-      });
-      imgs[index] = urls;
-    });
-    setSearchResultsImage(imgs);
-  }
-
   return (
     <Container>
       <NavigationBar></NavigationBar>
       <CentredDiv>Listings</CentredDiv>
-      <SearchResults resultTexts={searchResultsText} setResultTexts={setSearchResultsText} resultImages={searchResultsImage} setResultImages={setSearchResultsImage}></SearchResults>
+      <SearchResults
+        resultDatas={searchResultsText}
+        setResultDatas={setSearchResultsText}
+        resultImages={searchResultsImage} />
     </Container>
   );
 }

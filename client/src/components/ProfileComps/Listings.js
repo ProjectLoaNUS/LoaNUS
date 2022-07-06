@@ -25,22 +25,6 @@ export default function Listings(props) {
     const [ listingTexts, setListingTexts ] = useState([]);
     const [ listingImgs, setListingImgs ] = useState([]);
 
-    async function binsToImgUrls(bins) {
-      let imgs = [];
-      bins.forEach((bin, index) => {
-        const datas = bin.images.data;
-        let urls = [];
-        datas.forEach((data, i) => {
-          const binary = Buffer.from(data.data);
-          const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
-          const url = URL.createObjectURL(blob);
-          urls[i] = url;
-        });
-        imgs[index] = urls;
-      });
-      setListingImgs(imgs);
-    }
-
     useEffect(() => {
       fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
         method: "POST",
@@ -54,7 +38,7 @@ export default function Listings(props) {
       .then(req => req.json())
       .then(data => {
         if (data.status === "ok") {
-          binsToImgUrls(data.listingsImgs);
+          setListingImgs(data.listingsImgs);
         }
       });
       fetch(`${BACKEND_URL}/api/items/getListingsTextsOfUser`, {
@@ -88,10 +72,9 @@ export default function Listings(props) {
       <PaddedGrid container spacing={1}>
         <ItemList
           CardContainer={ListingsGrid}
-          texts={listingTexts}
-          setTexts={setListingTexts}
-          imageUrls={listingImgs}
-          setImageUrls={setListingImgs} />
+          itemImages={listingImgs}
+          itemDatas={listingTexts}
+          setItemDatas={setListingTexts} />
       </PaddedGrid>
     );
 }

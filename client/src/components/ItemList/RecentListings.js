@@ -23,13 +23,13 @@ const ListingsPaper = styled(Paper)`
 `;
 
 export default function RecentListings(props) {
-    const { imageUrls, setImageUrls, texts, setTexts } = props;
+    const { itemImages, itemDatas, setItemDatas } = props;
 
     return (
         <ListingsPaper>
             <Typography align="left" variant="h3">Recent listings</Typography>
             <ListingsStack direction="row">
-                <ItemList imageUrls={imageUrls} setImageUrls={setImageUrls} texts={texts} setTexts={setTexts} />
+                <ItemList itemImages={itemImages} itemDatas={itemDatas} setItemDatas={setItemDatas} />
             </ListingsStack>
         </ListingsPaper>
     );

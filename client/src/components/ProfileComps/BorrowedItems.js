@@ -26,22 +26,6 @@ export default function BorrowedItems(props) {
     const [ borrowedTexts, setBorrowedTexts ] = useState([]);
     const [ borrowedImgs, setBorrowedImgs ] = useState([]);
 
-    async function binsToImgUrls(bins) {
-      let imgs = [];
-      bins.forEach((bin, index) => {
-        const datas = bin.images.data;
-        let urls = [];
-        datas.forEach((data, i) => {
-          const binary = Buffer.from(data.data);
-          const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
-          const url = URL.createObjectURL(blob);
-          urls[i] = url;
-        });
-        imgs[index] = urls;
-      });
-      setBorrowedImgs(imgs);
-    }
-
     useEffect(() => {
       fetch(`${BACKEND_URL}/api/items/getBorrowedImgsOfUser`, {
         method: "POST",
@@ -55,7 +39,8 @@ export default function BorrowedItems(props) {
       .then(req => req.json())
       .then(data => {
         if (data.status === "ok") {
-          binsToImgUrls(data.borrowedImgs);
+          //binsToImgUrls(data.borrowedImgs);
+          setBorrowedImgs(data.borrowedImgs);
         }
       });
       fetch(`${BACKEND_URL}/api/items/getBorrowedTextsOfUser`, {
@@ -89,12 +74,9 @@ export default function BorrowedItems(props) {
       <PaddedGrid container spacing={1}>
         <ItemList
           CardContainer={BorrowedItemsGrid}
-          texts={borrowedTexts}
-          setTexts={setBorrowedTexts}
-          imageUrls={borrowedImgs}
-          setimageUrls={setBorrowedImgs}
-          buttonText="Return It!"
-          onClickAction={returnItemAction} />
+          itemImages={borrowedImgs}
+          itemDatas={borrowedTexts}
+          setItemDatas={setBorrowedTexts} />
       </PaddedGrid>
     );
 }

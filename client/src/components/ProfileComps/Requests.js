@@ -66,7 +66,7 @@ function TabPanel(props) {
 }
 
 function Requests() {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [ selectedTab, setSelectedTab ] = useState(0);
   const { user } = useAuth();
   const [ requests, setRequests ] = useState([]);
 
@@ -112,10 +112,8 @@ function Requests() {
         <PaddedGrid container spacing={1}>
           <ItemList
             CardContainer={RequestsGrid}
-            texts={requests}
-            setTexts={setRequests}
-            buttonText="Delete Request"
-            onClickAction={deleteRequestAction} />
+            itemDatas={requests}
+            setItemDatas={setRequests} />
         </PaddedGrid>
       </TabPanel>
       {/*<TabPanel value={selectedTab} index={1}>

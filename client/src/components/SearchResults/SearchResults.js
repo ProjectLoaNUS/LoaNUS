@@ -14,7 +14,7 @@ const ItemGrid = styled(Grid)`
 `;
 
 const SearchResults = (props) => {
-  const { resultTexts, setResultTexts, resultImages, setResultImages } = props;
+  const { resultDatas, setResultDatas, resultImages } = props;
 
   function ResultsGrid(props) {
     const { children } = props;
@@ -30,10 +30,9 @@ const SearchResults = (props) => {
     <PaddedGrid container spacing={1}>
         <ItemList
           CardContainer={ResultsGrid}
-          texts={resultTexts}
-          setTexts={setResultTexts}
-          imageUrls={resultImages}
-          setImageUrls={setResultImages} />
+          itemImages={resultImages}
+          itemDatas={resultDatas}
+          setItemDatas={setResultDatas} />
     </PaddedGrid>
   );
 };

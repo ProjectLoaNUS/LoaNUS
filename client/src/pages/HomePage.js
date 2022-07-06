@@ -31,7 +31,7 @@ function HomePage() {
     axios
       .get(`${BACKEND_URL}/api/items/getListingsImgs`)
       .then((res) => {
-        binsToImgUrls(res.data.images);
+        setListingImgs(res.data.images);
       })
       .catch((err) => console.log(err, "error occured"));
     axios
@@ -52,27 +52,14 @@ function HomePage() {
     }
   }, [user, setUser]);
 
-  async function binsToImgUrls(bins) {
-    let imgs = [];
-    bins.forEach((bin, index) => {
-      const datas = bin.images.data;
-      let urls = [];
-      datas.forEach((data, i) => {
-        const binary = Buffer.from(data.data);
-        const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
-        const url = URL.createObjectURL(blob);
-        urls[i] = url;
-      });
-      imgs[index] = urls;
-    });
-    setListingImgs(imgs);
-  }
-
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <RecentListings imageUrls={listingImgs} setImageUrls={setListingImgs} texts={listingTexts} setTexts={setListingTexts} />
+        <RecentListings
+          itemImages={listingImgs}
+          itemDatas={listingTexts}
+          setItemDatas={setListingTexts} />
         <AboutLoanus />
       </BodyContainer>
     </MainContainer>
