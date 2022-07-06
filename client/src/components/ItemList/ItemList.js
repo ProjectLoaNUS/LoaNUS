@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import LoadingItemList from "./LoadingItemList";
 
 export default function ItemList(props) {
-    const { CardContainer, itemImages, itemImagesType, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
+    const { CardContainer, isLoading, itemImages, itemImagesType, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
     const [ itemImageUrls, setItemImageUrls ] = useState([]);
 
     const processImages = async (imageBins, imageBinsType) => {
@@ -32,7 +32,7 @@ export default function ItemList(props) {
 
     return (
         <>
-            { itemDatas?.length ? (itemDatas.map((itemData, index) => {
+            { !isLoading ? (itemDatas.map((itemData, index) => {
                 if (!itemData.borrowedBy) {
 
                     const removeItem = () => {

@@ -71,6 +71,7 @@ function Requests() {
   const [ selectedTab, setSelectedTab ] = useState(0);
   const { user } = useAuth();
   const [ requests, setRequests ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -90,6 +91,7 @@ function Requests() {
     .then(data => {
       if (data.status === "ok") {
         setRequests(data.requests);
+        setIsLoading(false);
       }
     });
   }, [user]);
@@ -113,6 +115,7 @@ function Requests() {
       <TabPanel value={selectedTab} index={0}>
         <PaddedGrid container spacing={1}>
           <ItemList
+            isLoading={isLoading}
             CardContainer={RequestsGrid}
             itemDatas={requests}
             setItemDatas={setRequests} />

@@ -28,6 +28,7 @@ const ListingsPaper = styled(Paper)`
 export default function RecentListings() {
     const [ listingDetails, setListingDetails ] = useState([]);
     const [ listingImgs, setListingImgs ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
         axios
@@ -40,6 +41,7 @@ export default function RecentListings() {
           .get(`${BACKEND_URL}/api/items/getListingsTexts`)
           .then((res) => {
             setListingDetails(res.data.listings);
+            setIsLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));
     }, []);
@@ -49,6 +51,7 @@ export default function RecentListings() {
             <Typography align="left" variant="h3">Recent listings</Typography>
             <ListingsStack direction="row">
                 <ItemList
+                  isLoading={isLoading}
                   itemImages={listingImgs}
                   itemDatas={listingDetails}
                   setItemDatas={setListingDetails} />

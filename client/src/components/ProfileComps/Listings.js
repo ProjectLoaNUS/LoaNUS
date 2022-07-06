@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
-import { Buffer } from 'buffer';
 
 const PaddedGrid = styled(Grid)`
   align-self: stretch;
@@ -24,6 +23,7 @@ export default function Listings(props) {
     const { user } = useAuth();
     const [ listingTexts, setListingTexts ] = useState([]);
     const [ listingImgs, setListingImgs ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
       fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
@@ -54,6 +54,7 @@ export default function Listings(props) {
       .then(data => {
         if (data.status === "ok") {
           setListingTexts(data.listingsTexts);
+          setIsLoading(false);
         }
       });
     }, [user]);
@@ -71,6 +72,7 @@ export default function Listings(props) {
     return (
       <PaddedGrid container spacing={1}>
         <ItemList
+          isLoading={isLoading}
           CardContainer={ListingsGrid}
           itemImages={listingImgs}
           itemDatas={listingTexts}

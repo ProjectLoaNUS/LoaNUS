@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
-import { Buffer } from 'buffer';
-import { returnItemAction } from "../ItemDetails/detailsDialogActions";
 
 const PaddedGrid = styled(Grid)`
   align-self: stretch;
@@ -25,6 +23,7 @@ export default function BorrowedItems(props) {
     const { user } = useAuth();
     const [ borrowedTexts, setBorrowedTexts ] = useState([]);
     const [ borrowedImgs, setBorrowedImgs ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
       fetch(`${BACKEND_URL}/api/items/getBorrowedImgsOfUser`, {
@@ -39,7 +38,6 @@ export default function BorrowedItems(props) {
       .then(req => req.json())
       .then(data => {
         if (data.status === "ok") {
-          //binsToImgUrls(data.borrowedImgs);
           setBorrowedImgs(data.borrowedImgs);
         }
       });
@@ -56,6 +54,7 @@ export default function BorrowedItems(props) {
       .then(data => {
         if (data.status === "ok") {
           setBorrowedTexts(data.borrowedTexts);
+          setIsLoading(false);
         }
       });
     }, [user]);
@@ -73,6 +72,7 @@ export default function BorrowedItems(props) {
     return (
       <PaddedGrid container spacing={1}>
         <ItemList
+          isLoading={isLoading}
           CardContainer={BorrowedItemsGrid}
           itemImages={borrowedImgs}
           itemDatas={borrowedTexts}

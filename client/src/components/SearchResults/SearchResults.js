@@ -21,6 +21,7 @@ const SearchResults = (props) => {
   const { queryText } = props;
   const [ searchResultsDetails, setSearchResultsDetails ] = useState([]);
   const [ searchResultsImages, setSearchResultsImages ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   useEffect(() => {
     const url = `${BACKEND_URL}/api/items/search`;
@@ -49,6 +50,7 @@ const SearchResults = (props) => {
         })
         .then((res) => {
           setSearchResultsDetails(res.data.results);
+          setIsLoading(false);
         })
         .catch((err) => console.log(err, "error occured"));
     }
@@ -67,6 +69,7 @@ const SearchResults = (props) => {
   return (
     <PaddedGrid container spacing={1}>
         <ItemList
+          isLoading={isLoading}
           CardContainer={ResultsGrid}
           itemImages={searchResultsImages}
           itemImagesType="base64"
