@@ -182,6 +182,14 @@ export default function SearchTextField() {
         options={searchResults}
         getOptionLabel={result => result.title}
         onChange={onClickResult}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            // Prevent MUI's default 'Enter' key behavior.
+            event.defaultMuiPrevented = true;
+            // Direct user to the ListingSearchPage to view detailed search results
+            handleSubmit(event);
+          }
+        }}
         renderInput={(params) => {
           return (
             <StyledSearchField
