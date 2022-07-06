@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Buffer } from 'buffer';
-import { BACKEND_URL } from "../database/const";
+import { useEffect } from "react";
 import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
 import AboutLoanus from "../components/AboutLoanus";
@@ -23,24 +20,7 @@ const BodyContainer = styled.div`
 `;
 
 function HomePage() {
-  const [ listingTexts, setListingTexts ] = useState([]);
-  const [ listingImgs, setListingImgs ] = useState([]);
   const { user, setUser } = useAuth();
-
-  useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/api/items/getListingsImgs`)
-      .then((res) => {
-        setListingImgs(res.data.images);
-      })
-      .catch((err) => console.log(err, "error occured"));
-    axios
-      .get(`${BACKEND_URL}/api/items/getListingsTexts`)
-      .then((res) => {
-        setListingTexts(res.data.listings);
-      })
-      .catch((err) => console.log(err, "error occured"));
-  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -59,10 +39,7 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <RecentListings
-          itemImages={listingImgs}
-          itemDatas={listingTexts}
-          setItemDatas={setListingTexts} />
+        <RecentListings />
         <AboutLoanus />
       </BodyContainer>
     </MainContainer>

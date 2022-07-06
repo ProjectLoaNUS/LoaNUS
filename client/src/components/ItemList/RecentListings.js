@@ -1,5 +1,8 @@
 import { Paper, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { BACKEND_URL } from "../../database/const";
 import ItemList from "./ItemList";
 
 const ListingsStack = styled(Stack)`
@@ -22,14 +25,33 @@ const ListingsPaper = styled(Paper)`
     height: 40vh;
 `;
 
-export default function RecentListings(props) {
-    const { itemImages, itemDatas, setItemDatas } = props;
+export default function RecentListings() {
+    const [ listingDetails, setListingDetails ] = useState([]);
+    const [ listingImgs, setListingImgs ] = useState([]);
+
+    useEffect(() => {
+        axios
+          .get(`${BACKEND_URL}/api/items/getListingsImgs`)
+          .then((res) => {
+            setListingImgs(res.data.images);
+          })
+          .catch((err) => console.log(err, "error occured"));
+        axios
+          .get(`${BACKEND_URL}/api/items/getListingsTexts`)
+          .then((res) => {
+            setListingDetails(res.data.listings);
+          })
+          .catch((err) => console.log(err, "error occured"));
+    }, []);
 
     return (
         <ListingsPaper>
             <Typography align="left" variant="h3">Recent listings</Typography>
             <ListingsStack direction="row">
-                <ItemList itemImages={itemImages} itemDatas={itemDatas} setItemDatas={setItemDatas} />
+                <ItemList
+                  itemImages={listingImgs}
+                  itemDatas={listingDetails}
+                  setItemDatas={setListingDetails} />
             </ListingsStack>
         </ListingsPaper>
     );
