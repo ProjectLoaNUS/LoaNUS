@@ -1,4 +1,6 @@
 import { Autocomplete, IconButton, TextField } from "@mui/material";
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -197,6 +199,27 @@ export default function SearchTextField() {
                 ),
               }} />
           )
+        }}
+        renderOption={(props, option, { inputValue }) => {
+          const matches = match(option.title, inputValue, { insideWords: true });
+          const parts = parse(option.title, matches);
+  
+          return (
+            <li {...props}>
+              <div>
+                {parts.map((part, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      fontWeight: part.highlight ? 700 : 400,
+                    }}
+                  >
+                    {part.text}
+                  </span>
+                ))}
+              </div>
+            </li>
+          );
         }} />
       <DetailsDialog
         itemId={clickResult && clickResult._id}
