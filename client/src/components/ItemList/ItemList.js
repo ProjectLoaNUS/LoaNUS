@@ -4,15 +4,15 @@ import { Buffer } from 'buffer';
 import { useEffect, useState } from "react";
 
 export default function ItemList(props) {
-    const { CardContainer, itemImages, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
+    const { CardContainer, itemImages, itemImagesType, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
     const [ itemImageUrls, setItemImageUrls ] = useState([]);
 
-    const processImages = async (imageBins) => {
+    const processImages = async (imageBins, imageBinsType) => {
         imageBins.forEach((bin) => {
             const datas = bin.images.data;
             let urls = [];
             datas.forEach((data, i) => {
-                const binary = Buffer.from(data.data);
+                const binary = imageBinsType ? Buffer.from(data, imageBinsType) : Buffer.from(data.data);
                 const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
                 const url = URL.createObjectURL(blob);
                 urls[i] = url;
@@ -25,7 +25,7 @@ export default function ItemList(props) {
 
     useEffect(() => {
         if (itemImages?.length) {
-            processImages(itemImages);
+            processImages(itemImages, itemImagesType);
         }
     }, [itemImages]);
 

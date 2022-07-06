@@ -32,6 +32,7 @@ const SearchResults = (props) => {
         <ItemList
           CardContainer={ResultsGrid}
           itemImages={resultImages}
+          itemImagesType="base64"
           itemDatas={resultDatas}
           setItemDatas={setResultDatas} />
     </PaddedGrid>
