@@ -45,6 +45,7 @@ const ListingActionArea = styled(CardActionArea)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  justify-content: space-between;
   height: 100%;
   width: 100%;
 `;

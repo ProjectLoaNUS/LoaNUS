@@ -7,8 +7,8 @@ import ItemList from "../ItemList/ItemList";
 import { Buffer } from 'buffer';
 
 const PaddedGrid = styled(Grid)`
-  height: 100%;
-  width: 100%;
+  align-self: stretch;
+  min-height: 40%;
   padding: 1ch 1rem;
   margin-top: 0;
   overflow-y: auto;

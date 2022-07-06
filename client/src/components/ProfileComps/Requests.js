@@ -2,14 +2,12 @@ import styled from "styled-components";
 import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import ItemList from "../ItemList/ItemList";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../database/auth";
 import { Container, Grid } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
-import { deleteRequestAction } from "../ItemDetails/detailsDialogActions";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -27,15 +25,19 @@ const MainContainer = styled.div`
     padding: 0;
 
     & .MuiBox-root {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      height: 100%;
       padding: 0;
     }
   }
 `;
 const PaddedGrid = styled(Grid)`
-  height: 100%;
-  width: 100%;
+  min-height: 30%;
   padding: 1ch 1rem;
   margin-top: 0;
+  margin-left: 0;
   overflow-y: auto;
 `;
 const ItemGrid = styled(Grid)`
