@@ -1,27 +1,45 @@
 import ItemCard from "./ItemCard";
 import Loading from "../../assets/loading.svg";
-import NoImage from "../../assets/no-image.png";
-import { CATEGORIES } from "../NewItem/ItemCategories";
+import { Buffer } from 'buffer';
+import { useEffect, useState } from "react";
 
 export default function ItemList(props) {
-    const { CardContainer, imageUrls, setImageUrls, texts, setTexts, buttonText, onActionDone, onClickAction } = props;
+    const { CardContainer, itemImages, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
+    const [ itemImageUrls, setItemImageUrls ] = useState([]);
+
+    const processImages = async (imageBins) => {
+        imageBins.forEach((bin) => {
+            const datas = bin.images.data;
+            let urls = [];
+            datas.forEach((data, i) => {
+                const binary = Buffer.from(data.data);
+                const blob = new Blob([binary.buffer], {type: bin.images.contentType[i]});
+                const url = URL.createObjectURL(blob);
+                urls[i] = url;
+            });
+            setItemImageUrls((prevImageUrls) => {
+                return [...prevImageUrls, urls];
+            });
+        });
+    };
+
+    useEffect(() => {
+        if (itemImages?.length) {
+            processImages(itemImages);
+        }
+    }, [itemImages]);
 
     return (
         <>
-            { texts ? (texts.map((text, index) => {
-                if (!text.borrowedBy) {
-                    const date = new Date(text.date).toLocaleDateString({}, 
-                            {year: 'numeric', month: 'short', day: 'numeric'});
-                    const deadline = new Date(text.deadline).toLocaleDateString({}, 
-                            {year: 'numeric', month: 'short', day: 'numeric'});
-                    const category = CATEGORIES[text.category];
+            { itemDatas?.length ? (itemDatas.map((itemData, index) => {
+                if (!itemData.borrowedBy) {
 
                     const removeItem = () => {
-                        setTexts(prevTexts => {
-                            return prevTexts.filter(other => other !== text);
+                        setItemDatas(prevDatas => {
+                            return prevDatas.filter(otherData => otherData !== itemData);
                         });
-                        if (setImageUrls) {
-                            setImageUrls(prevUrls => {
+                        if (setItemImageUrls) {
+                            setItemImageUrls(prevUrls => {
                                 const thisUrl = prevUrls[index];
                                 return prevUrls.filter(other => other !== thisUrl);
                             });
@@ -31,15 +49,8 @@ export default function ItemList(props) {
                     function Item() {
                         return (
                             <ItemCard
-                                itemId={text._id}
-                                date={date}
-                                imagesUrl={imageUrls && ( (imageUrls[index] !== undefined && (imageUrls[index]).length === 0) ? [NoImage] : (imageUrls[index] || [Loading]) )}
-                                title={text.title}
-                                owner={text.listedBy}
-                                deadline={deadline}
-                                category={category}
-                                description={text.description}
-                                location={text.location}
+                                itemDetails={itemData}
+                                imageUrls={itemImages && ( itemImageUrls[index] || [Loading] )}
                                 onActionDone={onActionDone || removeItem}
                                 onClickAction={onClickAction}
                                 buttonText={buttonText} />
@@ -52,7 +63,8 @@ export default function ItemList(props) {
                     return <Item key={index} />
                 }
             })) : 
-            'Loading' }
+                'Loading'
+            }
         </>
     );
 }
