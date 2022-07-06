@@ -4,9 +4,14 @@ import { auth } from "./setup";
 import { BACKEND_URL } from "./const";
 
 const authCtx = createContext({
+  hasUser: null,
   signInWithGoogle: null,
+  signInUserPass: null,
+  signUpUser: null,
   signOut: null,
   user: null,
+  setUser: null,
+  isGoogleSignIn: null
 });
 
 function useAuthProvider() {
@@ -135,7 +140,7 @@ function useAuthProvider() {
     signOut,
     user,
     setUser,
-    isGoogleSignIn,
+    isGoogleSignIn
   };
 }
 
