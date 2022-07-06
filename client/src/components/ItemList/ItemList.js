@@ -2,6 +2,7 @@ import ItemCard from "./ItemCard";
 import Loading from "../../assets/loading.svg";
 import { Buffer } from 'buffer';
 import { useEffect, useState } from "react";
+import LoadingItemList from "./LoadingItemList";
 
 export default function ItemList(props) {
     const { CardContainer, itemImages, itemImagesType, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
@@ -63,7 +64,7 @@ export default function ItemList(props) {
                     return <Item key={index} />
                 }
             })) : 
-                'Loading'
+                <LoadingItemList isItemRequest={!Boolean(itemImages)} />
             }
         </>
     );
