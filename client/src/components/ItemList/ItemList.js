@@ -30,40 +30,51 @@ export default function ItemList(props) {
         }
     }, [itemImages]);
 
+    function ItemCardList(props) {
+        const { itemsDatas } = props;
+
+        return (
+            <>
+                { itemsDatas.map((itemData, index) => {
+                    if (!itemData.borrowedBy) {
+
+                        const removeItem = () => {
+                            setItemDatas(prevDatas => {
+                                return prevDatas.filter(otherData => otherData !== itemData);
+                            });
+                            if (setItemImageUrls) {
+                                setItemImageUrls(prevUrls => {
+                                    const thisUrl = prevUrls[index];
+                                    return prevUrls.filter(other => other !== thisUrl);
+                                });
+                            }
+                        }
+
+                        function Item() {
+                            return (
+                                <ItemCard
+                                    itemDetails={itemData}
+                                    imageUrls={itemImages && ( itemImageUrls[index] || [Loading] )}
+                                    onActionDone={onActionDone || removeItem}
+                                    onClickAction={onClickAction}
+                                    buttonText={buttonText} />
+                            );
+                        }
+
+                        if (CardContainer) {
+                            return <CardContainer key={index}><Item/></CardContainer>
+                        }
+                        return <Item key={index} />
+                    }
+                }) }
+            </>
+        );
+    }
+
     return (
         <>
-            { !isLoading ? (itemDatas.map((itemData, index) => {
-                if (!itemData.borrowedBy) {
-
-                    const removeItem = () => {
-                        setItemDatas(prevDatas => {
-                            return prevDatas.filter(otherData => otherData !== itemData);
-                        });
-                        if (setItemImageUrls) {
-                            setItemImageUrls(prevUrls => {
-                                const thisUrl = prevUrls[index];
-                                return prevUrls.filter(other => other !== thisUrl);
-                            });
-                        }
-                    }
-
-                    function Item() {
-                        return (
-                            <ItemCard
-                                itemDetails={itemData}
-                                imageUrls={itemImages && ( itemImageUrls[index] || [Loading] )}
-                                onActionDone={onActionDone || removeItem}
-                                onClickAction={onClickAction}
-                                buttonText={buttonText} />
-                        );
-                    }
-
-                    if (CardContainer) {
-                        return <CardContainer key={index}><Item/></CardContainer>
-                    }
-                    return <Item key={index} />
-                }
-            })) : 
+            { !isLoading ? 
+                <ItemCardList itemsDatas={itemDatas} /> :
                 <LoadingItemList isItemRequest={!Boolean(itemImages)} />
             }
         </>
