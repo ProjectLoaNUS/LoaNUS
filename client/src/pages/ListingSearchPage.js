@@ -1,16 +1,29 @@
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
-import { CentredDiv } from "../components/FlexDiv";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchResults from "../components/SearchResults/SearchResults";
-import { Buffer } from 'buffer';
 import { BACKEND_URL } from "../database/const";
+import { Typography } from "@mui/material";
 
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
+const PageContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 90%;
+  gap: 1ch;
+`;
+
+const SearchTitle = styled(Typography)`
+  flex: 0 0 auto;
+  padding: 0 1rem;
 `;
 
 function SearchedListings() {
@@ -52,14 +65,18 @@ function SearchedListings() {
   }, [state]);
 
   return (
-    <Container>
+    <PageContainer>
       <NavigationBar></NavigationBar>
-      <CentredDiv>Listings</CentredDiv>
-      <SearchResults
-        resultDatas={searchResultsText}
-        setResultDatas={setSearchResultsText}
-        resultImages={searchResultsImage} />
-    </Container>
+      <SearchContainer>
+        <SearchTitle variant="h3">
+          Search results for "{state ? (state.queryText || "") : ""}"
+        </SearchTitle>
+        <SearchResults
+          resultDatas={searchResultsText}
+          setResultDatas={setSearchResultsText}
+          resultImages={searchResultsImage} />
+      </SearchContainer>
+    </PageContainer>
   );
 }
 

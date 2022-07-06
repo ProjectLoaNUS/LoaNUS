@@ -1,10 +1,11 @@
 import { Grid } from "@mui/material";
-import React from "react";
 import styled from "styled-components";
 import ItemList from "../ItemList/ItemList";
 
 const PaddedGrid = styled(Grid)`
-  padding: 0 1rem;
+  padding: 1ch 1rem;
+  min-height: 33%;
+  overflow-y: auto;
 `;
 const ItemGrid = styled(Grid)`
   .MuiCard-root {
