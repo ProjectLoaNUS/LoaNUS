@@ -253,6 +253,18 @@ router.get("/verifyEmail", async (req, res, next) => {
   }
 });
 
+router.post("/getProfilePic", async (req, res) => {
+  const userId = req.body.userId;
+  if (!userId) {
+    return res.json({status: "error"});
+  }
+  const user = await UserModel.findOne({ _id: userId }, ["image"]);
+  if (!user) {
+    return res.json({status: "error"});
+  }
+  return res.json({status: "ok", image: user.image});
+});
+
 //Upload profile picture
 const storage = multer.memoryStorage();
 const upload = multer({
