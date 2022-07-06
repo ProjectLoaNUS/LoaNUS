@@ -40,6 +40,9 @@ function HomePage() {
         setListingTexts(res.data.listings);
       })
       .catch((err) => console.log(err, "error occured"));
+  }, []);
+
+  useEffect(() => {
     if (!user) {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
