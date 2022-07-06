@@ -10,12 +10,14 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
 import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
+import { Buffer } from 'buffer';
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
+import { BACKEND_URL } from "../../database/const";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -59,7 +61,8 @@ export default function ItemCard(props) {
     onClickAction
   } = props;
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const [ ownerPicUrl, setOwnerPicUrl ] = useState("");
+  const { user, setUser } = useAuth();
   const processedImageUrls = imageUrls && ( imageUrls.length === 0 ? [NoImage] : imageUrls );
   
   const itemId = itemDetails._id;
@@ -95,12 +98,61 @@ export default function ItemCard(props) {
       }
   }
 
+  useEffect(() => {
+    if (!!owner) {
+      if (!isOwner) {  
+        fetch(`${BACKEND_URL}/api/user/getProfilePic`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: owner.id
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "ok") {  
+            const image = data.image;
+            if (!!image) {
+              try {
+                const binary = Buffer.from(image.data);
+                const blob = new Blob([binary.buffer], {type: image.contentType});
+                const url = URL.createObjectURL(blob);
+                setOwnerPicUrl(url);
+              } catch(err) {
+                console.log(err);
+              }
+            }
+          } else {
+            console.log(`Error occurred while loading profile picture of user named "${owner.name}"`);
+          }
+        });
+      } else {
+        let photoURL;
+        if (!user.photoURL && (user.photodata && user.photoformat)) {
+          const binary = Buffer.from(user.photodata);
+          const blob = new Blob([binary.buffer], { type: user.photoformat });
+          photoURL = URL.createObjectURL(blob);
+          setUser(prevUser => {
+            return {...prevUser, photoURL: photoURL};
+          });
+        } else if (user.photoURL) {
+          photoURL = user.photoURL;
+        } else {
+          photoURL = "";
+        }
+        setOwnerPicUrl(photoURL);
+      }
+    }
+  }, [owner]);
+
   return (
     <ListCard>
       <ListingActionArea component="a" onClick={handleShowDetails}>
         <CardHeader 
           avatar={
-            <Avatar>{owner && (owner.name && owner.name.charAt(0))}</Avatar>
+            <Avatar src={ownerPicUrl}>{!ownerPicUrl && ( owner && (owner.name && owner.name.charAt(0)) )}</Avatar>
           }
           title={owner && owner.name}
           subheader={date} />
