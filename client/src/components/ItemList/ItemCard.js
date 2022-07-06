@@ -14,6 +14,8 @@ import { useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
 import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
+import NoImage from "../../assets/no-image.png";
+import { CATEGORIES } from "../NewItem/ItemCategories";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -49,21 +51,26 @@ const ListingActionArea = styled(CardActionArea)`
 
 export default function ItemCard(props) {
   const {
-    itemId,
-    date,
-    title,
-    imagesUrl,
-    owner,
-    category,
-    description,
-    location,
-    deadline,
+    itemDetails,
+    imageUrls,
     buttonText,
     onActionDone,
     onClickAction
   } = props;
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
+  const processedImageUrls = imageUrls && ( imageUrls.length === 0 ? [NoImage] : imageUrls );
+  
+  const itemId = itemDetails._id;
+  const date = new Date(itemDetails.date).toLocaleDateString({}, 
+    {year: 'numeric', month: 'short', day: 'numeric'});
+  const deadline = new Date(itemDetails.deadline).toLocaleDateString({}, 
+    {year: 'numeric', month: 'short', day: 'numeric'});
+  const category = CATEGORIES[itemDetails.category];
+  const title = itemDetails.title;
+  const owner = itemDetails.listedBy;
+  const description = itemDetails.description;
+  const location = itemDetails.location;
   const isOwner = isUserListingRelated(user, {listedBy: owner});
 
   const handleShowDetails = (event) => {
@@ -96,11 +103,11 @@ export default function ItemCard(props) {
           }
           title={owner && owner.name}
           subheader={date} />
-        {imagesUrl &&
+        {processedImageUrls &&
           <ImageDiv>
             <CardMedia 
               component="img"
-              image={imagesUrl[0]}
+              image={processedImageUrls[0]}
               alt="Item listing image" />
           </ImageDiv>
         }
@@ -118,7 +125,7 @@ export default function ItemCard(props) {
         date={date}
         owner={owner}
         title={title}
-        imageUrls={imagesUrl}
+        imageUrls={processedImageUrls}
         category={category}
         description={description}
         location={location}
