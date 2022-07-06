@@ -1,5 +1,8 @@
 import { Grid } from "@mui/material";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
 
 const PaddedGrid = styled(Grid)`
@@ -15,7 +18,41 @@ const ItemGrid = styled(Grid)`
 `;
 
 const SearchResults = (props) => {
-  const { resultDatas, setResultDatas, resultImages } = props;
+  const { queryText } = props;
+  const [ searchResultsDetails, setSearchResultsDetails ] = useState([]);
+  const [ searchResultsImages, setSearchResultsImages ] = useState([]);
+
+  useEffect(() => {
+    const url = `${BACKEND_URL}/api/items/search`;
+    if (queryText) {
+      // Images of search result items
+      axios
+        .get(url, {
+          params: {
+            name: queryText,
+            isFullSearch: true,
+            isImageOnly: true
+          },
+        })
+        .then((res) => {
+          setSearchResultsImages(res.data.results);
+        })
+        .catch((err) => console.log(err, "error occured"));
+      // Text details(title, description, etc) of search result items
+      axios
+        .get(url, {
+          params: {
+            name: queryText,
+            isFullSearch: true,
+            isTextOnly: true
+          },
+        })
+        .then((res) => {
+          setSearchResultsDetails(res.data.results);
+        })
+        .catch((err) => console.log(err, "error occured"));
+    }
+  }, [queryText]);
 
   function ResultsGrid(props) {
     const { children } = props;
@@ -31,10 +68,10 @@ const SearchResults = (props) => {
     <PaddedGrid container spacing={1}>
         <ItemList
           CardContainer={ResultsGrid}
-          itemImages={resultImages}
+          itemImages={searchResultsImages}
           itemImagesType="base64"
-          itemDatas={resultDatas}
-          setItemDatas={setResultDatas} />
+          itemDatas={searchResultsDetails}
+          setItemDatas={setSearchResultsDetails} />
     </PaddedGrid>
   );
 };
