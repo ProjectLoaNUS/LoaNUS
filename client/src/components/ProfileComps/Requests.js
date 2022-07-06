@@ -116,6 +116,7 @@ function Requests() {
         <PaddedGrid container spacing={1}>
           <ItemList
             isLoading={isLoading}
+            noItemsText="No item requests yet. Create one?"
             CardContainer={RequestsGrid}
             itemDatas={requests}
             setItemDatas={setRequests} />

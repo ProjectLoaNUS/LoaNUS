@@ -73,6 +73,7 @@ export default function BorrowedItems(props) {
       <PaddedGrid container spacing={1}>
         <ItemList
           isLoading={isLoading}
+          noItemsText="No items borrowed. Check out recent item listings for some options!"
           CardContainer={BorrowedItemsGrid}
           itemImages={borrowedImgs}
           itemDatas={borrowedTexts}

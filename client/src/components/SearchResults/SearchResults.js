@@ -70,6 +70,7 @@ const SearchResults = (props) => {
     <PaddedGrid container spacing={1}>
         <ItemList
           isLoading={isLoading}
+          noItemsText={`No results found for "${queryText}"`}
           CardContainer={ResultsGrid}
           itemImages={searchResultsImages}
           itemImagesType="base64"

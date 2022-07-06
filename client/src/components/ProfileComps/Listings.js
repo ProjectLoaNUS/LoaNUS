@@ -73,6 +73,7 @@ export default function Listings(props) {
       <PaddedGrid container spacing={1}>
         <ItemList
           isLoading={isLoading}
+          noItemsText="No item listings yet. Create one?"
           CardContainer={ListingsGrid}
           itemImages={listingImgs}
           itemDatas={listingTexts}

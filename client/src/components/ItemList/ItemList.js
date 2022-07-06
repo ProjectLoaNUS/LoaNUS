@@ -3,9 +3,26 @@ import Loading from "../../assets/loading.svg";
 import { Buffer } from 'buffer';
 import { useEffect, useState } from "react";
 import LoadingItemList from "./LoadingItemList";
+import styled from "styled-components";
+import { Typography } from "@mui/material";
+
+const NoItemsTypo = styled(Typography)`
+
+`;
 
 export default function ItemList(props) {
-    const { CardContainer, isLoading, itemImages, itemImagesType, itemDatas, setItemDatas, buttonText, onActionDone, onClickAction } = props;
+    const {
+      CardContainer,
+      isLoading,
+      noItemsText,
+      itemImages,
+      itemImagesType,
+      itemDatas,
+      setItemDatas,
+      buttonText,
+      onActionDone,
+      onClickAction
+    } = props;
     const [ itemImageUrls, setItemImageUrls ] = useState([]);
 
     const processImages = async (imageBins, imageBinsType) => {
@@ -73,9 +90,11 @@ export default function ItemList(props) {
 
     return (
         <>
-            { !isLoading ? 
-                <ItemCardList itemsDatas={itemDatas} /> :
-                <LoadingItemList isItemRequest={!Boolean(itemImages)} />
+            { isLoading ?
+                <LoadingItemList isItemRequest={!Boolean(itemImages)} /> :
+                ( itemDatas.length ?
+                    <ItemCardList itemsDatas={itemDatas} /> :
+                    <NoItemsTypo variant="subtitle1">{noItemsText || "No items to display"}</NoItemsTypo> )
             }
         </>
     );

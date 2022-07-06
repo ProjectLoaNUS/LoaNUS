@@ -52,6 +52,7 @@ export default function RecentListings() {
             <ListingsStack direction="row">
                 <ItemList
                   isLoading={isLoading}
+                  noItemsText="No items listed by anyone yet. You can start by listing one of your items!"
                   itemImages={listingImgs}
                   itemDatas={listingDetails}
                   setItemDatas={setListingDetails} />
