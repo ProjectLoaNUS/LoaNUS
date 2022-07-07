@@ -11,11 +11,19 @@ const MainContainer = styled.div`
 `;
 
 function UserDisplay(props) {
+  const { users } = props;
+
   return (
     <MainContainer>
-      {props.users.map((user, index) => (
-        <UserCard key={index} otheruser={user} />
-      ))}
+      {users ? 
+        users.length ?
+          users.map((user, index) => (
+            <UserCard key={index} otheruser={user} />
+          ))
+        : "No such user"
+      : 
+        ""
+      }
     </MainContainer>
   );
 }
