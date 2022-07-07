@@ -48,6 +48,7 @@ function FollowingDisplay() {
             image={u.image}
             username={u.name}
             id={u._id}
+            activatebutton={false}
           ></FollowCard>
         ))}
       </SubContainer>

@@ -49,6 +49,7 @@ function FollowingDisplay() {
             username={u.name}
             id={u._id}
             followed={true}
+            activatebutton={true}
           ></FollowCard>
         ))}
       </SubContainer>

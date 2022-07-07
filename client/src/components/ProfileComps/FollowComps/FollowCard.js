@@ -66,19 +66,27 @@ function FollowCard(props) {
           <Avatar src={url || null}></Avatar>
         </ListItemAvatar>
         <ListItemText primary={props.username || "User"} />
-        {followed ? (
-          <ButtonComponent
-            state="primary"
-            text="Unfollow"
-            onClick={() => handleUnfollow(props.id)}
-          ></ButtonComponent>
-        ) : (
-          <ButtonComponent
-            state="primary"
-            text="Follow"
-            onClick={() => handleFollow(props.id)}
-          ></ButtonComponent>
-        )}
+        {props.activatebutton ? (
+          followed ? (
+            <ButtonComponent
+              state="primary"
+              text="Unfollow"
+              setWidth={"30%"}
+              setHeight={"30%"}
+              setFontsize={"0.5rem"}
+              onClick={() => handleUnfollow(props.id)}
+            ></ButtonComponent>
+          ) : (
+            <ButtonComponent
+              state="primary"
+              text="Follow"
+              setWidth={"30%"}
+              setHeight={"30%"}
+              setFontsize={"0.5rem"}
+              onClick={() => handleFollow(props.id)}
+            ></ButtonComponent>
+          )
+        ) : null}
       </ListItem>
     </List>
   );
