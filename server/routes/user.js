@@ -276,7 +276,7 @@ router.post(
   upload.single("image"),
   (request, response) => {
     try {
-      UserModel.findOne({ name: request.body.username }, function (err, User) {
+      UserModel.findOne({ _id: request.body.userId }, function (err, User) {
         if (!User) {
           console.log("error", "User not found");
         }

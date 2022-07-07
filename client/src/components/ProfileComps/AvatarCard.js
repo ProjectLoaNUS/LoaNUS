@@ -79,7 +79,7 @@ function AvatarCard(props) {
     });
     
     let formData = new FormData();
-    formData.append("username", user.displayName);
+    formData.append("userId", user.id);
     formData.append("image", profileimage);
     axios
       .post(`${BACKEND_URL}/api/user/setProfilePic`, formData, {
