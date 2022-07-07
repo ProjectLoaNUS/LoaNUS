@@ -25,7 +25,7 @@ require("dotenv").config();
 
 app.use(expressLayouts);
 app.set("view engine", "ejs");
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 //const client = new MongoClient(
 // "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
 //);
@@ -238,6 +238,8 @@ app.get("/user", async (req, res) => {
         photodata: user.image.data,
         photoformat: user.image.contentType,
         id: user._id,
+        followers: user.followers,
+        following: user.following,
       },
     });
   } catch (err) {

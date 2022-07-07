@@ -46,6 +46,7 @@ const HiddenInput = styled.input`
 function AvatarCard(props) {
   const [profileimage, setProfileImage] = useState();
   const { user, setUser } = useAuth();
+
   const hiddenFileInput = React.useRef(null);
 
   useEffect(() => {
@@ -111,7 +112,10 @@ function AvatarCard(props) {
       <Email>{user.email}</Email>
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
-      <FollowContainer>10 Followers 5 Following</FollowContainer>
+      <FollowContainer>
+        {user.followers?.length || 0} Followers {user.following?.length || 0}{" "}
+        Following
+      </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent
           text={"Set picture"}

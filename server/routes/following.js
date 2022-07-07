@@ -53,4 +53,40 @@ router.post("/unfollowuser", async (req, res) => {
   }
 });
 
+//get following
+
+router.get("/getfollowing", async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.query.userId);
+    let followingarray = user.following;
+
+    const array = await UserModel.find({ _id: { $in: followingarray } }, [
+      "_id",
+      "name",
+      "image",
+    ]);
+
+    res.status(200).send(array);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+//get followers
+router.get("/getfollowers", async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.query.userId);
+    let followersarray = user.followers;
+
+    const array = await UserModel.find({ _id: { $in: followersarray } }, [
+      "_id",
+      "name",
+      "image",
+    ]);
+
+    res.status(200).send(array);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
