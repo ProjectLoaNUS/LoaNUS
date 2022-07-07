@@ -73,7 +73,7 @@ export default function SearchUserField() {
 
   useEffect(() => {
     if (!queryText) {
-      setSearchResults(null);
+      setSearchResults([]);
     } else {
       (async () => {
         const url = `${BACKEND_URL}/api/searchUser`;
