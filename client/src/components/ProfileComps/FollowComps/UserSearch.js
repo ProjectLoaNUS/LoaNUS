@@ -172,6 +172,15 @@ export default function SearchUserField() {
     }
   };
 
+  const onEnterKey = (event) => {
+    if (event.key === 'Enter') {
+      // Prevent MUI's default 'Enter' key behavior.
+      event.defaultMuiPrevented = true;
+      // Same action as clicking the search icon button: View full list of results
+      handleSubmit(event);
+    }
+  }
+
   const onChangeSearchField = (event) => {
     const value = event.target.value;
     if (value) {
@@ -192,6 +201,7 @@ export default function SearchUserField() {
         options={searchResults}
         getOptionLabel={(result) => result.name}
         onChange={onClickResult}
+        onKeyDown={onEnterKey}
         renderInput={(params) => {
           return (
             <TextField
