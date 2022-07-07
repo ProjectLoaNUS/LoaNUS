@@ -24,7 +24,6 @@ const ListCard = styled(Card)`
   flex-direction: column;
   align-items: stretch;
   flex: 0 0 auto;
-  width: 30%;
   & .MuiCardHeader-title {
     white-space: nowrap;
     overflow: hidden;

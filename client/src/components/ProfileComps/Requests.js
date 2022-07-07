@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import ItemList from "../ItemList/ItemList";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../database/auth";
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 
 const MainContainer = styled.div`
@@ -33,18 +33,25 @@ const MainContainer = styled.div`
     }
   }
 `;
-const PaddedGrid = styled(Grid)`
-  min-height: 30%;
-  padding: 1ch 1rem;
-  margin-top: 0;
-  margin-left: 0;
+const RequestsGrid = styled.div`
+  --grid-layout-gap: 1ch;
+  --grid-column-count: 4;
+  --grid-item--min-width: 210px;
+
+  --gap-count: calc(var(--grid-column-count) - 1);
+  --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+  --grid-item-width: max(var(--grid-item--min-width), var(--grid-item--max-width));
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-width), 1fr));
+  grid-auto-rows: calc(var(--grid-item-width) * 2 / 3);
+  grid-gap: var(--grid-layout-gap);
+  align-items: stretch;
+  justify-items: stretch;
+  padding: 1ch;
+  height: 100%;
   overflow-y: auto;
-`;
-const ItemGrid = styled(Grid)`
-  .MuiCard-root {
-    height: 100%;
-    width: 100%;
-  }
 `;
 
 function TabPanel(props) {
@@ -96,16 +103,6 @@ function Requests() {
     });
   }, [user]);
 
-  function RequestsGrid(props) {
-    const { children } = props;
-
-    return (
-      <ItemGrid item alignItems="stretch" justifyContent="center" xl={4} xs={4}>
-        {children}
-      </ItemGrid>
-    );
-  }
-
   return (
     <MainContainer>
       <Tabs variant="scrollable" value={selectedTab} onChange={handleChange}>
@@ -113,14 +110,12 @@ function Requests() {
         {/*<Tab label="Requests for approval"></Tab>*/}
       </Tabs>
       <TabPanel value={selectedTab} index={0}>
-        <PaddedGrid container spacing={1}>
-          <ItemList
-            isLoading={isLoading}
-            noItemsText="No item requests yet. Create one?"
-            CardContainer={RequestsGrid}
-            itemDatas={requests}
-            setItemDatas={setRequests} />
-        </PaddedGrid>
+        <ItemList
+          ListContainer={RequestsGrid}
+          isLoading={isLoading}
+          noItemsText="No item requests yet. Create one?"
+          itemDatas={requests}
+          setItemDatas={setRequests} />
       </TabPanel>
       {/*<TabPanel value={selectedTab} index={1}>
         No Requests currently

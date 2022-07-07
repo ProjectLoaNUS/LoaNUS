@@ -86,7 +86,7 @@ export default function DetailsView(props) {
                 </IconButton>
             </DialogTitle>
             <DialogContainer>
-                <Typography variant="h3" align="left">{ title }</Typography>
+                <Typography variant="h4" align="left">{ title }</Typography>
                 {imageUrls && <ImageList imageUrls={imageUrls} />}
                 <Row>
                     <Typography variant="body1" align="left">{date} by</Typography>

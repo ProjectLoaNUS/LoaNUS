@@ -1,23 +1,7 @@
-import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
-
-const PaddedGrid = styled(Grid)`
-  align-self: stretch;
-  min-height: 40%;
-  padding: 1ch 1rem;
-  margin-top: 0;
-  overflow-y: auto;
-`;
-const ItemGrid = styled(Grid)`
-  .MuiCard-root {
-    height: 100%;
-    width: 100%;
-  }
-`;
 
 export default function Listings(props) {
     const { user } = useAuth();
@@ -59,25 +43,12 @@ export default function Listings(props) {
       });
     }, [user]);
 
-    function ListingsGrid(props) {
-        const { children } = props;
-    
-        return (
-          <ItemGrid item alignItems="stretch" justifyContent="center" xl={4} xs={4}>
-            {children}
-          </ItemGrid>
-        );
-      }
-
     return (
-      <PaddedGrid container spacing={1}>
-        <ItemList
-          isLoading={isLoading}
-          noItemsText="No item listings yet. Create one?"
-          CardContainer={ListingsGrid}
-          itemImages={listingImgs}
-          itemDatas={listingTexts}
-          setItemDatas={setListingTexts} />
-      </PaddedGrid>
+      <ItemList
+        isLoading={isLoading}
+        noItemsText="No item listings yet. Create one?"
+        itemImages={listingImgs}
+        itemDatas={listingTexts}
+        setItemDatas={setListingTexts} />
     );
 }
