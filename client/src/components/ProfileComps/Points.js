@@ -4,8 +4,10 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../database/const";
 import { useAuth } from "../../database/auth";
+import { Typography } from "@mui/material";
 
 const CoinsContainer = styled.div`
+    align-self: center;
     border: 1px solid #c9c9c9;
     border-radius: 7px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
@@ -14,16 +16,8 @@ const CoinsContainer = styled.div`
     justify-content: space-between;
     margin: 10px;
     align-items: center;
-    padding: 5px;
-`;
-const CoinTitle = styled.h1`
-    margin: 10px;
-`;
-const CoinsSubContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    padding: 1rem 1ch;
+    gap: 1ch;
 `;
 const StyledCoin = styled(CurrencyExchangeIcon)`
     color: #2d3c4a;
@@ -58,12 +52,14 @@ export default function Points() {
 
     return (
         <>
-            <CoinTitle>LoaNUS Coins</CoinTitle>
+            <Typography variant="h4" align="center" sx={{fontWeight: "bold", marginTop: "1rem"}}>
+                LoaNUS Coins
+            </Typography>
             <CoinsContainer>
-                <CoinsSubContainer>
                 <StyledCoin></StyledCoin>
-                <h2>{ points !== null ? points : "..." } Coins</h2>
-                </CoinsSubContainer>
+                <Typography variant="h5" sx={{fontWeight: "bold"}}>
+                    { points !== null ? points : "..." } Coins
+                </Typography>
 
                 <ButtonComponent
                     size={"small"}
