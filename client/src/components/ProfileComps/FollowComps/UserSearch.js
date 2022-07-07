@@ -64,30 +64,10 @@ const StyledSearchField = styled((props) => <TextField {...props} />)(
 );
 
 export default function SearchUserField() {
-  const navigate = useNavigate();
   const [queryText, setQueryText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [finalSearch, setFinalSearch] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [clickResult, setClickResult] = useState({});
-  const [clickResultImgs, setClickResultImgs] = useState([]);
-  const [open, setOpen] = useState(false);
-  const { user } = useAuth();
-  const isOwner = isUserListingRelated(user, clickResult);
-
-  const removeResult = () => {
-    setSearchResults((prevResults) => {
-      return prevResults.filter((result) => result._id !== clickResult._id);
-    });
-  };
-
-  const getResultAction = () => {
-    if (isOwner) {
-      return deleteListingAction;
-    } else {
-      return borrowAction;
-    }
-  };
 
   useEffect(() => {
     if (!queryText) {
@@ -119,56 +99,7 @@ export default function SearchUserField() {
   };
 
   const onClickResult = async (event, newValue, reason) => {
-    const imgsToUrls = async (images) => {
-      let imgs = [];
-      const bins = images.data;
-      bins.forEach((bin, index) => {
-        const binary = Buffer.from(bin);
-        const blob = new Blob([binary.buffer], {
-          type: images.contentType[index],
-        });
-        const url = URL.createObjectURL(blob);
-        imgs[index] = url;
-      });
-      setClickResultImgs(imgs);
-    };
-
-    const processResult = async (rawResult) => {
-      let result = {
-        _id: rawResult._id,
-        title: rawResult.title,
-        description: rawResult.description,
-        location: rawResult.location,
-        listedBy: rawResult.listedBy,
-        borrowedBy: rawResult.borrowedBy,
-      };
-      result.category = CATEGORIES[rawResult.category];
-      result.deadline = new Date(rawResult.deadline).toLocaleDateString(
-        {},
-        { year: "numeric", month: "short", day: "numeric" }
-      );
-      result.date = new Date(rawResult.date).toLocaleDateString(
-        {},
-        { year: "numeric", month: "short", day: "numeric" }
-      );
-      setClickResult(result);
-    };
-
     if (reason === "selectOption") {
-      event.defaultMuiPrevented = true;
-
-      axios
-        .get(`${BACKEND_URL}/api/search-exact`, {
-          params: {
-            id: newValue._id,
-          },
-        })
-        .then((res) => {
-          imgsToUrls(res.data.result.images);
-          processResult(res.data.result);
-        })
-        .catch((err) => console.log(err, "error occured"));
-      setOpen(true);
     }
   };
 
