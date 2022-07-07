@@ -171,7 +171,7 @@ export default function SearchUserField() {
           );
         }}
       />
-      <UserDisplay users={finalSearch}></UserDisplay>
+      <UserDisplay queryText={queryText} users={finalSearch}></UserDisplay>
     </MainContainer>
   );
 }

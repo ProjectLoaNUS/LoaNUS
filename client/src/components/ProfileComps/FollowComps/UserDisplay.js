@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import UserCard from "../../UserComps/UserCard";
+import { Typography } from "@mui/material";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -9,9 +10,13 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
+const StyledTypo = styled(Typography)`
+  padding: 1em 0;
+  width: 100%;
+`;
 
 function UserDisplay(props) {
-  const { users } = props;
+  const { queryText, users } = props;
 
   return (
     <MainContainer>
@@ -20,7 +25,7 @@ function UserDisplay(props) {
           users.map((user, index) => (
             <UserCard key={index} otheruser={user} />
           ))
-        : "No such user"
+        : <StyledTypo align="center" variant="subtitle1">No user named "{queryText}"</StyledTypo>
       : 
         ""
       }
