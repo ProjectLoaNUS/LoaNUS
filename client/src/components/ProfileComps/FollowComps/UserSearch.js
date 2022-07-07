@@ -66,12 +66,14 @@ const StyledSearchField = styled((props) => <TextField {...props} />)(
 export default function SearchUserField() {
   const [queryText, setQueryText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [finalSearch, setFinalSearch] = useState([]);
+  const [ isFinalSearch, setIsFinalSearch ] = useState(false);
+  const [finalSearch, setFinalSearch] = useState(null);
+  const [ open, setOpen ] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!queryText) {
-      setSearchResults([]);
+      setSearchResults(null);
     } else {
       (async () => {
         const url = `${BACKEND_URL}/api/searchUser`;
@@ -83,6 +85,10 @@ export default function SearchUserField() {
           })
           .then((res) => {
             setSearchResults(res.data.results);
+            if (isFinalSearch) {
+              setFinalSearch(res.data.results);
+              setIsFinalSearch(false);
+            }
             console.log(res.data.results);
             setLoading(false);
           })
@@ -95,13 +101,16 @@ export default function SearchUserField() {
     e.preventDefault();
     if (queryText) {
       setFinalSearch(searchResults);
+      setOpen(false);
     }
   };
 
   const onClickResult = async (event, newValue, reason) => {
     if (reason === "selectOption") {
+      setFinalSearch(null);
+      setIsFinalSearch(true);
       setQueryText(newValue.name);
-      handleSubmit(event);
+      setOpen(false);
     }
   };
 
@@ -131,6 +140,13 @@ export default function SearchUserField() {
         filterOptions={(x) => x}
         id="search"
         loading={loading}
+        open={open}
+        onOpen={() => {
+          setOpen(true);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
         options={searchResults}
         getOptionLabel={(result) => result.name}
         onChange={onClickResult}
