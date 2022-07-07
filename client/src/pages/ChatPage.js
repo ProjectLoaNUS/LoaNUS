@@ -6,7 +6,7 @@ import { useAuth } from "../database/auth";
 import axios from "axios";
 import Message from "../components/ChatComps/Message";
 import ChatOnline from "../components/ChatComps/ChatOnline";
-import { BACKEND_URL, SOCKET_URL } from "../database/const";
+import { BACKEND_URL } from "../database/const";
 import Conversation from "../components/ChatComps/Conversation";
 import ButtonComponent from "../components/Button";
 import { Avatar } from "@mui/material";
@@ -131,7 +131,7 @@ function ChatPage() {
   }, [user, setUser]);
 
   useEffect(() => {
-    socket.current = io(SOCKET_URL);
+    socket.current = io(BACKEND_URL);
     socket.current.on("getMessage", (data) => {
       setArrivalMessage({
         sender: data.senderId,
@@ -154,7 +154,7 @@ function ChatPage() {
   useEffect(() => {
     socket.current.emit("addUser", user?.id);
     socket.current.on("getUsers", (users) => {
-      fetch(`${BACKEND_URL}/api/getNamesOfUsers`, {
+      fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

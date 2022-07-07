@@ -1,40 +1,55 @@
-import { Grid } from "@mui/material";
-import React from "react";
-import styled from "styled-components";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
 
-const PaddedGrid = styled(Grid)`
-  padding: 0 1rem;
-`;
-const ItemGrid = styled(Grid)`
-  .MuiCard-root {
-    height: 100%;
-    width: 100%;
-  }
-`;
-
 const SearchResults = (props) => {
-  const { resultTexts, setResultTexts, resultImages, setResultImages } = props;
+  const { queryText } = props;
+  const [ searchResultsDetails, setSearchResultsDetails ] = useState([]);
+  const [ searchResultsImages, setSearchResultsImages ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(true);
 
-  function ResultsGrid(props) {
-    const { children, key } = props;
-
-    return (
-      <ItemGrid item key={key} alignItems="stretch" justifyContent="center" xs={4}>
-        {children}
-      </ItemGrid>
-    );
-  }
+  useEffect(() => {
+    const url = `${BACKEND_URL}/api/items/search`;
+    if (queryText) {
+      // Images of search result items
+      axios
+        .get(url, {
+          params: {
+            name: queryText,
+            isFullSearch: true,
+            isImageOnly: true
+          },
+        })
+        .then((res) => {
+          setSearchResultsImages(res.data.results);
+        })
+        .catch((err) => console.log(err, "error occured"));
+      // Text details(title, description, etc) of search result items
+      axios
+        .get(url, {
+          params: {
+            name: queryText,
+            isFullSearch: true,
+            isTextOnly: true
+          },
+        })
+        .then((res) => {
+          setSearchResultsDetails(res.data.results);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err, "error occured"));
+    }
+  }, [queryText]);
 
   return (
-    <PaddedGrid container spacing={1}>
-        <ItemList
-          CardContainer={ResultsGrid}
-          texts={resultTexts}
-          setTexts={setResultTexts}
-          imageUrls={resultImages}
-          setImageUrls={setResultImages} />
-    </PaddedGrid>
+    <ItemList
+      isLoading={isLoading}
+      noItemsText={`No results found for "${queryText}"`}
+      itemImages={searchResultsImages}
+      itemImagesType="base64"
+      itemDatas={searchResultsDetails}
+      setItemDatas={setSearchResultsDetails} />
   );
 };
 

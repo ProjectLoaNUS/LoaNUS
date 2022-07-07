@@ -4,9 +4,14 @@ import { auth } from "./setup";
 import { BACKEND_URL } from "./const";
 
 const authCtx = createContext({
+  hasUser: null,
   signInWithGoogle: null,
+  signInUserPass: null,
+  signUpUser: null,
   signOut: null,
   user: null,
+  setUser: null,
+  isGoogleSignIn: null
 });
 
 function useAuthProvider() {
@@ -16,7 +21,7 @@ function useAuthProvider() {
 
   const signInWithGoogle = () => {
     return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
-      fetch(`${BACKEND_URL}/api/postAltLogin`, {
+      fetch(`${BACKEND_URL}/api/user/postAltLogin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +59,7 @@ function useAuthProvider() {
   };
 
   const signInUserPass = async (givenEmail, givenPassword) => {
-    const res = await fetch(`${BACKEND_URL}/api/login`, {
+    const res = await fetch(`${BACKEND_URL}/api/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +82,7 @@ function useAuthProvider() {
   const signUpUser = async (givenName, givenAge, givenEmail, givenPassword) => {
     const userStatus = await hasUser(givenEmail);
     if (userStatus === hasUserResultCodes.NO_SUCH_USER) {
-      const req = await fetch(`${BACKEND_URL}/api/signUpUser`, {
+      const req = await fetch(`${BACKEND_URL}/api/user/signUp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +104,7 @@ function useAuthProvider() {
   };
 
   const hasUser = async (givenEmail) => {
-    const req = await fetch(`${BACKEND_URL}/api/hasUser`, {
+    const req = await fetch(`${BACKEND_URL}/api/user/hasUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -135,7 +140,7 @@ function useAuthProvider() {
     signOut,
     user,
     setUser,
-    isGoogleSignIn,
+    isGoogleSignIn
   };
 }
 

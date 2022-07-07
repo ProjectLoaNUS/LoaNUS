@@ -4,7 +4,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { BACKEND_URL, SOCKET_URL } from "../../database/const";
+import { BACKEND_URL } from "../../database/const";
 import { io } from "socket.io-client";
 import ChatBox from "../ChatComps/ChatBox";
 
@@ -24,7 +24,7 @@ export default function ChatView(props) {
     const socket = useRef();
 
     const openSocket = async () => {
-        socket.current = io(SOCKET_URL);
+        socket.current = io(BACKEND_URL);
         socket.current.on("getMessage", (data) => {
           setArrivalMessage({
             sender: data.senderId,
@@ -50,12 +50,15 @@ export default function ChatView(props) {
 
     useEffect(() => {
         openSocket();
-        fetchMessages();
     
         return () => {
           socket.current.disconnect();
         }
     }, []);
+
+    useEffect(() => {
+        fetchMessages();
+    }, [chat]);
 
     useEffect(() => {
         arrivalMessage &&
