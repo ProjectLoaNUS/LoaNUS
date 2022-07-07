@@ -14,7 +14,7 @@ const MainContainer = styled.div`
   align-items: center;
 `;
 const SubContainer = styled.div`
-  width: 30%;
+  width: max(265px, 30%);
   height: 100%;
   border-radius: 10px;
   box-shadow: 5px 10px #dce0e6;
