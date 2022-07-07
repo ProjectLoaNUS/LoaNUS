@@ -13,7 +13,7 @@ import axios from "axios";
 import { BACKEND_URL } from "../../../database/const";
 
 function FollowCard(props) {
-  const { image } = props;
+  const { id, activatebutton, image, username } = props;
   const { user } = useAuth();
   const [followed, setFollowed] = useState(props.followed);
   const [ userPicUrl, setUserPicUrl ] = useState("");
@@ -69,8 +69,8 @@ function FollowCard(props) {
         <ListItemAvatar>
           <Avatar src={userPicUrl || null}></Avatar>
         </ListItemAvatar>
-        <ListItemText primary={props.username || "User"} />
-        {props.activatebutton ? (
+        <ListItemText primary={username || "User"} />
+        {activatebutton ? (
           followed ? (
             <ButtonComponent
               state="primary"
@@ -78,7 +78,7 @@ function FollowCard(props) {
               setWidth={"30%"}
               setHeight={"30%"}
               setFontsize={"0.5rem"}
-              onClick={() => handleUnfollow(props.id)}
+              onClick={() => handleUnfollow(id)}
             ></ButtonComponent>
           ) : (
             <ButtonComponent
@@ -87,7 +87,7 @@ function FollowCard(props) {
               setWidth={"30%"}
               setHeight={"30%"}
               setFontsize={"0.5rem"}
-              onClick={() => handleFollow(props.id)}
+              onClick={() => handleFollow(id)}
             ></ButtonComponent>
           )
         ) : null}
