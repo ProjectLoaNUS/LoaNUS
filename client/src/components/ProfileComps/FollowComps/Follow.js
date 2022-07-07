@@ -47,13 +47,13 @@ function Follow() {
         <Tab label="Following"></Tab>
         {/*<Tab label="Requests for approval"></Tab>*/}
       </Tabs>
-      <TabPanel value={selectedTab} index={0}>
+      <TabPanel value={selectedTab} index={0} sx={{flex: selectedTab === 0 ? "1 1 auto" : "0 0 0"}}>
         <SearchUserField></SearchUserField>
       </TabPanel>
-      <TabPanel value={selectedTab} index={1}>
+      <TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
         <FollowerDisplay></FollowerDisplay>
       </TabPanel>
-      <TabPanel value={selectedTab} index={2}>
+      <TabPanel value={selectedTab} index={2} sx={{flex: selectedTab === 2 ? "1 1 auto" : "0 0 0"}}>
         <FollowingDisplay></FollowingDisplay>
       </TabPanel>
     </MainContainer>

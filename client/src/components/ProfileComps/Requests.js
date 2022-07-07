@@ -23,7 +23,6 @@ const MainContainer = styled.div`
     flex: 0 0 auto;
   }
   & .MuiContainer-root {
-    flex: 1 1 auto;
     padding: 0;
 
     & .MuiBox-root {
@@ -108,7 +107,7 @@ function Requests() {
         <Tab label="Your Requests"></Tab>
         {/*<Tab label="Requests for approval"></Tab>*/}
       </Tabs>
-      <TabPanel value={selectedTab} index={0}>
+      <TabPanel value={selectedTab} index={0} sx={{flex: selectedTab === 0 ? "1 1 auto" : "0 0 0"}}>
         <PaddedGrid container spacing={1}>
           <ItemList
             CardContainer={RequestsGrid}
@@ -118,7 +117,7 @@ function Requests() {
             onClickAction={deleteRequestAction} />
         </PaddedGrid>
       </TabPanel>
-      {/*<TabPanel value={selectedTab} index={1}>
+      {/*<TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
         No Requests currently
       </TabPanel>*/}
     </MainContainer>
