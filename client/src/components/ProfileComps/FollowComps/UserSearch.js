@@ -100,6 +100,8 @@ export default function SearchUserField() {
 
   const onClickResult = async (event, newValue, reason) => {
     if (reason === "selectOption") {
+      setQueryText(newValue.name);
+      handleSubmit(event);
     }
   };
 
