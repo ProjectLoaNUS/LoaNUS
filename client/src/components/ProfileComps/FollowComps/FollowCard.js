@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect } from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
@@ -13,20 +13,11 @@ import axios from "axios";
 import { BACKEND_URL } from "../../../database/const";
 
 function FollowCard(props) {
+  const { image } = props;
   const { user } = useAuth();
   const [followed, setFollowed] = useState(props.followed);
-  let userimage;
-  let url;
-  if (props.image) {
-    userimage = props.image;
-    const bin = userimage.data;
-    const ctype = userimage.contentType;
-    const binary = Buffer.from(bin, "base64");
-    const blob = new Blob([binary.buffer], {
-      type: ctype,
-    });
-    url = URL.createObjectURL(blob);
-  }
+  const [ userPicUrl, setUserPicUrl ] = useState("");
+  
   const handleFollow = async (otherid) => {
     let friends = {
       follower: user.id,
@@ -59,11 +50,24 @@ function FollowCard(props) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (image) {
+      const bin = image.data;
+      const ctype = image.contentType;
+      const binary = Buffer.from(bin, "base64");
+      const blob = new Blob([binary.buffer], {
+        type: ctype,
+      });
+      setUserPicUrl(URL.createObjectURL(blob));
+    }
+  }, [image]);
+
   return (
     <List>
       <ListItem>
         <ListItemAvatar>
-          <Avatar src={url || null}></Avatar>
+          <Avatar src={userPicUrl || null}></Avatar>
         </ListItemAvatar>
         <ListItemText primary={props.username || "User"} />
         {props.activatebutton ? (
