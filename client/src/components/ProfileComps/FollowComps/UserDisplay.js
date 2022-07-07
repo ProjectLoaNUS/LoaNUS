@@ -13,8 +13,8 @@ const MainContainer = styled.div`
 function UserDisplay(props) {
   return (
     <MainContainer>
-      {props.users.map((user) => (
-        <UserCard otheruser={user} />
+      {props.users.map((user, index) => (
+        <UserCard key={index} otheruser={user} />
       ))}
     </MainContainer>
   );

@@ -6,7 +6,7 @@ const MyButton = styled(Button)`
   height: ${(props) => props.height ?? `auto`};
   width: ${(props) => props.width ?? `max-content`};
   border-radius: 25px;
-  font-size: ${(props) => props.fontsize ?? `12`};
+  font-size: ${(props) => props.setfontsize ?? `12`};
   border: solid 0.1rem transparent;
   background-image: linear-gradient(
       rgba(255, 255, 255, 0),
@@ -36,7 +36,7 @@ function ButtonComponent(props) {
       width={props.setWidth}
       height={props.setHeight}
       size={props.size ?? "medium"}
-      fontsize={props.setFontsize}
+      setfontsize={props.setFontsize}
     >
       {props.text}
     </MyButton>
