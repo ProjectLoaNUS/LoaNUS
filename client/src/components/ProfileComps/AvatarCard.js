@@ -37,6 +37,8 @@ const ImageUploadContainer = styled.div`
   display: flex;
   flex-direction: row;
   padding-top: 20px;
+  align-items: center;
+  justify-content: space-evenly;
 `;
 
 const HiddenInput = styled.input`
@@ -121,12 +123,16 @@ function AvatarCard(props) {
           text={"Set picture"}
           size={"small"}
           state={"primary"}
+          setWidth={"30%"}
+          setFontsize={"0.45rem"}
           onClick={handleClick}
         ></ButtonComponent>
         <ButtonComponent
           text={"Upload Image"}
           size={"small"}
+          setWidth={"30%"}
           onClick={handleSubmit}
+          setFontsize={"0.45rem"}
         ></ButtonComponent>
       </ImageUploadContainer>
 
