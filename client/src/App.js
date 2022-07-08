@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/HomePage";
@@ -23,8 +23,25 @@ import {
 } from "./pages/routes";
 import ClaimRewardPage from "./pages/ClaimRewardPage";
 import AdminPage from "./pages/AdminPage";
+import { useAuth } from "./database/auth";
 
 function App() {
+  const { user, setUser, setIsUserLoaded } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      setIsUserLoaded(true);
+    }
+  }, []);
+
   return (
     <div>
       <ThemeProvider theme={theme}>

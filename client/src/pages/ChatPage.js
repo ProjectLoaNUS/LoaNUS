@@ -47,7 +47,7 @@ const ChatBoxContainer = styled.div`
 `;
 
 function ChatPage() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, isUserLoaded } = useAuth();
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -59,24 +59,15 @@ function ChatPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch (err) {
-          console.log(err);
+    if (!user && isUserLoaded) {
+      navigate(SIGN_IN, {
+        state: {
+          open: true, 
+          message: "Sign in before chatting with other users"
         }
-      } else {
-        navigate(SIGN_IN, {
-          state: {
-            open: true,
-            message: "Sign in before chatting with other users",
-          },
-        });
-      }
+      });
     }
-  }, [user, setUser, navigate]);
+  }, [user]);
   useEffect(() => {
     const getfollowing = async () => {
       try {
@@ -126,28 +117,30 @@ function ChatPage() {
   }, [arrivalmessage, currentChat]);
 
   useEffect(() => {
-    socket.current.emit("addUser", user?.id);
-    socket.current.on("getUsers", (users) => {
-      fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          users: users.filter(
-            (otherUser) =>
-              otherUser.userId !== user?.id &&
-              (followers.includes(otherUser.userId) ||
-                following.includes(otherUser.userId))
-          ),
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
+    if (user) {
+      socket.current.emit("addUser", user.id);
+      socket.current.on("getUsers", (users) => {
+        fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            users: users.filter(
+              (otherUser) =>
+                otherUser.userId !== user?.id &&
+                (followers.includes(otherUser.userId) ||
+                  following.includes(otherUser.userId))
+            ),
+          }),
+        })
+        .then(res => res.json())
+        .then(data => {
           setOnlineUsers(data.userDetails);
         });
-    });
-  }, [user, followers, following]);
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     const getConversations = async () => {
@@ -159,7 +152,9 @@ function ChatPage() {
         console.log(err);
       }
     };
-    getConversations();
+    if (user) {
+      getConversations();
+    }
   }, [user]);
 
   useEffect(() => {
@@ -174,7 +169,9 @@ function ChatPage() {
         console.log(err);
       }
     };
-    getMessages();
+    if (currentChat) {
+      getMessages();
+    }
   }, [currentChat]);
 
   return (

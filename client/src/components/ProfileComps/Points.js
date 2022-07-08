@@ -29,28 +29,30 @@ const StyledCoin = styled(CurrencyExchangeIcon)`
 `;
 
 export default function Points() {
-    const [ points, setPoints ] = useState(null);
+    const [ points, setPoints ] = useState("...");
     const { user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/user/getPoints`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: user.id
-            }),
-        })
-        .then(req => req.json())
-        .then(data => {
-            if (data.status === "ok" && data.points !== undefined) {
-                setPoints(data.points);
-            } else {
-                console.log("Error fetching user's points from backend");
-            }
-        });
+        if (points === "...") {
+            fetch(`${BACKEND_URL}/api/user/getPoints`, {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                userId: user.id
+                }),
+            })
+            .then(req => req.json())
+            .then(data => {
+                if (data.status === "ok" && data.points !== undefined) {
+                    setPoints(data.points);
+                } else {
+                    console.log("Error fetching user's points from backend");
+                }
+            });
+        }
     }, [user]);
 
     const onClickSpend = () => {
@@ -65,7 +67,7 @@ export default function Points() {
             <CoinsContainer>
                 <StyledCoin></StyledCoin>
                 <Typography variant="h5" sx={{fontWeight: "bold"}}>
-                    { points !== null ? points : "..." } Coins
+                    { points } Coins
                 </Typography>
 
                 <ButtonComponent

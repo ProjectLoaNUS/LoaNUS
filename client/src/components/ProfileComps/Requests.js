@@ -77,7 +77,7 @@ function TabPanel(props) {
 function Requests() {
   const [ selectedTab, setSelectedTab ] = useState(0);
   const { user } = useAuth();
-  const [ requests, setRequests ] = useState([]);
+  const [ requests, setRequests ] = useState(null);
   const [ isLoading, setIsLoading ] = useState(true);
 
   const handleChange = (event, newValue) => {
@@ -85,22 +85,24 @@ function Requests() {
   };
 
   useEffect(() => {
-    fetch(`${BACKEND_URL}/api/items/getRequestsOfUser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: user.id
-      }),
-    })
-    .then(req => req.json())
-    .then(data => {
-      if (data.status === "ok") {
-        setRequests(data.requests);
-        setIsLoading(false);
-      }
-    });
+    if (requests === null) {
+      fetch(`${BACKEND_URL}/api/items/getRequestsOfUser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id
+        }),
+      })
+      .then(req => req.json())
+      .then(data => {
+        if (data.status === "ok") {
+          setRequests(data.requests);
+          setIsLoading(false);
+        }
+      });
+    }
   }, [user]);
 
   return (

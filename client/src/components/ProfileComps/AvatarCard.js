@@ -50,6 +50,8 @@ function AvatarCard(props) {
   const [ alertMessage, setAlertMessage ] = useState("");
   const [profileimage, setProfileImage] = useState();
   const { user, setUser } = useAuth();
+  const [ followersCount, setFollowersCount ] = useState("...");
+  const [ followingCount, setFollowingCount ] = useState("...");
 
   const hiddenFileInput = React.useRef(null);
 
@@ -64,42 +66,42 @@ function AvatarCard(props) {
           return newUser;
         });
       }
-      fetch(`${BACKEND_URL}/api/user/getFollowersCount`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id
+      if (followersCount === "...") {
+        fetch(`${BACKEND_URL}/api/user/getFollowersCount`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          })
         })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'ok') {
-          setUser(prevUser => {
-            return {...prevUser, followersCount: data.followersCount};
-          });
-        }
-      });
-      fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            setFollowersCount(data.followersCount);
+          }
+        });
+      }
+      if (followingCount === "...") {
+        fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          })
         })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'ok') {
-          setUser(prevUser => {
-            return {...prevUser, followingCount: data.followingCount};
-          });
-        }
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            setFollowingCount(data.followingCount);
+          }
+        });
+      }
     }
-  }, []);
+  }, [user]);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -159,7 +161,7 @@ function AvatarCard(props) {
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
       <FollowContainer>
-        {user.followersCount || 0} Followers {user.followingCount || 0}{" "}
+        {followersCount} Followers {followingCount}{" "}
         Following
       </FollowContainer>
       <ImageUploadContainer>

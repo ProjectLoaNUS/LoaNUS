@@ -11,11 +11,14 @@ const authCtx = createContext({
   signOut: null,
   user: null,
   setUser: null,
-  isGoogleSignIn: null
+  isUserLoaded: false,
+  setIsUserLoaded: null,
+  isGoogleSignIn: false
 });
 
 function useAuthProvider() {
   const [user, setUser] = useState(null);
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
   const [isGoogleSignIn, setIsGoogleSignIn] = useState(false);
   const googleAuthProvider = new GoogleAuthProvider();
 
@@ -140,6 +143,8 @@ function useAuthProvider() {
     signOut,
     user,
     setUser,
+    isUserLoaded,
+    setIsUserLoaded,
     isGoogleSignIn
   };
 }

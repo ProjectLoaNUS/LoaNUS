@@ -22,20 +22,6 @@ const BodyContainer = styled.div`
 `;
 
 function HomePage() {
-  const { user, setUser } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    }
-  }, [user, setUser]);
 
   return (
     <MainContainer>

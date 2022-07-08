@@ -12,14 +12,16 @@ import {
   PROFILE_REQUESTS,
   PROFILE_REVIEWS,
   PROFILE_REWARDS_CLAIMED,
+  SIGN_IN,
 } from "./routes";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Points from "../components/ProfileComps/Points";
 import Requests from "../components/ProfileComps/Requests";
 import Reviews from "../components/ProfileComps/Reviews";
 import Rewards from "../components/ProfileComps/Rewards";
 import BorrowedItems from "../components/ProfileComps/BorrowedItems";
 import Follow from "../components/ProfileComps/FollowComps/Follow";
+import { useEffect } from "react";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -66,7 +68,19 @@ const InformationDisplayContainer = styled.div`
 `;
 
 function ProfilePage() {
-  const { user } = useAuth();
+  const { user, isUserLoaded } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user && isUserLoaded) {
+      navigate(SIGN_IN, {
+        state: {
+          open: true, 
+          message: "Sign in before viewing your user profile"
+        }
+      });
+    }
+  }, [user]);
 
   function InformationDisplay() {
     const location = useLocation();
