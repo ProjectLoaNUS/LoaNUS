@@ -52,6 +52,8 @@ export default function BorrowedItems(props) {
         onClickAction={returnItemAction}
         itemImages={borrowedImgs}
         itemDatas={borrowedTexts}
-        setItemDatas={setBorrowedTexts} />
+        setItemDatas={setBorrowedTexts}
+        onClickAction={returnItemAction}
+        buttonText="Return it!" />
     );
 }

@@ -57,8 +57,15 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 
 export default function ItemCard(props) {
-  const { itemDetails, imageUrls, buttonText, onActionDone, onClickAction } =
-    props;
+  const {
+    itemDetails,
+    imageUrls,
+    buttonText,
+    isOwnerButtonText,
+    onActionDone,
+    onClickAction,
+    isOwnerOnClickAction
+  } = props;
   const [open, setOpen] = useState(false);
   const [ownerPicUrl, setOwnerPicUrl] = useState("");
   const { user, setUser } = useAuth();
@@ -107,18 +114,20 @@ export default function ItemCard(props) {
   };
 
   const getItemCardAction = () => {
-    if (isOwner) {
-      return deleteListingAction;
-    } else {
-      return borrowAction;
-    }
-  };
+      if (isOwner) {
+          return isOwnerOnClickAction || deleteListingAction;
+      } else {
+          return onClickAction || borrowAction;
+      }
+  }
 
-  useEffect(() => {
-    if (user && owner) {
-      setIsOwner(isUserListingRelated(user, {listedBy: owner}));
+  const getButtonText = (isUserOwner) => {
+    if (isUserOwner) {
+      return isOwnerButtonText || "Delete Listing";
+    } else {
+      return buttonText;
     }
-  }, [user, owner]);
+  }
 
   useEffect(() => {
     if (!!owner) {
@@ -221,9 +230,8 @@ export default function ItemCard(props) {
         open={open}
         setOpen={setOpen}
         onActionDone={onActionDone}
-        buttonAction={onClickAction || getItemCardAction()}
-        buttonText={buttonText || (isOwner ? "Delete Listing" : "Borrow It!")}
-      />
+        buttonAction={getItemCardAction()}
+        buttonText={getButtonText(isOwner)} />
     </ListCard>
   );
 }

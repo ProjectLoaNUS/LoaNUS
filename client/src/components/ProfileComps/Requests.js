@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../database/auth";
 import { Container } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
+import { deleteRequestAction } from "../ItemDetails/detailsDialogActions";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -115,7 +116,9 @@ function Requests() {
           buttonText="Delete request"
           noItemsText="No item requests yet. Create one?"
           itemDatas={requests}
-          setItemDatas={setRequests} />
+          setItemDatas={setRequests}
+          isOwnerOnClickAction={deleteRequestAction}
+          isOwnerButtonText="Delete request" />
       </TabPanel>
       {/*<TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
         No Requests currently
