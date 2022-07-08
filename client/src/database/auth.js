@@ -53,11 +53,11 @@ function useAuthProvider() {
   const signOut = () => {
     if (isGoogleSignIn) {
       return auth.signOut().then(() => {
-        setUser(false);
+        setUser(null);
         localStorage.setItem("user", "");
       });
     }
-    setUser(false);
+    setUser(null);
     localStorage.setItem("user", "");
   };
 
