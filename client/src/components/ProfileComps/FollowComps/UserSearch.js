@@ -1,5 +1,7 @@
 import { Autocomplete, IconButton, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
@@ -173,6 +175,27 @@ export default function SearchUserField() {
                 ),
               }}
             />
+          );
+        }}
+        renderOption={(props, option, { inputValue }) => {
+          const matches = match(option.name, inputValue, { insideWords: true });
+          const parts = parse(option.name, matches);
+  
+          return (
+            <li {...props}>
+              <div>
+                {parts.map((part, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      fontWeight: part.highlight ? 700 : 400,
+                    }}
+                  >
+                    {part.text}
+                  </span>
+                ))}
+              </div>
+            </li>
           );
         }}
       />
