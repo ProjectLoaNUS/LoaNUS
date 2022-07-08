@@ -9,7 +9,7 @@ const socketServer = (app, server) => {
             origin: SOCKET_ORIGIN
         }
     });
-    console.log("socket-io server initialised");
+    console.log("socket-io: Server initialised");
 
     let users = [];
     const addUser = (userId, socketId) => {
@@ -25,7 +25,7 @@ const socketServer = (app, server) => {
     };
     io.on("connection", (socket) => {
         //When connect
-        console.log("a user connected");
+        console.log("socket-io: A user just got connected");
         //retrieve userId and socketId from user
         socket.on("addUser", (userId) => {
             addUser(userId, socket.id);
@@ -40,12 +40,12 @@ const socketServer = (app, server) => {
                 text,
             });
             } else {
-            console.log(`Error: Invalid receiver ID ${receiverId}`);
+            console.log(`socket-io error: Invalid receiver ID ${receiverId}`);
             }
         });
         //When disconnect
         socket.on("disconnect", () => {
-            console.log("a user disconnected");
+            console.log("socket-io: A user just got disconnected");
             removeUser(socket.id);
             io.emit("getUsers", users);
         });
