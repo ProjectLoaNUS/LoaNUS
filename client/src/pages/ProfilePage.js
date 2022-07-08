@@ -62,7 +62,7 @@ const InformationDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  align-items: stretch;
 `;
 
 function ProfilePage() {

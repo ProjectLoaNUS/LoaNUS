@@ -79,7 +79,7 @@ export default function SearchUserField() {
       setSearchResults([]);
     } else {
       (async () => {
-        const url = `${BACKEND_URL}/api/searchUser`;
+        const url = `${BACKEND_URL}/api/user/search`;
         axios
           .get(url, {
             params: {

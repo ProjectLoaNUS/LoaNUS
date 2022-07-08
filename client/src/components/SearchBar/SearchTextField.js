@@ -1,4 +1,6 @@
 import { Autocomplete, IconButton, TextField } from "@mui/material";
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -87,7 +89,7 @@ export default function SearchTextField() {
       setSearchResults([]);
     } else {
       (async () => {
-        const url = `${BACKEND_URL}/api/search`;
+        const url = `${BACKEND_URL}/api/items/search`;
         axios
           .get(url, {
             params: {
@@ -146,7 +148,7 @@ export default function SearchTextField() {
       event.defaultMuiPrevented = true;
 
       axios
-        .get(`${BACKEND_URL}/api/search-exact`, {
+        .get(`${BACKEND_URL}/api/items/search-exact`, {
           params: {
             id: newValue._id
           },
@@ -180,6 +182,14 @@ export default function SearchTextField() {
         options={searchResults}
         getOptionLabel={result => result.title}
         onChange={onClickResult}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            // Prevent MUI's default 'Enter' key behavior.
+            event.defaultMuiPrevented = true;
+            // Direct user to the ListingSearchPage to view detailed search results
+            handleSubmit(event);
+          }
+        }}
         renderInput={(params) => {
           return (
             <StyledSearchField
@@ -197,6 +207,27 @@ export default function SearchTextField() {
                 ),
               }} />
           )
+        }}
+        renderOption={(props, option, { inputValue }) => {
+          const matches = match(option.title, inputValue, { insideWords: true });
+          const parts = parse(option.title, matches);
+  
+          return (
+            <li {...props}>
+              <div>
+                {parts.map((part, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      fontWeight: part.highlight ? 700 : 400,
+                    }}
+                  >
+                    {part.text}
+                  </span>
+                ))}
+              </div>
+            </li>
+          );
         }} />
       <DetailsDialog
         itemId={clickResult && clickResult._id}

@@ -82,10 +82,10 @@ function AvatarCard(props) {
     });
 
     let formData = new FormData();
-    formData.append("username", user.displayName);
+    formData.append("userId", user.id);
     formData.append("image", profileimage);
     axios
-      .post(`${BACKEND_URL}/profile-upload`, formData, {
+      .post(`${BACKEND_URL}/api/user/setProfilePic`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -110,8 +110,8 @@ function AvatarCard(props) {
             : "U"
           : ""}
       </Avatar>
-      <UserName>{user.displayName}</UserName>
-      <Email>{user.email}</Email>
+      <UserName>{user && user.displayName}</UserName>
+      <Email>{user && user.email}</Email>
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
       <FollowContainer>

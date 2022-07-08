@@ -2,14 +2,12 @@ import styled from "styled-components";
 import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import ItemList from "../ItemList/ItemList";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../database/auth";
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
-import { deleteRequestAction } from "../ItemDetails/detailsDialogActions";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -26,22 +24,33 @@ const MainContainer = styled.div`
     padding: 0;
 
     & .MuiBox-root {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      height: 100%;
       padding: 0;
     }
   }
 `;
-const PaddedGrid = styled(Grid)`
+const RequestsGrid = styled.div`
+  --grid-layout-gap: 1ch;
+  --grid-column-count: 4;
+  --grid-item--min-width: 210px;
+
+  --gap-count: calc(var(--grid-column-count) - 1);
+  --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+  --grid-item-width: max(var(--grid-item--min-width), var(--grid-item--max-width));
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-width), 1fr));
+  grid-auto-rows: calc(var(--grid-item-width) * 2 / 3);
+  grid-gap: var(--grid-layout-gap);
+  align-items: stretch;
+  justify-items: stretch;
+  padding: 1ch;
   height: 100%;
-  width: 100%;
-  padding: 1ch 1rem;
-  margin-top: 0;
   overflow-y: auto;
-`;
-const ItemGrid = styled(Grid)`
-  .MuiCard-root {
-    height: 100%;
-    width: 100%;
-  }
 `;
 
 function TabPanel(props) {
@@ -65,9 +74,10 @@ function TabPanel(props) {
 }
 
 function Requests() {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [ selectedTab, setSelectedTab ] = useState(0);
   const { user } = useAuth();
   const [ requests, setRequests ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -87,19 +97,10 @@ function Requests() {
     .then(data => {
       if (data.status === "ok") {
         setRequests(data.requests);
+        setIsLoading(false);
       }
     });
   }, [user]);
-
-  function RequestsGrid(props) {
-    const { children } = props;
-
-    return (
-      <ItemGrid item alignItems="stretch" justifyContent="center" xl={4} xs={4}>
-        {children}
-      </ItemGrid>
-    );
-  }
 
   return (
     <MainContainer>
@@ -108,14 +109,12 @@ function Requests() {
         {/*<Tab label="Requests for approval"></Tab>*/}
       </Tabs>
       <TabPanel value={selectedTab} index={0} sx={{flex: selectedTab === 0 ? "1 1 auto" : "0 0 0"}}>
-        <PaddedGrid container spacing={1}>
-          <ItemList
-            CardContainer={RequestsGrid}
-            texts={requests}
-            setTexts={setRequests}
-            buttonText="Delete Request"
-            onClickAction={deleteRequestAction} />
-        </PaddedGrid>
+        <ItemList
+          ListContainer={RequestsGrid}
+          isLoading={isLoading}
+          noItemsText="No item requests yet. Create one?"
+          itemDatas={requests}
+          setItemDatas={setRequests} />
       </TabPanel>
       {/*<TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
         No Requests currently
