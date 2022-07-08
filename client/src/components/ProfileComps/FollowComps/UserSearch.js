@@ -73,6 +73,7 @@ export default function SearchUserField() {
   const [finalSearch, setFinalSearch] = useState(null);
   const [ open, setOpen ] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!queryText) {
@@ -87,9 +88,10 @@ export default function SearchUserField() {
             },
           })
           .then((res) => {
-            setSearchResults(res.data.results);
+            const results = res.data.results.filter(result => result._id !== user.id);
+            setSearchResults(results);
             if (isFinalSearch) {
-              setFinalSearch(res.data.results);
+              setFinalSearch(results);
               setIsFinalSearch(false);
             }
             setLoading(false);
