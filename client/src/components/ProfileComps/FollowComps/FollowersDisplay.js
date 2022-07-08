@@ -5,6 +5,7 @@ import { useAuth } from "../../../database/auth";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
+import { Typography } from "@mui/material";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -41,17 +42,22 @@ function FollowingDisplay() {
   }, []);
   return (
     <MainContainer>
-      <FollowerList>
-        {followers.map((u, index) => (
-          <FollowCard
-            key={index}
-            image={u.image}
-            username={u.name}
-            id={u._id}
-            activatebutton={false}
-          ></FollowCard>
-        ))}
-      </FollowerList>
+      { followers && followers.length ?
+        <FollowerList>
+          {followers.map((u, index) => (
+            <FollowCard
+              key={index}
+              image={u.image}
+              username={u.name}
+              id={u._id}
+              activatebutton={false}
+            ></FollowCard>
+          ))}
+        </FollowerList> :
+        <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>
+          No followers yet.
+        </Typography>
+      }
     </MainContainer>
   );
 }
