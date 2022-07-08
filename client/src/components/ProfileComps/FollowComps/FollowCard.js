@@ -12,6 +12,14 @@ import { useAuth } from "../../../database/auth";
 import axios from "axios";
 import { BACKEND_URL } from "../../../database/const";
 
+const FollowItem = styled(ListItem)`
+  margin-bottom: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  box-shadow: 5px 10px #dce0e6;
+  transition: box-shadow 300ms cubic-bezier(0.4,0,0.2,1) 0ms;
+`;
+
 function FollowCard(props) {
   const { id, activatebutton, image, username } = props;
   const { user } = useAuth();
@@ -64,35 +72,33 @@ function FollowCard(props) {
   }, [image]);
 
   return (
-    <List>
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar src={userPicUrl || null}></Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={username || "User"} />
-        {activatebutton ? (
-          followed ? (
-            <ButtonComponent
-              state="primary"
-              text="Unfollow"
-              setWidth={"30%"}
-              setHeight={"30%"}
-              setFontsize={"0.5rem"}
-              onClick={() => handleUnfollow(id)}
-            ></ButtonComponent>
-          ) : (
-            <ButtonComponent
-              state="primary"
-              text="Follow"
-              setWidth={"30%"}
-              setHeight={"30%"}
-              setFontsize={"0.5rem"}
-              onClick={() => handleFollow(id)}
-            ></ButtonComponent>
-          )
-        ) : null}
-      </ListItem>
-    </List>
+    <FollowItem>
+      <ListItemAvatar>
+        <Avatar src={userPicUrl || null}></Avatar>
+      </ListItemAvatar>
+      <ListItemText primary={username || "User"} />
+      {activatebutton ? (
+        followed ? (
+          <ButtonComponent
+            state="primary"
+            text="Unfollow"
+            setWidth={"30%"}
+            setHeight={"30%"}
+            setFontsize={"0.5rem"}
+            onClick={() => handleUnfollow(id)}
+          ></ButtonComponent>
+        ) : (
+          <ButtonComponent
+            state="primary"
+            text="Follow"
+            setWidth={"30%"}
+            setHeight={"30%"}
+            setFontsize={"0.5rem"}
+            onClick={() => handleFollow(id)}
+          ></ButtonComponent>
+        )
+      ) : null}
+    </FollowItem>
   );
 }
 

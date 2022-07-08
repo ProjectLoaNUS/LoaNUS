@@ -11,9 +11,9 @@ import { BACKEND_URL } from "../../database/const";
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
-  height: 350px;
-  width: 260px;
   box-shadow: 5px 10px #dce0e6;
+  margin-right: 5px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;

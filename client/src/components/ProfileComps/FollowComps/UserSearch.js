@@ -23,8 +23,11 @@ import UserDisplay from "./UserDisplay";
 
 const ContrastIconBtn = styled(IconButton)``;
 const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
 `;
 
 const StyledSearchField = styled((props) => <TextField {...props} />)(
@@ -151,6 +154,7 @@ export default function SearchUserField() {
         getOptionLabel={(result) => result.name}
         onChange={onClickResult}
         onKeyDown={onEnterKey}
+        sx={{paddingTop: "1em"}}
         renderInput={(params) => {
           return (
             <TextField

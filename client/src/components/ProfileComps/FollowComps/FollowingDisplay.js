@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import FollowCard from "./FollowCard";
+import List from "@mui/material/List";
 import { useAuth } from "../../../database/auth";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../../database/const";
@@ -9,15 +10,16 @@ const MainContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
 `;
-const SubContainer = styled.div`
+const FollowingList = styled(List)`
   width: max(265px, 30%);
-  height: 100%;
-  border-radius: 10px;
-  box-shadow: 5px 10px #dce0e6;
+  min-height: 0%;
+  max-height: 100%;
+  padding-right: 6px;
+  overflow-y: auto;
 `;
 
 function FollowingDisplay() {
@@ -41,7 +43,7 @@ function FollowingDisplay() {
   }, []);
   return (
     <MainContainer>
-      <SubContainer>
+      <FollowingList>
         {following.map((u, index) => (
           <FollowCard
             key={index}
@@ -52,7 +54,7 @@ function FollowingDisplay() {
             activatebutton={true}
           ></FollowCard>
         ))}
-      </SubContainer>
+      </FollowingList>
     </MainContainer>
   );
 }

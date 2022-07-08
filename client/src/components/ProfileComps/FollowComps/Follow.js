@@ -16,6 +16,15 @@ const MainContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
+
+  & .MuiContainer-root{
+    overflow-y: hidden;
+    & .MuiBox-root {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+    }
+  }
 `;
 
 function TabPanel(props) {
