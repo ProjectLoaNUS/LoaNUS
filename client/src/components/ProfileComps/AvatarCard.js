@@ -149,15 +149,15 @@ function AvatarCard(props) {
   };
   return (
     <MainContainer>
-      <Avatar src={user && user.photoURL} sx={{ width: 120, height: 120 }}>
+      <Avatar src={user?.photoURL} sx={{ width: 120, height: 120 }}>
         {user && !user.photoURL
           ? user.displayName
             ? user.displayName[0]
             : "U"
           : ""}
       </Avatar>
-      <UserName>{user && user.displayName}</UserName>
-      <Email>{user && user.email}</Email>
+      <UserName>{user?.displayName}</UserName>
+      <Email>{user?.email}</Email>
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
       <FollowContainer>
