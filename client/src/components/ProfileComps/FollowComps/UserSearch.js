@@ -2,24 +2,11 @@ import { Autocomplete, IconButton, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { theme } from "../../Theme";
 import { BACKEND_URL } from "../../../database/const";
-import { SEARCH_LISTINGS } from "../../../pages/routes";
-import DetailsDialog from "../../ItemDetails/DetailsDialog";
-import { Buffer } from "buffer";
-import Loading from "../../../assets/loading.svg";
-import NoImage from "../../../assets/no-image.png";
-import { CATEGORIES } from "../../NewItem/ItemCategories";
-import {
-  borrowAction,
-  deleteListingAction,
-  isUserListingRelated,
-} from "../../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../../database/auth";
 import UserDisplay from "./UserDisplay";
 
