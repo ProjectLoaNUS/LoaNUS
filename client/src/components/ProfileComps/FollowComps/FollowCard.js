@@ -32,7 +32,6 @@ function FollowCard(props) {
       followed: otherid,
     };
     try {
-      console.log(friends);
       axios
         .post(`${BACKEND_URL}/api/follow/followuser`, friends)
         .then((res) => {
@@ -48,7 +47,6 @@ function FollowCard(props) {
       unfollowed: otherid,
     };
     try {
-      console.log(friends);
       axios
         .post(`${BACKEND_URL}/api/follow/unfollowuser`, friends)
         .then((res) => {
