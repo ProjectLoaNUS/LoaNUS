@@ -30,7 +30,7 @@ const Ratings = styled.div`
   align-items: center;
   justify-content: center;
 `;
-function Usercard(props) {
+function UserCard(props) {
   const { user } = useAuth();
   const [followed, setFollowed] = useState(false);
   const [ profilePicUrl, setProfilePicUrl ] = useState("");
@@ -115,4 +115,4 @@ function Usercard(props) {
   );
 }
 
-export default Usercard;
+export default UserCard;
