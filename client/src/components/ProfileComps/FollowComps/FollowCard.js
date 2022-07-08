@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useAuth } from "../../../database/auth";
 import axios from "axios";
 import { BACKEND_URL } from "../../../database/const";
+import { Button, Skeleton, Stack } from "@mui/material";
 
 const FollowItem = styled(ListItem)`
   margin-bottom: 10px;
@@ -101,3 +102,50 @@ function FollowCard(props) {
 }
 
 export default FollowCard;
+
+const CardsList = styled(Stack)`
+  width: max(265px, 30%);
+  min-height: 0%;
+  max-height: 100%;
+  padding-right: 6px;
+  overflow-y: auto;
+`;
+export function LoadingFollowCards(props) {
+  const {numOfCards} = props;
+
+  return (
+    <CardsList>
+      {
+        [...Array(numOfCards)].map((card, index) => {
+          return <LoadingFollowCard key={index} />
+        })
+      }
+    </CardsList>
+  );
+}
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1ch;
+  padding: 1ch;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  box-shadow: 5px 10px #dce0e6;
+  transition: box-shadow 300ms cubic-bezier(0.4,0,0.2,1) 0ms;
+`;
+export function LoadingFollowCard() {
+
+  return (
+    <Container>
+      <Skeleton variant="circular" sx={{flex: "0 0 auto"}}>
+        <Avatar />
+      </Skeleton>
+      <Skeleton variant="text" sx={{flex: "1 1 auto"}} />
+      <Skeleton variant="rectangular" sx={{flex: "0 0 auto", borderRadius: "25px"}}>
+        <Button>Follow</Button>
+      </Skeleton>
+    </Container>
+  );
+}

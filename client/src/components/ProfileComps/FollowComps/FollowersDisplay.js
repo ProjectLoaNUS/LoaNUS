@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
 import { Typography } from "@mui/material";
+import { LoadingFollowCards } from "./FollowCard";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -26,20 +27,23 @@ const FollowerList = styled(List)`
 function FollowingDisplay() {
   const { user } = useAuth();
   const [followers, setFollowers] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   useEffect(() => {
-    const getfollowing = async () => {
+    const getFollowing = async () => {
       try {
         const res = await axios.get(
           `${BACKEND_URL}/api/follow/getfollowers?userId=` + user.id
         );
+        setIsLoading(false);
         setFollowers(res.data);
       } catch (err) {
         console.log(err);
       }
     };
-    getfollowing();
+    getFollowing();
   }, []);
+
   return (
     <MainContainer>
       { followers && followers.length ?
@@ -54,9 +58,13 @@ function FollowingDisplay() {
             ></FollowCard>
           ))}
         </FollowerList> :
-        <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>
-          No followers yet.
-        </Typography>
+        ( isLoading ?
+          <LoadingFollowCards numOfCards={3} />
+          :
+          <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>
+            No followers yet.
+          </Typography>
+        )
       }
     </MainContainer>
   );
