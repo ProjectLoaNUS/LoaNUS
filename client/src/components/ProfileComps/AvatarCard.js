@@ -61,12 +61,45 @@ function AvatarCard(props) {
         setUser((prevUser) => {
           let newUser = structuredClone(prevUser);
           newUser.photoURL = URL.createObjectURL(blob);
-
           return newUser;
         });
       }
+      fetch(`${BACKEND_URL}/api/user/getFollowersCount`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          setUser(prevUser => {
+            return {...prevUser, followersCount: data.followersCount};
+          });
+        }
+      });
+      fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          setUser(prevUser => {
+            return {...prevUser, followingCount: data.followingCount};
+          });
+        }
+      });
     }
-  }, [user, setUser]);
+  }, []);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -126,8 +159,8 @@ function AvatarCard(props) {
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
       <FollowContainer>
-        {user?.followers ? user?.followers.length : 0} Followers{" "}
-        {user?.following ? user?.following.length : 0} Following
+        {user.followersCount || 0} Followers {user.followingCount || 0}{" "}
+        Following
       </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent
