@@ -145,21 +145,22 @@ export default function DetailsView(props) {
               Chat
             </Button>
           )}
-          <Button
-            disabled={isBtnDisabled}
-            variant="contained"
-            color={isActionError ? "error" : "primary"}
-            onClick={buttonAction(
-              setError,
-              setIsButtonEnabled,
-              setOpen,
-              onActionDone,
-              itemId,
-              user
-            )}
-          >
-            {buttonText}
-          </Button>
+          { buttonText &&
+            <Button
+              disabled={isBtnDisabled}
+              variant="contained"
+              color={isActionError ? "error" : "primary"}
+              onClick={buttonAction(
+                setError,
+                setIsButtonEnabled,
+                setOpen,
+                onActionDone,
+                itemId,
+                user
+              )} >
+              {buttonText}
+            </Button>
+          }
         </ButtonGroup>
         <TransitionGroup>
           {buttonHelperText && (
