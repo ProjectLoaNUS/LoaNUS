@@ -33,31 +33,20 @@ const Ratings = styled.div`
 function Usercard(props) {
   const { user } = useAuth();
   const [followed, setFollowed] = useState(false);
+  const [ profilePicUrl, setProfilePicUrl ] = useState("");
 
-  let userimage;
-  let url;
-  if (props.otheruser.image) {
-    userimage = props.otheruser.image;
-    const bin = userimage.data;
-    const ctype = userimage.contentType;
-    const binary = Buffer.from(bin, "base64");
-    const blob = new Blob([binary.buffer], {
-      type: ctype,
-    });
-    url = URL.createObjectURL(blob);
-  }
-
-  /* function binToImgUrl(image) {
-    const bin = image.data;
-    const ctype = image.contentType;
-    const binary = Buffer.from(bin, "base64");
-    const blob = new Blob([binary.buffer], {
-      type: ctype,
-    });
-    const url = URL.createObjectURL(blob);
-    return url;
-  }
-  let urlimage = binToImgUrl(userimage);*/
+  useEffect(() => {
+    if (props.otheruser.image) {
+      const userimage = props.otheruser.image;
+      const bin = userimage.data;
+      const ctype = userimage.contentType;
+      const binary = Buffer.from(bin, "base64");
+      const blob = new Blob([binary.buffer], {
+        type: ctype,
+      });
+      setProfilePicUrl(URL.createObjectURL(blob));
+    }
+  }, [props.otheruser]);
 
   const handleFollow = async (otheruser) => {
     let friends = {
@@ -93,8 +82,8 @@ function Usercard(props) {
   };
   return (
     <StyledCard variant="outlined">
-      <Avatar src={url || null} sx={{ width: 140, height: 140 }}>
-        {props.otheruser && !url
+      <Avatar src={profilePicUrl || null} sx={{ width: 140, height: 140 }}>
+        {props.otheruser && !profilePicUrl
           ? props.otheruser.name
             ? props.otheruser.name[0]
             : "U"
