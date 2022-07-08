@@ -61,9 +61,7 @@ function AvatarCard(props) {
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
         setUser((prevUser) => {
-          let newUser = structuredClone(prevUser);
-          newUser.photoURL = URL.createObjectURL(blob);
-          return newUser;
+          return {...prevUser, photoURL: URL.createObjectURL(blob)};
         });
       }
       if (followersCount === "...") {
