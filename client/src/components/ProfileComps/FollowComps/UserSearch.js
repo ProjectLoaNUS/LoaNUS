@@ -94,7 +94,7 @@ export default function SearchUserField() {
             }
             setLoading(false);
           })
-          .catch((err) => console.log(err, "error occured"));
+          .catch((err) => console.log("Error occurred: " + err));
       })();
     }
   }, [queryText]);
