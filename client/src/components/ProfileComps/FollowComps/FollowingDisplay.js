@@ -26,7 +26,6 @@ function FollowingDisplay() {
   const { user } = useAuth();
   const [following, setFollowing] = useState([]);
 
-  console.log(user);
   useEffect(() => {
     const getfollowing = async () => {
       try {
@@ -34,7 +33,6 @@ function FollowingDisplay() {
           `${BACKEND_URL}/api/follow/getfollowing?userId=` + user.id
         );
         setFollowing(res.data);
-        console.log(res.data);
       } catch (err) {
         console.log(err);
       }

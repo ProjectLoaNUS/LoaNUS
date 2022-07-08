@@ -92,7 +92,6 @@ export default function SearchUserField() {
               setFinalSearch(res.data.results);
               setIsFinalSearch(false);
             }
-            console.log(res.data.results);
             setLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));

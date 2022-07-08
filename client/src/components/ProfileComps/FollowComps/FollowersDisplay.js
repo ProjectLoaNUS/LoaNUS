@@ -33,7 +33,6 @@ function FollowingDisplay() {
           `${BACKEND_URL}/api/follow/getfollowers?userId=` + user.id
         );
         setFollowers(res.data);
-        console.log(res.data);
       } catch (err) {
         console.log(err);
       }
