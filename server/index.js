@@ -2,17 +2,15 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const mongoose = require("mongoose");
-const ItemListingsModel = require("./models/ItemListings");
 const cors = require("cors");
-const conversationRoute = require("./routes/conversations");
-const messageRoute = require("./routes/messsages");
+
 const PORT = process.env.PORT || 3001;
 
 require("dotenv").config();
 
 app.use(expressLayouts);
 app.set("view engine", "ejs");
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 //const client = new MongoClient(
 // "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
 //);
@@ -26,15 +24,21 @@ mongoose.connect(
     useUnifiedTopology: true,
   }
 );
-const user = require("./routes/user");
-app.use("/api/user", user);
 
-const items = require("./routes/items/index");
-app.use("/api", items);
+const userRoutes = require("./routes/user");
+app.use("/api/user", userRoutes);
 
-// Endpoints needed for Chat system
-app.use("/api/conversations", conversationRoute);
-app.use("/api/messages", messageRoute);
+const itemsRoutes = require("./routes/items/index");
+app.use("/api", itemsRoutes);
+
+const conversationRoutes = require("./routes/conversations");
+app.use("/api/conversations", conversationRoutes);
+
+const messageRoutes = require("./routes/messsages");
+app.use("/api/messages", messageRoutes);
+
+const followingRoutes = require("./routes/following");
+app.use("/api/follow", followingRoutes);
 
 const server = app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);

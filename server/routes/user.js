@@ -210,6 +210,8 @@ router.get("/getUserDetails", async (req, res) => {
         photodata: user.image.data,
         photoformat: user.image.contentType,
         id: user._id,
+        followers: user.followers,
+        following: user.following
       },
     });
   } catch (err) {
@@ -231,8 +233,10 @@ router.post("/getNamesOf", async (req, res) => {
   if (!users) {
     return res.json({status: "error"});
   }
-  const userDetails = await UserModel.find({'_id': { $in: users.map(user => user.userId)} }, 
-      ["_id", "name"]);
+  const userDetails = await UserModel.find(
+    {'_id': { $in: users.map(user => user.userId)} }, 
+    ["_id", "name"]
+  );
   return res.json({status: "ok", userDetails: userDetails});
 })
 
@@ -304,6 +308,48 @@ router.post("/getPoints", async (req, res) => {
     return res.json({status: "error"});
   }
   return res.json({status: "ok", points: user.points});
+});
+
+//UserSearch
+router.get("/search", async (request, response) => {
+  try {
+    const query = request.query;
+    let results;
+
+    results = await UserModel.aggregate([
+      {
+        $search: {
+          index: "users",
+          autocomplete: {
+            query: `${query.name}`,
+            path: "name",
+            fuzzy: {
+              maxEdits: 2,
+            },
+            tokenOrder: "sequential",
+          },
+        },
+      },
+      {
+        $limit: 15,
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          image: 1,
+        },
+      },
+    ]);
+    if (results) {
+      return response.json({ status: "ok", results: results });
+    }
+
+    response.json({ status: "error" });
+  } catch (error) {
+    console.log(error);
+    response.json({ status: "error" });
+  }
 });
 
 module.exports = router;

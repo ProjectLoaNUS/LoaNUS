@@ -37,6 +37,8 @@ const ImageUploadContainer = styled.div`
   display: flex;
   flex-direction: row;
   padding-top: 20px;
+  align-items: center;
+  justify-content: space-evenly;
 `;
 
 const HiddenInput = styled.input`
@@ -46,6 +48,7 @@ const HiddenInput = styled.input`
 function AvatarCard(props) {
   const [profileimage, setProfileImage] = useState();
   const { user, setUser } = useAuth();
+
   const hiddenFileInput = React.useRef(null);
 
   useEffect(() => {
@@ -111,18 +114,25 @@ function AvatarCard(props) {
       <Email>{user && user.email}</Email>
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
-      <FollowContainer>10 Followers 5 Following</FollowContainer>
+      <FollowContainer>
+        {user.followers?.length || 0} Followers {user.following?.length || 0}{" "}
+        Following
+      </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent
           text={"Set picture"}
           size={"small"}
           state={"primary"}
+          setWidth={"30%"}
+          setFontsize={"0.45rem"}
           onClick={handleClick}
         ></ButtonComponent>
         <ButtonComponent
           text={"Upload Image"}
           size={"small"}
+          setWidth={"30%"}
           onClick={handleSubmit}
+          setFontsize={"0.45rem"}
         ></ButtonComponent>
       </ImageUploadContainer>
 
