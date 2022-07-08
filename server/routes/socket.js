@@ -35,12 +35,12 @@ const socketServer = (app, server) => {
         socket.on("sendMessage", ({ senderId, receiverId, text }) => {
             const user = getUser(receiverId);
             if (user) {  
-            io.to(user.socketId).emit("getMessage", {
-                senderId,
-                text,
-            });
+                io.to(user.socketId).emit("getMessage", {
+                    senderId,
+                    text,
+                });
             } else {
-            console.log(`socket-io error: Invalid receiver ID ${receiverId}`);
+                console.log(`socket-io error: Invalid receiver ID ${receiverId}`);
             }
         });
         //When disconnect
