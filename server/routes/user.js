@@ -311,7 +311,7 @@ router.post("/getPoints", async (req, res) => {
 });
 
 //UserSearch
-app.get("/search", async (request, response) => {
+router.get("/search", async (request, response) => {
   try {
     const query = request.query;
     let results;
