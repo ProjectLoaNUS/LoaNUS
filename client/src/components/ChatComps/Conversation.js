@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -23,32 +23,34 @@ const Name = styled.span`
 
 function Conversation({ conversation, currentuser }) {
   const [user, setUser] = useState(null);
-  useEffect(() => {
-    const friendId = conversation.members.find((m) => m !== currentuser.id);
 
-    const getUser = async () => {
-      try {
-        fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            users: [{userId: friendId}]
-          })
+  const getUser = useCallback(async () => {
+    try {
+      const friendId = conversation.members.find((m) => m !== currentuser.id);
+      fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          users: [{userId: friendId}]
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'ok' && data.userDetails?.length) {
-            setUser(data.userDetails[0]);
-          }
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok' && data.userDetails?.length) {
+          setUser(data.userDetails[0]);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [conversation, currentuser]);
+
+  useEffect(() => {
     getUser();
-  }, [currentuser, conversation]);
+  }, [getUser]);
+
   const Bintourl = (data, contentType) => {
     if (data && contentType) {
       const binary = Buffer.from(data);
