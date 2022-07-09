@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
 import ChatBox from "../components/ChatComps/ChatBox";
+import { useSocket } from "../utils/socketContext";
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -47,15 +48,14 @@ const ChatBoxContainer = styled.div`
 `;
 
 function ChatPage() {
-  const { user, setUser, isUserLoaded } = useAuth();
+  const { user, isUserLoaded } = useAuth();
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [arrivalmessage, setArrivalMessage] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [followers, setFollowers] = useState([]);
-  const socket = useRef();
+  const { socket, onlineUsers } = useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,6 +68,7 @@ function ChatPage() {
       });
     }
   }, [user]);
+
   useEffect(() => {
     const getfollowing = async () => {
       try {
@@ -95,52 +96,27 @@ function ChatPage() {
     getfollowers();
   }, [user]);
 
-  useEffect(() => {
-    socket.current = io(BACKEND_URL);
-    socket.current.on("getMessage", (data) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
+  const onGetMessage = useCallback(async () => {
+    if (socket) {
+      socket.on("getMessage", (data) => {
+        setArrivalMessage({
+          sender: data.senderId,
+          text: data.text,
+          createdAt: Date.now(),
+        });
       });
-    });
+    }
+  }, [socket]);
 
-    return () => {
-      socket.current.disconnect();
-    };
-  }, []);
+  useEffect(() => {
+    onGetMessage();
+  }, [onGetMessage]);
 
   useEffect(() => {
     arrivalmessage &&
       currentChat?.members.includes(arrivalmessage.sender) &&
       setMessages((prev) => [...prev, arrivalmessage]);
-  }, [arrivalmessage, currentChat]);
-
-  useEffect(() => {
-    if (user) {
-      socket.current.emit("addUser", user.id);
-      socket.current.on("getUsers", (users) => {
-        fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            users: users.filter(
-              (otherUser) =>
-                otherUser.userId !== user?.id &&
-                (followers.includes(otherUser.userId) ||
-                  following.includes(otherUser.userId))
-            ),
-          }),
-        })
-        .then(res => res.json())
-        .then(data => {
-          setOnlineUsers(data.userDetails);
-        });
-      });
-    }
-  }, [user]);
+  }, [arrivalmessage]);
 
   useEffect(() => {
     const getConversations = async () => {
@@ -192,10 +168,7 @@ function ChatPage() {
           <ChatBox
             currentChat={currentChat}
             messages={messages}
-            setMessages={setMessages}
-            socket={socket}
-            user={user}
-          />
+            setMessages={setMessages} />
         </ChatBoxContainer>
         <ChatOnline
           currentId={user?.id}

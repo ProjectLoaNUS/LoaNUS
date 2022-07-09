@@ -4,6 +4,8 @@ import ButtonComponent from "../Button";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
 import { useEffect, useRef, useState } from "react";
+import { useSocket } from "../../utils/socketContext";
+import { useAuth } from "../../database/auth";
 
 const ChatBoxWrapper = styled.div`
   display: flex;
@@ -39,7 +41,9 @@ const NoConversationDisplay = styled.span`
 `;
 
 export default function ChatBox(props) {
-  const { currentChat, messages, setMessages, socket, user } = props;
+  const { currentChat, messages, setMessages } = props;
+  const { user } = useAuth();
+  const { socket } = useSocket();
   const [newMessage, setNewMessage] = useState("");
   const chatRef = useRef(null);
 
@@ -51,7 +55,7 @@ export default function ChatBox(props) {
       conversationId: currentChat._id,
     };
     const receiverId = currentChat.members.find((member) => member !== user.id);
-    socket.current.emit("sendMessage", {
+    socket.emit("sendMessage", {
       senderId: user.id,
       receiverId,
       text: newMessage,
