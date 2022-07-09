@@ -6,6 +6,7 @@ import { store } from "./app/store";
 import App from "./App";
 import "./index.css";
 import { AuthProvider } from "./database/auth";
+import { SocketProvider } from "./utils/socketContext";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
@@ -13,9 +14,11 @@ const root = createRoot(container);
 root.render(
   <Provider store={store}>
     <AuthProvider>
-      <HashRouter>
-        <App />
-      </HashRouter>
+      <SocketProvider>
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </SocketProvider>
     </AuthProvider>
   </Provider>
 );
