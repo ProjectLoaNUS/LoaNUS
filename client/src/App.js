@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/HomePage";
@@ -24,9 +24,12 @@ import {
 import ClaimRewardPage from "./pages/ClaimRewardPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./database/auth";
+import { useSocket } from "./utils/socketContext";
 
 function App() {
   const { user, setUser, setIsUserLoaded } = useAuth();
+  const { socket, connectSocket, disconnectSocket } = useSocket();
+  const [ isInitialised, setIsInitialised ] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -40,7 +43,27 @@ function App() {
       }
       setIsUserLoaded(true);
     }
+
+    return () => {
+      disconnectSocket();
+    }
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      if (!isInitialised) {
+        if (socket) {
+          disconnectSocket();
+        }
+        connectSocket(user);
+        setIsInitialised(true);
+      }
+    } else {
+      if (socket) {
+        disconnectSocket();
+      }
+    }
+  }, [user]);
 
   return (
     <div>
