@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../database/const";
-import { Buffer } from "buffer";
+import { getProfilePicUrl } from "../../utils/getProfilePic";
 
 const ConversationContainer = styled.div`
   display: flex;
@@ -22,7 +22,8 @@ const Name = styled.span`
 `;
 
 function Conversation({ conversation, currentuser }) {
-  const [user, setUser] = useState(null);
+  const [ userName, setUserName ] = useState("");
+  const [ userPhotoUrl, setUserPhotoUrl ] = useState("");
 
   const getUser = useCallback(async () => {
     try {
@@ -39,7 +40,7 @@ function Conversation({ conversation, currentuser }) {
       .then(res => res.json())
       .then(data => {
         if (data.status === 'ok' && data.userDetails?.length) {
-          setUser(data.userDetails[0]);
+          setUserName(data.userDetails[0].name);
         }
       });
     } catch (err) {
@@ -51,23 +52,30 @@ function Conversation({ conversation, currentuser }) {
     getUser();
   }, [getUser]);
 
-  const Bintourl = (data, contentType) => {
-    if (data && contentType) {
-      const binary = Buffer.from(data);
-      const blob = new Blob([binary.buffer], { type: contentType });
-      const url = URL.createObjectURL(blob);
-      return url;
-    } else {
-      return null;
+  const getProfilePic = useCallback(async () => {
+    if (conversation && currentuser) {
+      const friendId = conversation.members.find((m) => m !== currentuser.id);
+      if (friendId) {
+        const url = await getProfilePicUrl(friendId);
+        setUserPhotoUrl(url);
+      }
     }
-  };
+  }, [conversation, currentuser]);
+
+  useEffect(() => {
+    getProfilePic();
+  }, [getProfilePic]);
 
   return (
     <ConversationContainer>
-      <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
-        {user?.name}
+      <Avatar src={userPhotoUrl} alt="U">
+        {userName ?
+            userName.charAt(0)
+          :
+            ""
+        }
       </Avatar>
-      <Name>{user?.name}</Name>
+      <Name>{userName}</Name>
     </ConversationContainer>
   );
 }
