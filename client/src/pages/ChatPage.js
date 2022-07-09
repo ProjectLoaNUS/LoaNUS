@@ -118,8 +118,8 @@ function ChatPage() {
       setMessages((prev) => [...prev, arrivalmessage]);
   }, [arrivalmessage]);
 
-  useEffect(() => {
-    const getConversations = async () => {
+  const getConversations = useCallback(async () => {
+    if (user) {
       try {
         axios.get(`${BACKEND_URL}/api/conversations/` + user.id).then((res) => {
           setConversations(res.data);
@@ -127,14 +127,14 @@ function ChatPage() {
       } catch (err) {
         console.log(err);
       }
-    };
-    if (user) {
-      getConversations();
     }
   }, [user]);
-
   useEffect(() => {
-    const getMessages = async () => {
+    getConversations();
+  }, [getConversations]);
+
+  const getMessages = useCallback(async () => {
+    if (currentChat) {
       try {
         axios
           .get(`${BACKEND_URL}/api/messages/` + currentChat?._id)
@@ -144,11 +144,11 @@ function ChatPage() {
       } catch (err) {
         console.log(err);
       }
-    };
-    if (currentChat) {
-      getMessages();
     }
   }, [currentChat]);
+  useEffect(() => {
+    getMessages();
+  }, [getMessages]);
 
   return (
     <PageContainer>

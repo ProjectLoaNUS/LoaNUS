@@ -24,7 +24,7 @@ export default function ChatView(props) {
     const [ arrivalMessage, setArrivalMessage ] = useState(null);
     const { socket } = useSocket();
 
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
         try {
             axios.get(
                 `${BACKEND_URL}/api/messages/` + chat?._id
@@ -35,11 +35,11 @@ export default function ChatView(props) {
         } catch (err) {
             console.log(err);
         }
-    };
+    }, [chat]);
 
     useEffect(() => {
         fetchMessages();
-    }, [chat]);
+    }, [fetchMessages]);
 
     const onGetMessage = useCallback(async () => {
         if (socket) {
