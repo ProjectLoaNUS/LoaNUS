@@ -1,6 +1,6 @@
 import { Dialog, Grow } from "@mui/material";
 import styled from "styled-components";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../database/auth";
 import DetailsView from "./DetailsView";
 import ChatView from "./ChatView";
@@ -51,65 +51,70 @@ export default function DetailsDialog(props) {
     setOpen(false);
   };
 
-  const fetchChat = async () => {
-    let convoUsers = {
-      senderId: user?.id,
-      receiverId: owner.id,
-    };
-    try {
-      axios.post(`${BACKEND_URL}/api/conversations`, convoUsers).then((res) => {
-        setChat(res.data);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const fetchChat = useCallback(async () => {
+      if (owner && user) {
+          let convoUsers = {
+              senderId: user.id,
+              receiverId: owner.id,
+          };
+          try {
+              axios.post(
+                  `${BACKEND_URL}/api/conversations`,
+                  convoUsers
+              )
+              .then(res => {
+                  setChat(res.data);
+              });
+          } catch (err) {
+              console.log(err);
+          }
+      }
+  }, [owner, user]);
 
   useEffect(() => {
-    open && owner && fetchChat();
-  }, [open, owner]);
+      if (open) {
+          fetchChat();
+      }
+  }, [open, fetchChat]);
 
   return (
-    <StyledDialog
-      open={open}
-      onClose={handleClose}
-      fullWidth={true}
-      TransitionComponent={Transition}
-    >
-      {isDetailsView ? (
-        <DetailsView
-          imageUrls={imageUrls}
-          handleClose={handleClose}
-          title={title}
-          date={date}
-          owner={owner}
-          category={category}
-          description={description}
-          deadline={deadline}
-          location={location}
-          buttonAction={buttonAction}
-          onActionDone={onActionDone}
-          buttonText={buttonText}
-          buttonHelperText={buttonHelperText}
-          setButtonHelperText={setButtonHelperText}
-          isActionError={isActionError}
-          setIsActionError={setIsActionError}
-          isBtnDisabled={isBtnDisabled}
-          setIsBtnDisabled={setIsBtnDisabled}
-          setOpen={setOpen}
-          itemId={itemId}
-          user={user}
-          openChat={() => setIsDetailsView(false)}
-        />
-      ) : (
-        <ChatView
-          user={user}
-          owner={owner}
-          chat={chat}
-          backToDetails={() => setIsDetailsView(true)}
-          handleClose={handleClose}
-        />
-      )}
-    </StyledDialog>
+      <StyledDialog
+        open={open}
+        onClose={handleClose}
+        fullWidth={true}
+        TransitionComponent={Transition}>
+          { isDetailsView ? 
+              <DetailsView
+                imageUrls={imageUrls}
+                handleClose={handleClose}
+                title={title}
+                date={date}
+                owner={owner}
+                category={category}
+                description={description}
+                deadline={deadline}
+                location={location}
+                buttonAction={buttonAction}
+                onActionDone={onActionDone}
+                buttonText={buttonText}
+                buttonHelperText={buttonHelperText}
+                setButtonHelperText={setButtonHelperText}
+                isActionError={isActionError}
+                setIsActionError={setIsActionError}
+                isBtnDisabled={isBtnDisabled}
+                setIsBtnDisabled={setIsBtnDisabled}
+                setOpen={setOpen}
+                itemId={itemId}
+                user={user}
+                openChat={() => setIsDetailsView(false)} />
+          :
+              <ChatView
+                user={user}
+                owner={owner}
+                chat={chat}
+                backToDetails={() => setIsDetailsView(true)}
+                handleClose={handleClose} />
+          }
+      </StyledDialog>
   );
 }
