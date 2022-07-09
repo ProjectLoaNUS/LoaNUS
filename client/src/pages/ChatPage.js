@@ -7,7 +7,10 @@ import axios from "axios";
 import ChatOnline from "../components/ChatComps/ChatOnline";
 import { BACKEND_URL } from "../database/const";
 import Conversation from "../components/ChatComps/Conversation";
+<<<<<<< HEAD
 import { io } from "socket.io-client";
+=======
+>>>>>>> 2b4a890 (Encapsulate message fetching and receiving logic within ChatBox component to greatly simplify the code of ChatPage and ChatView components)
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
 import ChatBox from "../components/ChatComps/ChatBox";
@@ -49,13 +52,11 @@ const ChatBoxContainer = styled.div`
 
 function ChatPage() {
   const { user, isUserLoaded } = useAuth();
-  const [conversations, setConversations] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [arrivalmessage, setArrivalMessage] = useState(null);
-  const [following, setFollowing] = useState([]);
-  const [followers, setFollowers] = useState([]);
-  const { socket, onlineUsers } = useSocket();
+  const [ conversations, setConversations ] = useState([]);
+  const [ currentChat, setCurrentChat ] = useState(null);
+  const [ following, setFollowing ] = useState([]);
+  const [ followers, setFollowers ] = useState([]);
+  const { onlineUsers } = useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,28 +97,6 @@ function ChatPage() {
     getfollowers();
   }, [user]);
 
-  const onGetMessage = useCallback(async () => {
-    if (socket) {
-      socket.on("getMessage", (data) => {
-        setArrivalMessage({
-          sender: data.senderId,
-          text: data.text,
-          createdAt: Date.now(),
-        });
-      });
-    }
-  }, [socket]);
-
-  useEffect(() => {
-    onGetMessage();
-  }, [onGetMessage]);
-
-  useEffect(() => {
-    arrivalmessage &&
-      currentChat?.members.includes(arrivalmessage.sender) &&
-      setMessages((prev) => [...prev, arrivalmessage]);
-  }, [arrivalmessage]);
-
   const getConversations = useCallback(async () => {
     if (user) {
       try {
@@ -132,23 +111,6 @@ function ChatPage() {
   useEffect(() => {
     getConversations();
   }, [getConversations]);
-
-  const getMessages = useCallback(async () => {
-    if (currentChat) {
-      try {
-        axios
-          .get(`${BACKEND_URL}/api/messages/` + currentChat?._id)
-          .then((res) => {
-            setMessages(res.data);
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }, [currentChat]);
-  useEffect(() => {
-    getMessages();
-  }, [getMessages]);
 
   return (
     <PageContainer>
@@ -166,9 +128,7 @@ function ChatPage() {
         </ChatMenuContainer>
         <ChatBoxContainer>
           <ChatBox
-            currentChat={currentChat}
-            messages={messages}
-            setMessages={setMessages} />
+            currentChat={currentChat} />
         </ChatBoxContainer>
         <ChatOnline
           currentId={user?.id}

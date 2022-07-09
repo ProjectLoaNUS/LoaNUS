@@ -2,12 +2,7 @@ import { DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import styled from "styled-components";
-import { useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { BACKEND_URL } from "../../database/const";
-import { io } from "socket.io-client";
 import ChatBox from "../ChatComps/ChatBox";
-import { useSocket } from "../../utils/socketContext";
 
 const DialogContainer = styled(DialogContent)`
     display: flex;
@@ -20,48 +15,6 @@ const DialogContainer = styled(DialogContent)`
 
 export default function ChatView(props) {
     const { owner, chat, backToDetails, handleClose } = props;
-    const [ messages, setMessages ] = useState([]);
-    const [ arrivalMessage, setArrivalMessage ] = useState(null);
-    const { socket } = useSocket();
-
-    const fetchMessages = useCallback(async () => {
-        try {
-            axios.get(
-                `${BACKEND_URL}/api/messages/` + chat?._id
-            )
-            .then(res => {
-                setMessages(res.data);
-            });
-        } catch (err) {
-            console.log(err);
-        }
-    }, [chat]);
-
-    useEffect(() => {
-        fetchMessages();
-    }, [fetchMessages]);
-
-    const onGetMessage = useCallback(async () => {
-        if (socket) {
-          socket.on("getMessage", (data) => {
-            setArrivalMessage({
-              sender: data.senderId,
-              text: data.text,
-              createdAt: Date.now(),
-            });
-          });
-        }
-    }, [socket]);
-
-    useEffect(() => {
-        onGetMessage();
-    }, [onGetMessage]);
-
-    useEffect(() => {
-        arrivalMessage &&
-          chat?.members.includes(arrivalMessage.sender) &&
-          setMessages((prev) => [...prev, arrivalMessage]);
-    }, [arrivalMessage]);
 
     return (
         <>
@@ -94,9 +47,7 @@ export default function ChatView(props) {
             </DialogTitle>
             <DialogContainer>
                 <ChatBox
-                  currentChat={chat}
-                  messages={messages}
-                  setMessages={setMessages} />
+                  currentChat={chat} />
             </DialogContainer>
         </>
     )
