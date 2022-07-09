@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
 
@@ -29,10 +28,21 @@ function Conversation({ conversation, currentuser }) {
 
     const getUser = async () => {
       try {
-        const res = await axios.get(
-          `${BACKEND_URL}/api/user/getUserDetails?userId=` + friendId
-        );
-        setUser(res.data);
+        fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            users: [{userId: friendId}]
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok' && data.userDetails?.length) {
+            setUser(data.userDetails[0]);
+          }
+        });
       } catch (err) {
         console.log(err);
       }
@@ -53,9 +63,9 @@ function Conversation({ conversation, currentuser }) {
   return (
     <ConversationContainer>
       <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
-        {user?.user.displayName[0]}
+        {user?.name}
       </Avatar>
-      <Name>{user?.user.displayName}</Name>
+      <Name>{user?.name}</Name>
     </ConversationContainer>
   );
 }
