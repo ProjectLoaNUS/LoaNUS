@@ -22,7 +22,7 @@ import { Buffer } from "buffer";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
-import axios from "axios";
+import { getProfilePicUrl } from "../../utils/getProfilePic";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -132,37 +132,7 @@ export default function ItemCard(props) {
   useEffect(() => {
     if (!!owner) {
       if (!isOwner) {
-        fetch(`${BACKEND_URL}/api/user/getProfilePic`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: owner.id,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.status === "ok") {
-              const image = data.image;
-              if (!!image) {
-                try {
-                  const binary = Buffer.from(image.data);
-                  const blob = new Blob([binary.buffer], {
-                    type: image.contentType,
-                  });
-                  const url = URL.createObjectURL(blob);
-                  setOwnerPicUrl(url);
-                } catch (err) {
-                  console.log(err);
-                }
-              }
-            } else {
-              console.log(
-                `Error occurred while loading profile picture of user named "${owner.name}"`
-              );
-            }
-          });
+        getProfilePicUrl(owner.id).then(url => setOwnerPicUrl(url));
       } else {
         let photoURL;
         if (!user.photoURL && user.photodata && user.photoformat) {
