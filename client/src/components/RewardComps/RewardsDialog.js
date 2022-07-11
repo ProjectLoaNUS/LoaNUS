@@ -1,11 +1,7 @@
 import { Dialog, Grow } from "@mui/material";
 import styled from "styled-components";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import { useAuth } from "../../database/auth";
-import DetailsView from "../ItemDetails/DetailsView";
-import ChatView from "../ItemDetails/ChatView";
-import axios from "axios";
-import { BACKEND_URL } from "../../database/const";
 import RewardsView from "./RewardsView";
 
 const GrowUp = styled(Grow)`
@@ -33,8 +29,8 @@ export default function RewardsDialog(props) {
     deadline,
     open,
     setOpen,
+    setReward,
     onActionDone,
-    buttonAction,
     buttonText,
   } = props;
   const { user } = useAuth();
@@ -77,6 +73,7 @@ export default function RewardsDialog(props) {
         isBtnDisabled={isBtnDisabled}
         setIsBtnDisabled={setIsBtnDisabled}
         setOpen={setOpen}
+        setReward={setReward}
         itemId={itemId}
         user={user}
       />

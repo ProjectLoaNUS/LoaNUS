@@ -4,7 +4,6 @@ import NavigationBar from "../components/NavBar/NavigationBar";
 import RewardCard from "../components/RewardComps/RewardCard";
 import axios from "axios";
 import { BACKEND_URL } from "../database/const";
-import { useAuth } from "../database/auth";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -24,7 +23,7 @@ const HeaderContainer = styled.div`
   align-self: center;
   color: #eb8736;
 
-  font-weight: 500;
+  font-weight: 550;
 `;
 const RewardContainer = styled.div`
   width: 95%;
@@ -57,8 +56,7 @@ function ClaimRewardPage() {
   const [vouchers, setVouchers] = useState([]);
   const [beverages, setBeverages] = useState([]);
   const [otherrewards, setOtherrewards] = useState([]);
-  const [category, setCategory] = useState("");
-  const { user } = useAuth();
+
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/reward/getrewards?category=Vouchers`)
@@ -79,7 +77,7 @@ function ClaimRewardPage() {
         setOtherrewards(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
-  }, []);
+  }, [vouchers, beverages, otherrewards]);
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
@@ -96,6 +94,7 @@ function ClaimRewardPage() {
                   buttonText={"Claim it!"}
                   itemDetails={r}
                   key={index}
+                  setReward={setVouchers}
                 />
               ) : null
             )}
@@ -110,6 +109,7 @@ function ClaimRewardPage() {
                   buttonText={"Claim it!"}
                   itemDetails={r}
                   key={index}
+                  setReward={setBeverages}
                 />
               ) : null
             )}
@@ -124,6 +124,7 @@ function ClaimRewardPage() {
                   buttonText={"Claim it!"}
                   itemDetails={r}
                   key={index}
+                  setReward={setOtherrewards}
                 />
               ) : null
             )}

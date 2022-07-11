@@ -1,26 +1,17 @@
 import {
-  Avatar,
   Card,
   CardActionArea,
   CardActions,
   CardHeader,
   CardMedia,
-  IconButton,
   Typography,
 } from "@mui/material";
 import styled from "styled-components";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { useEffect, useState } from "react";
-import {
-  borrowAction,
-  deleteListingAction,
-  isUserListingRelated,
-} from "../ItemDetails/detailsDialogActions";
-import { useAuth } from "../../database/auth";
+
+import { useState } from "react";
+
 import { Buffer } from "buffer";
-import NoImage from "../../assets/no-image.png";
-import { CATEGORIES } from "../NewItem/ItemCategories";
-import { BACKEND_URL } from "../../database/const";
+
 import RewardsDialog from "./RewardsDialog";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
@@ -31,6 +22,13 @@ const ListCard = styled(Card)`
   width: 25%;
   height: 100%;
   margin-right: 10px;
+  & .MuiCardHeader-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 550;
+    color: #2d3c4a;
+  }
 `;
 const ImageDiv = styled.div`
   display: flex;
@@ -54,7 +52,7 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 const StyledCoin = styled(CurrencyExchangeIcon)`
   color: #2d3c4a;
-  margin-right: 10px;
+  margin-right: 2px;
   transform: scale(1);
   margin-left: 5px;
 `;
@@ -64,9 +62,14 @@ const CoinsContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
+const StyledCardActions = styled(CardActions)`
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+`;
 
 export default function RewardCard(props) {
-  const { itemDetails, buttonText, onActionDone, onClickAction } = props;
+  const { itemDetails, buttonText, onActionDone, setReward } = props;
   const [open, setOpen] = useState(false);
 
   const binary = Buffer.from(itemDetails.image.data.data);
@@ -76,8 +79,6 @@ export default function RewardCard(props) {
   const url = URL.createObjectURL(blob);
   let processedurl = [];
   processedurl.push(url);
-
-  const { user, setUser } = useAuth();
 
   const itemId = itemDetails._id;
   const deadline = new Date(itemDetails.deadline).toLocaleDateString(
@@ -93,15 +94,6 @@ export default function RewardCard(props) {
     setOpen(true);
   };
 
-  const handleLike = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-  };
-
-  const handleMouseDown = (event) => {
-    event.stopPropagation();
-  };
-
   return (
     <ListCard>
       <ListingActionArea component="a" onClick={handleShowDetails}>
@@ -115,17 +107,14 @@ export default function RewardCard(props) {
             />
           </ImageDiv>
         )}
-        <CardActions>
-          <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
-            <FavoriteBorderIcon />
-          </IconButton>
+        <StyledCardActions>
           <CoinsContainer>
+            <StyledCoin></StyledCoin>
             <Typography align="center" variant="h5" color="#eb8736">
               {points}
             </Typography>
-            <StyledCoin></StyledCoin>
           </CoinsContainer>
-        </CardActions>
+        </StyledCardActions>
       </ListingActionArea>
       <RewardsDialog
         itemId={itemId}
@@ -138,6 +127,7 @@ export default function RewardCard(props) {
         setOpen={setOpen}
         onActionDone={onActionDone}
         buttonText={buttonText}
+        setReward={setReward}
       />
     </ListCard>
   );

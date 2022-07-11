@@ -2,9 +2,7 @@ import {
   Button,
   DialogContent,
   DialogTitle,
-  Grow,
   IconButton,
-  Link,
   Slide,
   Typography,
 } from "@mui/material";
@@ -24,9 +22,6 @@ const DialogContainer = styled(DialogContent)`
   align-items: stretch;
   padding: 1rem;
   overflow-y: auto;
-`;
-const GrowUp = styled(Grow)`
-  transform-origin: bottom center;
 `;
 const Row = styled.div`
   display: flex;
@@ -48,34 +43,19 @@ export default function RewardsView(props) {
     imageUrls,
     handleClose,
     title,
-    date,
-    owner,
     category,
     description,
     deadline,
-    location,
-    buttonAction,
-    onActionDone,
     buttonText,
     buttonHelperText,
-    setButtonHelperText,
     isActionError,
-    setIsActionError,
     isBtnDisabled,
-    setIsBtnDisabled,
     setOpen,
+    setReward,
     itemId,
     user,
   } = props;
 
-  const setError = (isError, helperText) => {
-    setIsActionError(isError);
-    setButtonHelperText(helperText);
-  };
-
-  const setIsButtonEnabled = (isEnabled) => {
-    setIsBtnDisabled(!isEnabled);
-  };
   const HandleClick = async () => {
     try {
       let data = {
@@ -83,6 +63,12 @@ export default function RewardsView(props) {
         user: user.id,
       };
       axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
+      await axios
+        .get(`${BACKEND_URL}/api/reward/getrewards?category=` + category)
+        .then((res) => {
+          setReward(res.data);
+        })
+        .catch((err) => console.log(err, "error occured"));
       setOpen(false);
     } catch (err) {
       console.log(err);
