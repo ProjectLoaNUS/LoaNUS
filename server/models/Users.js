@@ -46,6 +46,10 @@ const UserSchema = new mongoose.Schema({
   following: {
     type: Array,
   },
+  admin: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);

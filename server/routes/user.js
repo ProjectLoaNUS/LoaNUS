@@ -10,16 +10,14 @@ sgMail.setApiKey(process.env.API_KEY);
 
 const getThirdPartyUser = async (email) => {
   const user = await UserModel.findOne({
-    $and: [
-      { email: email },
-      { password: { $exists: false} }
-  ]});
+    $and: [{ email: email }, { password: { $exists: false } }],
+  });
   return user;
-}
+};
 const isThirdPartyUser = async (email) => {
   const user = await getThirdPartyUser(email);
   return !!user;
-}
+};
 router.post("/hasUser", async (req, res) => {
   const hasUserResultCodes = {
     HAS_USER: 0,
@@ -30,16 +28,14 @@ router.post("/hasUser", async (req, res) => {
   };
   const givenEmail = req.body.email;
   const user = await UserModel.findOne({
-    $and: [
-      { email: givenEmail },
-      { password: { $exists: true} }
-  ]});
+    $and: [{ email: givenEmail }, { password: { $exists: true } }],
+  });
   if (!user) {
     const isUserThirdParty = await isThirdPartyUser(givenEmail);
     if (isUserThirdParty) {
       return res.json({
         status: "error",
-        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN
+        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN,
       });
     }
     return res.json({
@@ -64,10 +60,8 @@ router.post("/login", async (req, res) => {
     ALTERNATE_SIGN_IN: 5,
   };
   const givenUser = await UserModel.findOne({
-    $and: [
-      { email: req.body.email },
-      { password: { $exists: true} }
-  ]});
+    $and: [{ email: req.body.email }, { password: { $exists: true } }],
+  });
   if (!givenUser) {
     return res.json({
       status: "error",
@@ -108,6 +102,7 @@ router.post("/login", async (req, res) => {
           photodata: givenUser.image.data,
           photoformat: givenUser.image.contentType,
           id: givenUser._id,
+          admin: givenUser.admin,
         },
       });
     }
@@ -127,9 +122,9 @@ router.post("/postAltLogin", async (req, res) => {
       id: "" + user._id,
       displayName: user.name,
       age: user.age,
-      email: user.email
-    }
-    return res.json({status: "ok", user: trimmedUser});
+      email: user.email,
+    };
+    return res.json({ status: "ok", user: trimmedUser });
   } else {
     user = await UserModel.create({
       name: req.body.name,
@@ -137,20 +132,20 @@ router.post("/postAltLogin", async (req, res) => {
       email: email,
       points: 0,
       emailToken: null,
-      isVerified: true
+      isVerified: true,
     });
     await user.save({}, (err) => {
       if (err) {
-        return res.json({status: "error", error: err});
+        return res.json({ status: "error", error: err });
       }
     });
     let trimmedUser = {
       id: "" + user._id,
       displayName: user.name,
       age: user.age,
-      email: user.email
-    }
-    return res.json({status: "ok", user: trimmedUser});
+      email: user.email,
+    };
+    return res.json({ status: "ok", user: trimmedUser });
   }
 });
 
@@ -158,7 +153,7 @@ router.post("/signUp", async (req, res) => {
   const password = req.body.password;
   const email = req.body.email;
   if (!password) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await UserModel.create({
@@ -168,7 +163,8 @@ router.post("/signUp", async (req, res) => {
     points: 0,
     password: hashedPassword,
     emailToken: crypto.randomBytes(64).toString("hex"),
-    isVerified: false
+    isVerified: false,
+    admin: false,
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -180,11 +176,15 @@ router.post("/signUp", async (req, res) => {
     to: req.body.email,
     from: "yongbin0162@gmail.com",
     subject: "LoaNUS - Verify your email",
-    text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. ${req.protocol}://${req.get('host')}/api/user/verifyEmail?token=${newUser.emailToken}`,
+    text: `Thanks for signing up for our site! Please copy and paste the address to verify your account. ${
+      req.protocol
+    }://${req.get("host")}/api/user/verifyEmail?token=${newUser.emailToken}`,
     html: `<h1>Hello,</h1>
     <p>Thanks for registering on our app.</p>
     <p>Please click the link below to verify your account.</p>
-    <a href="${req.protocol}://${req.get('host')}/api/user/verifyEmail?token=${newUser.emailToken}">Verify your account</a>`,
+    <a href="${req.protocol}://${req.get("host")}/api/user/verifyEmail?token=${
+      newUser.emailToken
+    }">Verify your account</a>`,
   };
 
   sgMail.send(msg, function (err, info) {
@@ -211,7 +211,7 @@ router.get("/getUserDetails", async (req, res) => {
         photoformat: user.image.contentType,
         id: user._id,
         followers: user.followers,
-        following: user.following
+        following: user.following,
       },
     });
   } catch (err) {
@@ -231,14 +231,14 @@ router.get("/getAllUsers", async (req, res) => {
 router.post("/getNamesOf", async (req, res) => {
   const users = req.body.users;
   if (!users) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
   const userDetails = await UserModel.find(
-    {'_id': { $in: users.map(user => user.userId)} }, 
+    { _id: { $in: users.map((user) => user.userId) } },
     ["_id", "name"]
   );
-  return res.json({status: "ok", userDetails: userDetails});
-})
+  return res.json({ status: "ok", userDetails: userDetails });
+});
 
 // Email verification route
 router.get("/verifyEmail", async (req, res, next) => {
@@ -250,23 +250,23 @@ router.get("/verifyEmail", async (req, res, next) => {
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.json({status: "ok"});
+    return res.json({ status: "ok" });
   } catch (error) {
     console.log(error);
-    return res.json({status: "error", error: error});
+    return res.json({ status: "error", error: error });
   }
 });
 
 router.post("/getProfilePic", async (req, res) => {
   const userId = req.body.userId;
   if (!userId) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
   const user = await UserModel.findOne({ _id: userId }, ["image"]);
   if (!user) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
-  return res.json({status: "ok", image: user.image});
+  return res.json({ status: "ok", image: user.image });
 });
 
 //Upload profile picture
@@ -275,39 +275,35 @@ const upload = multer({
   storage: storage,
   limits: { fieldsize: 1024 * 1024 * 3 },
 });
-router.post(
-  "/setProfilePic",
-  upload.single("image"),
-  (request, response) => {
-    try {
-      UserModel.findOne({ _id: request.body.userId }, function (err, User) {
-        if (!User) {
-          console.log("error", "User not found");
-        }
-        const imageprop = {
-          data: request.file.buffer,
-          contentType: request.file.mimetype,
-        };
+router.post("/setProfilePic", upload.single("image"), (request, response) => {
+  try {
+    UserModel.findOne({ _id: request.body.userId }, function (err, User) {
+      if (!User) {
+        console.log("error", "User not found");
+      }
+      const imageprop = {
+        data: request.file.buffer,
+        contentType: request.file.mimetype,
+      };
 
-        User.image = imageprop;
-        User.save();
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      User.image = imageprop;
+      User.save();
+    });
+  } catch (error) {
+    console.log(error);
   }
-);
+});
 
 router.post("/getPoints", async (req, res) => {
   const userId = req.body.userId;
   if (!userId) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
   const user = await UserModel.findOne({ _id: userId }, ["points"]);
   if (!user) {
-    return res.json({status: "error"});
+    return res.json({ status: "error" });
   }
-  return res.json({status: "ok", points: user.points});
+  return res.json({ status: "ok", points: user.points });
 });
 
 //UserSearch

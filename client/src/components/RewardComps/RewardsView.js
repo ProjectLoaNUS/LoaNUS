@@ -11,7 +11,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
 import { theme } from "../Theme";
-import ImageList from "./ImageList";
+import ImageList from "../ItemDetails/ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
 
@@ -41,7 +41,7 @@ const ButtonGroup = styled(CentredDiv)`
   gap: 1rem;
 `;
 
-export default function DetailsView(props) {
+export default function RewardsView(props) {
   const {
     imageUrls,
     handleClose,
@@ -80,7 +80,7 @@ export default function DetailsView(props) {
   return (
     <>
       <DialogTitle>
-        {imageUrls ? "Item Listing" : "Item Request"}
+        Reward Listing
         <IconButton
           aria-label="close"
           onClick={handleClose}
@@ -100,9 +100,6 @@ export default function DetailsView(props) {
         </Typography>
         {imageUrls && <ImageList imageUrls={imageUrls} />}
         <Row>
-          <Typography variant="body1" align="left">
-            {date} by
-          </Typography>
           <ContrastTypo variant="body1" align="left">
             {" "}
             {owner && owner.name}
@@ -126,25 +123,15 @@ export default function DetailsView(props) {
         {deadline && (
           <>
             <BoldedTypo variant="h6" align="left">
-              Return deadline
+              Use by
             </BoldedTypo>
             <Typography variant="body1" align="left">
               {deadline}
             </Typography>
           </>
         )}
-        <BoldedTypo variant="h6" align="left">
-          Meet-up
-        </BoldedTypo>
-        <Typography variant="body1" align="left">
-          {location}
-        </Typography>
+
         <ButtonGroup>
-          {!isOwner && (
-            <Button variant="outlined" color="primary" onClick={openChat}>
-              Chat
-            </Button>
-          )}
           <Button
             disabled={isBtnDisabled}
             variant="contained"

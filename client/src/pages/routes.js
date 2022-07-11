@@ -1,6 +1,8 @@
 export const HOME = "/";
 export const SIGN_IN = "/signin";
 export const PROFILE = "/profile";
+export const CLAIM_REWARD = "/claimreward";
+export const CREATE_REWARD = "/createreward";
 export const CHAT = "/chat";
 export const NEW_ITEM = "/new-item";
 export const SEARCH_LISTINGS = "/search-items";

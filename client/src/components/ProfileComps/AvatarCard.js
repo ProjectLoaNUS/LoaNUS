@@ -59,6 +59,7 @@ function AvatarCard(props) {
         setUser((prevUser) => {
           let newUser = structuredClone(prevUser);
           newUser.photoURL = URL.createObjectURL(blob);
+
           return newUser;
         });
       }
@@ -100,7 +101,6 @@ function AvatarCard(props) {
     const fileUploaded = event.target.files[0];
     setProfileImage(fileUploaded);
   };
-
   return (
     <MainContainer>
       <Avatar src={user && user.photoURL} sx={{ width: 120, height: 120 }}>
@@ -115,8 +115,8 @@ function AvatarCard(props) {
       <Rating name="size-medium" defaultValue={3} />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
       <FollowContainer>
-        {user.followers?.length || 0} Followers {user.following?.length || 0}{" "}
-        Following
+        {user?.followers ? user?.followers.length : 0} Followers{" "}
+        {user?.following ? user?.following.length : 0} Following
       </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent
