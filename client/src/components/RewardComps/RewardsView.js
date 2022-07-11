@@ -14,6 +14,8 @@ import { theme } from "../Theme";
 import ImageList from "../ItemDetails/ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
+import axios from "axios";
+import { BACKEND_URL } from "../../database/const";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -64,9 +66,7 @@ export default function RewardsView(props) {
     setOpen,
     itemId,
     user,
-    openChat,
   } = props;
-  const isOwner = owner && owner.id === user.id;
 
   const setError = (isError, helperText) => {
     setIsActionError(isError);
@@ -75,6 +75,18 @@ export default function RewardsView(props) {
 
   const setIsButtonEnabled = (isEnabled) => {
     setIsBtnDisabled(!isEnabled);
+  };
+  const HandleClick = async () => {
+    try {
+      let data = {
+        item: itemId,
+        user: user.id,
+      };
+      axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
+      setOpen(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -99,12 +111,7 @@ export default function RewardsView(props) {
           {title}
         </Typography>
         {imageUrls && <ImageList imageUrls={imageUrls} />}
-        <Row>
-          <ContrastTypo variant="body1" align="left">
-            {" "}
-            {owner && owner.name}
-          </ContrastTypo>
-        </Row>
+
         <Row>
           <Typography variant="body1" align="left">
             In
@@ -136,14 +143,7 @@ export default function RewardsView(props) {
             disabled={isBtnDisabled}
             variant="contained"
             color={isActionError ? "error" : "primary"}
-            onClick={buttonAction(
-              setError,
-              setIsButtonEnabled,
-              setOpen,
-              onActionDone,
-              itemId,
-              user
-            )}
+            onClick={HandleClick}
           >
             {buttonText}
           </Button>

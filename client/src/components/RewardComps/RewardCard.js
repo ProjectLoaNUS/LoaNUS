@@ -11,7 +11,6 @@ import {
 import styled from "styled-components";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useEffect, useState } from "react";
-import DetailsDialog from "../ItemDetails/DetailsDialog";
 import {
   borrowAction,
   deleteListingAction,
@@ -32,12 +31,6 @@ const ListCard = styled(Card)`
   width: 25%;
   height: 100%;
   margin-right: 10px;
-
-  & .MuiCardHeader-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 `;
 const ImageDiv = styled.div`
   display: flex;
@@ -75,6 +68,7 @@ const CoinsContainer = styled.div`
 export default function RewardCard(props) {
   const { itemDetails, buttonText, onActionDone, onClickAction } = props;
   const [open, setOpen] = useState(false);
+
   const binary = Buffer.from(itemDetails.image.data.data);
   const blob = new Blob([binary.buffer], {
     type: itemDetails.image.contentType,
@@ -143,7 +137,6 @@ export default function RewardCard(props) {
         open={open}
         setOpen={setOpen}
         onActionDone={onActionDone}
-        buttonAction={onClickAction}
         buttonText={buttonText}
       />
     </ListCard>

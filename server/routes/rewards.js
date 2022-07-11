@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const RewardsModel = require("../models/Rewards");
 const multer = require("multer");
+const UserModel = require("../models/Users");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -44,6 +45,26 @@ router.get("/getrewards", async (req, res) => {
     const array = await RewardsModel.find({ category: searchcat });
 
     res.status(200).send(array);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.post("/claimreward", async (req, res) => {
+  try {
+    const itemId = req.body.item;
+    const userId = req.body.user;
+
+    let usermodel = await UserModel.findById(userId);
+    let rewardmodel = await RewardsModel.findById(itemId);
+
+    if (!usermodel.rewards.includes(itemId)) {
+      usermodel.rewards.push(itemId);
+    }
+    rewardmodel.claimed = true;
+    await usermodel.save();
+    await rewardmodel.save();
+    res.status(200);
   } catch (err) {
     res.status(500).json(err);
   }

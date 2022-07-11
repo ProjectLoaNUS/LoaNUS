@@ -42,7 +42,6 @@ export default function RewardsDialog(props) {
   const [isActionError, setIsActionError] = useState(false);
   const [buttonHelperText, setButtonHelperText] = useState("");
   const [isDetailsView, setIsDetailsView] = useState(true);
-  const [chat, setChat] = useState(null);
 
   const handleClose = () => {
     setButtonHelperText("");
@@ -51,24 +50,6 @@ export default function RewardsDialog(props) {
     setIsDetailsView(true);
     setOpen(false);
   };
-
-  const fetchChat = async () => {
-    let convoUsers = {
-      senderId: user.id,
-      receiverId: owner.id,
-    };
-    try {
-      axios.post(`${BACKEND_URL}/api/conversations`, convoUsers).then((res) => {
-        setChat(res.data);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    open && owner && fetchChat();
-  }, [open, owner]);
 
   return (
     <StyledDialog
@@ -87,7 +68,6 @@ export default function RewardsDialog(props) {
         description={description}
         deadline={deadline}
         location={location}
-        buttonAction={buttonAction}
         onActionDone={onActionDone}
         buttonText={buttonText}
         buttonHelperText={buttonHelperText}

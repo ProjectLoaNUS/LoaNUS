@@ -90,36 +90,43 @@ function ClaimRewardPage() {
         <RewardContainer>
           <RewardType>Vouchers</RewardType>
           <RewardCardContainer>
-            {vouchers.map((r, index) => (
-              <RewardCard
-                buttonText={"CLAIM IT!"}
-                itemDetails={r}
-                key={index}
-                onClickAction={() => {
-                  console.log("test123");
-                }}
-              />
-            ))}
+            {vouchers.map((r, index) =>
+              !r.claimed ? (
+                <RewardCard
+                  buttonText={"Claim it!"}
+                  itemDetails={r}
+                  key={index}
+                />
+              ) : null
+            )}
           </RewardCardContainer>
         </RewardContainer>
         <RewardContainer>
           <RewardType>Beverages</RewardType>
           <RewardCardContainer>
-            {beverages.map((r, index) => (
-              <RewardCard
-                buttonText={"Claim it!"}
-                itemDetails={r}
-                key={index}
-              />
-            ))}
+            {beverages.map((r, index) =>
+              !r.claimed ? (
+                <RewardCard
+                  buttonText={"Claim it!"}
+                  itemDetails={r}
+                  key={index}
+                />
+              ) : null
+            )}
           </RewardCardContainer>
         </RewardContainer>
         <RewardContainer>
           <RewardType>Others</RewardType>
           <RewardCardContainer>
-            {otherrewards.map((r, index) => (
-              <RewardCard itemDetails={r} key={index} />
-            ))}
+            {otherrewards.map((r, index) =>
+              !r.claimed ? (
+                <RewardCard
+                  buttonText={"Claim it!"}
+                  itemDetails={r}
+                  key={index}
+                />
+              ) : null
+            )}
           </RewardCardContainer>
         </RewardContainer>
       </BelowNavBarContainer>

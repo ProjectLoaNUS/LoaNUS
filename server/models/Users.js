@@ -50,6 +50,9 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  rewards: {
+    type: Array,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);
