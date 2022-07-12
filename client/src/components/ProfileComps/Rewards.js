@@ -35,18 +35,22 @@ export default function Rewards() {
   const { user } = useAuth();
 
   useEffect(() => {
-    const data = {
-      userId: user.id,
-    };
-    axios
-      .post(`${BACKEND_URL}/api/reward/getRewardsOfUser`, data)
-      .then((res) => {
-        setRewards(res.data.rewards);
-      })
-      .catch((err) => console.log(err, "error occured"));
+    if (user) {
+      const data = {
+        userId: user.id,
+      };
+      axios
+        .post(`${BACKEND_URL}/api/reward/getRewardsOfUser`, data)
+        .then((res) => {
+          if (res.data.status === 'ok') {
+            setRewards(res.data.rewards);
+          } else {
+            console.log("Error occurred while fetching rewards claimed");
+          }
+        })
+        .catch((err) => console.log(err, "error occured"));
+    }
   }, [user]);
-
-  console.log(rewards);
 
   return (
     <ItemsGrid>
