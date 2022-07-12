@@ -44,12 +44,14 @@ const RewardType = styled.div`
   border-bottom: solid 2.5px;
 `;
 const RewardCardContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  overflow-x: scroll;
-  padding: 5px;
+  flex: 1 1 auto;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max(240px, 25%);
+  grid-gap: 1ch;
+  justify-items: stretch;
+  padding: 1ch;
+  overflow-x: auto;
 `;
 
 function ClaimRewardPage() {
@@ -64,20 +66,23 @@ function ClaimRewardPage() {
         setVouchers(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
-
+  }, [vouchers]);
+  useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/reward/getrewards?category=Beverages`)
       .then((res) => {
         setBeverages(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
+  }, [beverages]);
+  useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/reward/getrewards?category=Others`)
       .then((res) => {
         setOtherrewards(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
-  }, [vouchers, beverages, otherrewards]);
+  }, [otherrewards]);
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>

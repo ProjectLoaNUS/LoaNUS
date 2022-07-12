@@ -61,6 +61,7 @@ router.post("/claimreward", async (req, res) => {
     if (!usermodel.rewards.includes(itemId)) {
       usermodel.rewards.push(itemId);
     }
+    usermodel.points -= rewardmodel.points;
     rewardmodel.claimed = true;
     await usermodel.save();
     await rewardmodel.save();
@@ -69,4 +70,21 @@ router.post("/claimreward", async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+// get user rewards
+router.post("/getRewardsOfUser", async (req, res) => {
+  if (!req.body.userId) {
+    return res.json({ status: "error" });
+  }
+  const user = await UserModel.findOne({
+    _id: req.body.userId,
+  });
+  if (!user) {
+    return res.json({ status: "error" });
+  }
+  const rewardsIds = user.rewards;
+  let rewards = await RewardsModel.find({ _id: { $in: rewardsIds } });
+  return res.json({ status: "ok", rewards: rewards });
+});
+
 module.exports = router;

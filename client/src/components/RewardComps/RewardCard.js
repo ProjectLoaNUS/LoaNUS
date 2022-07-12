@@ -19,9 +19,7 @@ const ListCard = styled(Card)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 25%;
-  height: 100%;
-  margin-right: 10px;
+  flex: 0 0 auto;
   & .MuiCardHeader-title {
     white-space: nowrap;
     overflow: hidden;
@@ -128,6 +126,7 @@ export default function RewardCard(props) {
         onActionDone={onActionDone}
         buttonText={buttonText}
         setReward={setReward}
+        points={points}
       />
     </ListCard>
   );

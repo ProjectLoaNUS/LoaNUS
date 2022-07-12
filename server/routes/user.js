@@ -103,6 +103,7 @@ router.post("/login", async (req, res) => {
           photoformat: givenUser.image.contentType,
           id: givenUser._id,
           admin: givenUser.admin,
+          points: givenUser.points,
         },
       });
     }

@@ -49,11 +49,12 @@ export default function RewardsView(props) {
     buttonText,
     buttonHelperText,
     isActionError,
-    isBtnDisabled,
     setOpen,
     setReward,
     itemId,
     user,
+    points,
+    setUser,
   } = props;
 
   const HandleClick = async () => {
@@ -70,10 +71,17 @@ export default function RewardsView(props) {
         })
         .catch((err) => console.log(err, "error occured"));
       setOpen(false);
+      setUser((prevUser) => {
+        let newUser = structuredClone(prevUser);
+        newUser.points -= points;
+        return newUser;
+      });
     } catch (err) {
       console.log(err);
     }
   };
+  console.log(points);
+  console.log(user.points);
 
   return (
     <>
@@ -126,7 +134,7 @@ export default function RewardsView(props) {
 
         <ButtonGroup>
           <Button
-            disabled={isBtnDisabled}
+            disabled={user.points >= points ? false : true}
             variant="contained"
             color={isActionError ? "error" : "primary"}
             onClick={HandleClick}
