@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
 import RewardCard from "../RewardComps/RewardCard";
+import LoadingRewardCards from "../RewardComps/LoadingRewardCards";
+import { Typography } from "@mui/material";
 
 const ItemsGrid = styled.div`
   --grid-layout-gap: 1ch;
@@ -31,7 +33,7 @@ const ItemsGrid = styled.div`
   overflow-y: auto;
 `;
 export default function Rewards() {
-  const [rewards, setRewards] = useState([]);
+  const [rewards, setRewards] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -52,16 +54,21 @@ export default function Rewards() {
     }
   }, [user]);
 
-  return (
-    <ItemsGrid>
-      {rewards.map((r, index) => (
-        <RewardCard
-          buttonText={"Use it!"}
-          itemDetails={r}
-          key={index}
-          setReward={setRewards}
-        />
-      ))}
-    </ItemsGrid>
-  );
+  if (rewards) {
+    return rewards.length ?
+      (
+        <ItemsGrid>
+          {rewards.map((r, index) => (
+            <RewardCard
+              buttonText={"Use it!"}
+              itemDetails={r}
+              key={index}
+              setReward={setRewards}
+            />
+          ))}
+        </ItemsGrid>
+      ) :
+      <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>No rewards claimed yet. Check out the 'Claim rewards' page!</Typography>
+  }
+  return <LoadingRewardCards />
 }
