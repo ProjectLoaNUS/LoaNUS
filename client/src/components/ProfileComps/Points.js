@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../database/const";
 import { useAuth } from "../../database/auth";
 import { Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { CLAIM_REWARD } from "../../pages/routes";
 
 const CoinsContainer = styled.div`
     align-self: center;
@@ -29,6 +31,7 @@ const StyledCoin = styled(CurrencyExchangeIcon)`
 export default function Points() {
     const [ points, setPoints ] = useState(null);
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`${BACKEND_URL}/api/user/getPoints`, {
@@ -50,6 +53,10 @@ export default function Points() {
         });
     }, [user]);
 
+    const onClickSpend = () => {
+        navigate(CLAIM_REWARD);
+    };
+
     return (
         <>
             <Typography variant="h4" align="center" sx={{fontWeight: "bold", marginTop: "1rem"}}>
@@ -63,7 +70,8 @@ export default function Points() {
 
                 <ButtonComponent
                     size={"small"}
-                    text={"Earn Coins"}
+                    text={"Spend coins"}
+                    onClick={onClickSpend}
                     state={"primary"}
                     setHeight={"15px"} />
             </CoinsContainer>

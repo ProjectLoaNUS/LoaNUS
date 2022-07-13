@@ -5,8 +5,18 @@ import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
 import RewardCard from "../RewardComps/RewardCard";
 import LoadingRewardCards from "../RewardComps/LoadingRewardCards";
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { CLAIM_REWARD } from "../../pages/routes";
+import ButtonComponent from "../Button";
 
+const RewardsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  padding-top: 0.5em;
+`;
 const ItemsGrid = styled.div`
   --grid-layout-gap: 1ch;
   --grid-column-count: 4;
@@ -22,6 +32,8 @@ const ItemsGrid = styled.div`
     var(--grid-item--max-width)
   );
 
+  flex: 1 1 auto;
+  align-self: stretch;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-width), 1fr));
   grid-auto-rows: calc(var(--grid-item-width) * 6 / 5);
@@ -29,12 +41,12 @@ const ItemsGrid = styled.div`
   align-items: stretch;
   justify-items: stretch;
   padding: 1ch;
-  height: 100%;
   overflow-y: auto;
 `;
 export default function Rewards() {
   const [rewards, setRewards] = useState(null);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -54,21 +66,36 @@ export default function Rewards() {
     }
   }, [user]);
 
+  const onClickClaim = () => {
+    navigate(CLAIM_REWARD);
+  };
+
   if (rewards) {
     return rewards.length ?
       (
-        <ItemsGrid>
-          {rewards.map((r, index) => (
-            <RewardCard
-              buttonText={"Use it!"}
-              itemDetails={r}
-              key={index}
-              setReward={setRewards}
-            />
-          ))}
-        </ItemsGrid>
+        <RewardsContainer>
+          <ButtonComponent
+            size="small"
+            text="Claim more rewards"
+            onClick={onClickClaim}
+            state="primary" />
+          <ItemsGrid>
+            {rewards.map((r, index) => (
+              <RewardCard
+                buttonText={"Use it!"}
+                itemDetails={r}
+                key={index}
+                setReward={setRewards}
+              />
+            ))}
+          </ItemsGrid>
+        </RewardsContainer>
       ) :
-      <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>No rewards claimed yet. Check out the 'Claim rewards' page!</Typography>
+      <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>
+        No rewards claimed yet. Check out the '
+        <Link onClick={onClickClaim}>Claim rewards</Link>
+        ' page!
+      </Typography>
   }
   return <LoadingRewardCards />
 }
