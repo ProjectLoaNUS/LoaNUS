@@ -80,8 +80,6 @@ export default function RewardsView(props) {
       console.log(err);
     }
   };
-  console.log(points);
-  console.log(user.points);
 
   return (
     <>

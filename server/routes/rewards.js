@@ -29,7 +29,6 @@ router.post("/createreward", upload.single("image"), (req, res) => {
     };
     const reward = new RewardsModel(data);
     const savedreward = reward.save();
-    console.log(data);
 
     res.status(200).json(savedreward);
   } catch (err) {

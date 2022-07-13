@@ -22,10 +22,6 @@ function CreateRewardPage() {
   const [image, setImage] = useState();
   const navigate = useNavigate();
   const handleSubmit = async () => {
-    console.log(category);
-    console.log(points);
-    console.log(date);
-    console.log(image);
     let formData = new FormData();
     formData.append("deadline", date);
     formData.append("category", category);
@@ -34,18 +30,18 @@ function CreateRewardPage() {
     formData.append("claimed", false);
     formData.append("points", points);
     formData.append("image", image);
-    console.log(Object.fromEntries(formData));
 
-    await axios
-      .post(`${BACKEND_URL}/api/reward/createreward`, formData, {
+    try {  
+      const res = await axios.post(`${BACKEND_URL}/api/reward/createreward`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
       });
+      if (res.status !== 200) {
+        const data = await res.json();
+        console.log(data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     if (!user.admin) {
@@ -57,7 +53,6 @@ function CreateRewardPage() {
     const fileUploaded = event.target.files[0];
     setImage(fileUploaded);
   };
-  console.log(user.admin);
 
   return (
     <MainContainer>
