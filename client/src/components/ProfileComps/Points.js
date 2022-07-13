@@ -75,6 +75,9 @@ export default function Points() {
                     state={"primary"}
                     setHeight={"15px"} />
             </CoinsContainer>
+            <Typography variant="subtitle1" align="center" sx={{fontStyle: "italic"}}>
+                Lend some items to others on LoaNUS to earn coins and redeem rewards!
+            </Typography>
         </>
     );
 }
