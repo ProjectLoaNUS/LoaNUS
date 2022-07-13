@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Avatar, Rating, Typography } from "@mui/material";
+import { Avatar, Button, Rating, Snackbar, Typography } from "@mui/material";
 import { useAuth } from "../../database/auth";
 import { useState } from "react";
 import ButtonComponent from "../Button";
@@ -46,6 +46,8 @@ const HiddenInput = styled.input`
 `;
 
 function AvatarCard(props) {
+  const [ showAlert, setShowAlert ] = useState(false);
+  const [ alertMessage, setAlertMessage ] = useState("");
   const [profileimage, setProfileImage] = useState();
   const { user, setUser } = useAuth();
 
@@ -66,35 +68,44 @@ function AvatarCard(props) {
     }
   }, [user, setUser]);
 
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+    setAlertMessage("");
+  }
   const handleClick = () => {
     hiddenFileInput.current.click();
   };
   const handleSubmit = async () => {
-    profileimage.arrayBuffer().then((rawBuffer) => {
-      const buffer = Buffer.from(rawBuffer);
-      let newUser = structuredClone(user);
-      newUser.photodata = buffer;
-      newUser.photoformat = profileimage.type;
-      delete newUser.photourl;
-      localStorage.setItem("user", JSON.stringify(newUser));
-      const blob = new Blob([buffer], { type: profileimage.type });
-      newUser.photoURL = URL.createObjectURL(blob);
-      setUser(newUser);
-    });
-
-    let formData = new FormData();
-    formData.append("userId", user.id);
-    formData.append("image", profileimage);
-    axios
-      .post(`${BACKEND_URL}/api/user/setProfilePic`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
+    if (!profileimage) {
+      setAlertMessage("Please select an image first!");
+      setShowAlert(true);
+    } else {
+      profileimage.arrayBuffer().then((rawBuffer) => {
+        const buffer = Buffer.from(rawBuffer);
+        let newUser = structuredClone(user);
+        newUser.photodata = buffer;
+        newUser.photoformat = profileimage.type;
+        delete newUser.photourl;
+        localStorage.setItem("user", JSON.stringify(newUser));
+        const blob = new Blob([buffer], { type: profileimage.type });
+        newUser.photoURL = URL.createObjectURL(blob);
+        setUser(newUser);
       });
+
+      let formData = new FormData();
+      formData.append("userId", user.id);
+      formData.append("image", profileimage);
+      axios
+        .post(`${BACKEND_URL}/api/user/setProfilePic`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const handleFileSubmitChange = (event) => {
@@ -144,6 +155,21 @@ function AvatarCard(props) {
         ref={hiddenFileInput}
         onChange={handleFileSubmitChange}
       />
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
+        onClose={(event, reason) => {
+          if (reason === 'escapeKeyDown') {
+            event.preventDefault();
+          }
+          handleCloseAlert(event);
+        }}
+        message={alertMessage}
+        action={
+          <Button color="secondary" size="small" onClick={handleCloseAlert}>
+            DISMISS
+          </Button>
+        } />
     </MainContainer>
   );
 }
