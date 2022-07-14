@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "cypress": "^10.3.0",
+    "cypress-file-upload": "^5.0.8",
     "reinstall-node-modules": "^2.0.0"
   }
 }

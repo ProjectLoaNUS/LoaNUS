@@ -1,4 +1,4 @@
-describe(" user log in", async () => {
+describe(" user log in", () => {
   it("user signs in", () => {
     //visit website homepage
     cy.visit("http://localhost:3000");
@@ -9,17 +9,21 @@ describe(" user log in", async () => {
     cy.findByRole("button", { name: /next/i }).click();
     cy.get("[id=password1]").type("P@ssword1234");
     cy.get("[id=submit]").click();
-
+    //user press itemcard and chats
     cy.findByRole("button", {
       name: /wang haoyang jul 6, 2022 item listing image overcooked/i,
     })
       .click()
       .should("be.visible");
-    /* cy.findByRole("button", { name: /borrow it!/i }).click();
-    // not signed in user clicks chat
+
+    cy.findByRole("button", { name: /chat/i }).click();
+    //user press itemcard and borrows
     cy.findByRole("button", {
       name: /wang haoyang jul 6, 2022 item listing image overcooked/i,
-    }).click();*/
-    cy.findByRole("button", { name: /chat/i }).click();
+    })
+      .click()
+      .should("be.visible");
+
+    cy.findByRole("button", { name: /borrow it!/i }).click();
   });
 });
