@@ -28,7 +28,7 @@ const Text = styled.p.attrs((props) => ({
 }))`
   &.own {
     border: 1px solid ${theme.palette.primary.main};
-    background-color:  ${theme.palette.primary.contrastText};
+    background-color: ${theme.palette.primary.contrastText};
     color: ${theme.palette.primary.main};
   }
   margin-left: 10px;
@@ -42,7 +42,7 @@ const Text = styled.p.attrs((props) => ({
 function Message({ message, own }) {
   return (
     <MessageContainer className={own ? "own" : null}>
-      <MessageTop>
+      <MessageTop data-testid="message">
         <Avatar></Avatar>
         <Text className={own ? "own" : null}>{message.text}</Text>
       </MessageTop>
