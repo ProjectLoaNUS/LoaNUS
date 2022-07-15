@@ -8,18 +8,20 @@ import SearchBar from "../SearchBar/SearchBar";
 import { theme } from "../Theme";
 import AppBtn from "./AppBtn/AppBtn";
 import ChatBtn from "./ChatBtn";
-import { Stack } from "@mui/material";
+import { AppBar, Stack, Toolbar } from "@mui/material";
 import { HOME } from "../../pages/routes";
 
-const MainContainer = styled.nav`
-  background-color: ${theme.palette.primary.main};
+const MyAppBar = styled(AppBar)`
   height: 10vh;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0ex 1ex;
-  gap: 1ex;
+
+  & .MuiToolbar-root {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    ustify-content: space-between;
+    padding: 0ex 1ex;
+    gap: 1ex;
+  }
 `;
 
 const iconStyles = {
@@ -29,7 +31,8 @@ const iconStyles = {
 function NavigationBar() {
   const { user } = useAuth();
   return (
-      <MainContainer>
+    <MyAppBar position="static">
+      <Toolbar>
         <AppBtn
           component={Link}
           to={HOME}
@@ -46,7 +49,8 @@ function NavigationBar() {
         :
           <SignInBtn url='/signin' />
         }
-      </MainContainer>
+      </Toolbar>
+    </MyAppBar>
   );
 }
 
