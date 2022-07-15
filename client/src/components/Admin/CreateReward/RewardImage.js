@@ -2,7 +2,7 @@ import { Card, CardActionArea, CardActions, CardMedia, IconButton, Stack } from 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CloseIcon from '@mui/icons-material/Close';
 import styled from "styled-components";
-import { theme } from "../Theme";
+import { theme } from "../../Theme";
 import { useRef } from "react";
 
 const ImageStack = styled(Stack)`

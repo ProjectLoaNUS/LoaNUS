@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../database/auth";
 import NavigationBar from "../components/NavBar/NavigationBar";
-import CreateRewardCard from "../components/CreateReward/CreateRewardCard";
+import CreateRewardCard from "../components/Admin/CreateReward/CreateRewardCard";
 
 const MainContainer = styled.div`
   height: 100%;

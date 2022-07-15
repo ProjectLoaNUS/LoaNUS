@@ -4,10 +4,10 @@ import { useRef, useState } from "react";
 import MyTextField from "./MyTextField";
 import DateField from "./DateField";
 import RewardImage from "./RewardImage";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../../Button";
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
-import { BACKEND_URL } from "../../database/const";
+import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
 
 const CreateCard = styled(Card)`
