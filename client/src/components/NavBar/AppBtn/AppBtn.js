@@ -11,7 +11,7 @@ export default function AppBtn(props) {
     const { component, to, color, dark, iconStyles } = props;
 
     return (
-        <TallIconBtn component={component} to={to} color={color}>
+        <TallIconBtn LinkComponent={component} to={to} color={color}>
           <AppIcon dark={dark} iconStyles={iconStyles} />
         </TallIconBtn>
     );
