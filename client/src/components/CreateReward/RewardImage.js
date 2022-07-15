@@ -76,8 +76,7 @@ const HiddenInput = styled.input`
 `;
 
 export default function RewardImage(props) {
-    const { image, setImage } = props;
-    const chosenImg = useRef(null);
+    const { image, setImage, imageRef } = props;
 
     const getImgUrl = (img) => {
       if (img) {
@@ -87,7 +86,7 @@ export default function RewardImage(props) {
     };
 
     const handleChooseImg = () => {
-      chosenImg.current.click();
+      imageRef.current.click();
     };
 
     const onImgChosen = (event) => {
@@ -95,7 +94,7 @@ export default function RewardImage(props) {
     };
 
     const rmImage = () => {
-      chosenImg.current.value = null;
+      imageRef.current.value = null;
       setImage(null);
     }
 
@@ -131,7 +130,7 @@ export default function RewardImage(props) {
               id="choose-image"
               accept="image/gif,image/jpeg,image/png,image/svg+xml"
               onChange={onImgChosen}
-              ref={chosenImg}
+              ref={imageRef}
             />
         </ImageStack>
     );

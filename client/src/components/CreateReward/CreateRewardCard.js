@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Card, Typography } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import MyTextField from "./MyTextField";
 import DateField from "./DateField";
 import RewardImage from "./RewardImage";
@@ -34,6 +34,7 @@ export default function CreateRewardCard() {
     const [ image, setImage ] = useState(null);
     const [ isAdding, setIsAdding ] = useState(false);
     const [ resultText, setResultText ] = useState("");
+    const chosenImg = useRef(null);
 
     const clearForm = () => {
         setCategory("");
@@ -43,6 +44,7 @@ export default function CreateRewardCard() {
         setDate(new Date());
         setIsFormError(false);
         setImage(null);
+        chosenImg.current.value = null;
     };
 
     const handleSubmit = async (event) => {
@@ -113,7 +115,8 @@ export default function CreateRewardCard() {
               setIsFormError={setIsFormError} />
             <RewardImage
               image={image}
-              setImage={setImage} />
+              setImage={setImage}
+              imageRef={chosenImg} />
             <SubmitButton
               type="submit"
               disabled={isFormError}
