@@ -46,6 +46,10 @@ const UserSchema = new mongoose.Schema({
   following: {
     type: Array,
   },
+  recommendation: {
+    type: Object,
+    required: true,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);
