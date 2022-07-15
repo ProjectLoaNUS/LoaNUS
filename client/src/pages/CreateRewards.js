@@ -20,10 +20,10 @@ function CreateRewardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user.admin) {
+    if (user && !user.admin) {
       navigate(-1);
     }
-  });
+  }, [user]);
 
   return (
     <MainContainer>
