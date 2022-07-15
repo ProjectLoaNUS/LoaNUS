@@ -1,14 +1,14 @@
 import styled from "styled-components";
-import { Card, Typography } from "@mui/material";
+import { Card, Slide, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import MyTextField from "./MyTextField";
 import DateField from "./DateField";
 import RewardImage from "./RewardImage";
-import ButtonComponent from "../../Button";
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
+import { TransitionGroup } from 'react-transition-group';
 
 const CreateCard = styled(Card)`
   display: flex;
@@ -35,6 +35,7 @@ export default function CreateRewardCard() {
     const [ isAdding, setIsAdding ] = useState(false);
     const [ resultText, setResultText ] = useState("");
     const chosenImg = useRef(null);
+    const cardRef = useRef(null);
 
     const clearForm = () => {
         setCategory("");
@@ -70,6 +71,9 @@ export default function CreateRewardCard() {
           } else {
             clearForm();
             setResultText("Reward added into the system");
+            setTimeout(() => {
+              setResultText("");
+            }, 6000);
           }
         } catch (err) {
           console.log(err);
@@ -80,7 +84,8 @@ export default function CreateRewardCard() {
     return (
         <CreateCard
           component="form" 
-          onSubmit={handleSubmit}>
+          onSubmit={handleSubmit}
+          ref={cardRef} >
             <Typography align="center" variant="h5">Add a reward</Typography>
             <MyTextField
               id="title"
@@ -127,13 +132,17 @@ export default function CreateRewardCard() {
               startIcon={<AddIcon />} >
                 Add
             </SubmitButton>
-            {resultText && 
-                <Typography
-                  align="center"
-                  color={isFormError ? "error" : "success.main"}>
-                    {resultText}
-                </Typography>
-            }
+            <TransitionGroup>
+              {resultText && 
+                <Slide container={cardRef.current} direction="right" >
+                  <Typography
+                    align="center"
+                    color={isFormError ? "error" : "success.main"}>
+                      {resultText}
+                  </Typography>
+                </Slide>
+              }
+            </TransitionGroup>
         </CreateCard>
     );
 }
