@@ -7,13 +7,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { ShrinkDiv } from '../FlexDiv';
 import styled from 'styled-components';
 import { theme } from '../Theme';
-import { PROFILE } from '../../pages/routes';
+import { ADMIN, PROFILE } from '../../pages/routes';
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
 `;
 
 export default function ProfileBtn() {
+    const { user } = useAuth();
     const [ anchorEl, setAnchorEl ] = useState(null);
     const open = Boolean(anchorEl);
     const { signOut } = useAuth();
@@ -48,7 +49,10 @@ export default function ProfileBtn() {
                   'arial-labelledby': 'basic-button'
               }}
             >
-                <MenuItem component={ Link } to={PROFILE}>Account</MenuItem>
+                <MenuItem component={Link} to={PROFILE}>Account</MenuItem>
+                { user?.admin &&
+                    <MenuItem component={Link} to={ADMIN}>Admin</MenuItem>
+                }
                 <MenuItem onClick={logOutNow}>Sign Out</MenuItem>
             </Menu>
         </ShrinkDiv>
