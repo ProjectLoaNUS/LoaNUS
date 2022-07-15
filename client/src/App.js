@@ -21,7 +21,6 @@ import {
   ADMIN,
 } from "./pages/routes";
 import ClaimRewardPage from "./pages/ClaimRewardPage";
-import CreateRewardPage from "./pages/CreateRewards";
 import AdminPage from "./pages/AdminPage";
 
 function App() {
