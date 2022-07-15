@@ -18,9 +18,11 @@ import {
   CHAT,
   CLAIM_REWARD,
   CREATE_REWARD,
+  ADMIN,
 } from "./pages/routes";
 import ClaimRewardPage from "./pages/ClaimRewardPage";
 import CreateRewardPage from "./pages/CreateRewards";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
           <Route path={`${PROFILE}/*`} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />
+          <Route path={`${ADMIN}/*`} element={<AdminPage />} />
           <Route exact path={HOME} element={<HomePage />} />
         </Routes>
       </ThemeProvider>

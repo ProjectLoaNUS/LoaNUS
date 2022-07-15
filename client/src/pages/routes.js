@@ -1,7 +1,6 @@
 export const HOME = "/";
 export const SIGN_IN = "/signin";
 export const CLAIM_REWARD = "/claim-reward";
-export const CREATE_REWARD = "/create-reward";
 export const CHAT = "/chat";
 export const NEW_ITEM = "/new-item";
 export const SEARCH_LISTINGS = "/search-items";
@@ -13,3 +12,5 @@ export const PROFILE_FOLLOW = `${PROFILE}/follow`;
 export const PROFILE_REVIEWS = `${PROFILE}/reviews`;
 export const PROFILE_REQUESTS = `${PROFILE}/requests`;
 export const PROFILE_REWARDS_CLAIMED = `${PROFILE}/rewards-claimed`;
+export const ADMIN = "/admin";
+export const CREATE_REWARD = `${ADMIN}/create-reward`;
