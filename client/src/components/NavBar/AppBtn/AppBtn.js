@@ -5,6 +5,7 @@ import AppIcon from "./AppIcon";
 const TallIconBtn = styled(IconButton)`
     display: flex;
     align-self: stretch;
+    aspect-ratio: 1 / 1;
 `;
 
 export default function AppBtn(props) {
