@@ -9,6 +9,7 @@ import { theme } from "../Theme";
 import AppBtn from "./AppBtn/AppBtn";
 import ChatBtn from "./ChatBtn";
 import { Stack } from "@mui/material";
+import { HOME } from "../../pages/routes";
 
 const MainContainer = styled.nav`
   background-color: ${theme.palette.primary.main};
@@ -29,7 +30,12 @@ function NavigationBar() {
   const { user } = useAuth();
   return (
       <MainContainer>
-        <AppBtn component={ Link } to="/" color="primary" dark={true} iconStyles={iconStyles} />
+        <AppBtn
+          component={Link}
+          to={HOME}
+          color="primary"
+          dark={true}
+          iconStyles={iconStyles} />
         <SearchBar />
         { user ?
           <Stack direction="row">
