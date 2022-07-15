@@ -137,7 +137,7 @@ export default function ItemList(props) {
         <ItemListContainer>
           <LoadingItemList isItemRequest={!Boolean(itemImages)} />
         </ItemListContainer>
-      ) : itemDatas.length ? (
+      ) : itemDatas?.length ? (
         <ItemListContainer>
           <ItemCardList itemsDatas={itemDatas} />
         </ItemListContainer>

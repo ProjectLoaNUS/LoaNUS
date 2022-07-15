@@ -70,7 +70,7 @@ export default function RecommendationListings() {
 
   return (
     <>
-      {user && listingDetails ? (
+      {user ? (
         <ListingsPaper>
           <Typography align="left" variant="h4">
             For you
