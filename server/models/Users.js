@@ -47,8 +47,9 @@ const UserSchema = new mongoose.Schema({
     type: Array,
   },
   recommendation: {
-    type: Object,
+    type: Array,
     required: true,
+    maxlength: 10,
   },
 });
 

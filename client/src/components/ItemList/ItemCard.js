@@ -169,7 +169,7 @@ export default function ItemCard(props) {
     <ListCard>
       <ListingActionArea
         component="a"
-        onClick={() => handleShowDetails(category, user?.id)}
+        onClick={() => handleShowDetails(itemDetails.category, user?.id)}
       >
         <CardHeader
           avatar={

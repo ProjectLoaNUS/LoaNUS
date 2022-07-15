@@ -163,27 +163,7 @@ router.post("/signUp", async (req, res) => {
     password: hashedPassword,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
-    recommendation: {
-      Audio: 0,
-      "Beauty & Personal Care": 0,
-      "Car Accessories": 0,
-      "Computers & Tech": 0,
-      "Food & Drinks": 0,
-      "Furniture & Home Living": 0,
-      "Health & Nutrition": 0,
-      "Hobbies & Toys": 0,
-      "Learning & Enrichment": 0,
-      Luxury: 0,
-      "Men's fashion": 0,
-      "Mobile Phones & Gadgets": 0,
-      Photography: 0,
-      "Sports equipment": 0,
-      Tools: 0,
-      "TV & Home Appliances": 0,
-      "Video Games": 0,
-      "Women's fasion": 0,
-      Others: 0,
-    },
+    recommendation: [],
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -376,8 +356,12 @@ router.post("/updaterecommendation", async (req, res) => {
     const category = req.body.itemcategory;
     const userId = req.body.userid;
     const user = await UserModel.findById(userId);
-    user.recommendation[category] = user.recommendation[category] + 1;
-    user.markModified("recommendation");
+    if (user.recommendation.length < 10) {
+      user.recommendation.unshift(category);
+    } else {
+      user.recommendation.pop();
+      user.recommendation.unshift(category);
+    }
     user.save();
     res.json({ status: "recommendation updated" });
   } catch (err) {
@@ -388,17 +372,35 @@ router.post("/updaterecommendation", async (req, res) => {
 
 router.get("/getrecommendation", async (req, res) => {
   try {
+    function mostFrequent(arr, n) {
+      if (n === 0) {
+        return null;
+      }
+      arr.sort();
+      let max_count = 1,
+        res = arr[0];
+      let curr_count = 1;
+
+      for (let i = 1; i < n; i++) {
+        if (arr[i] == arr[i - 1]) curr_count++;
+        else curr_count = 1;
+
+        if (curr_count > max_count) {
+          max_count = curr_count;
+          res = arr[i - 1];
+        }
+      }
+      return res;
+    }
+
     const userid = req.query.userid;
     const user = await UserModel.findById(userid);
-    let recommended = null;
-    let frequency = 0;
-    const recommendation = user.recommendation;
-    for (const property in recommendation) {
-      if (recommendation[property] > frequency) {
-        frequency = recommendation[property];
-        recommended = property;
-      }
-    }
+
+    let recommended = mostFrequent(
+      user.recommendation,
+      user.recommendation.length
+    );
+    console.log(recommended);
     res.json({ status: "success", recommended: recommended });
   } catch (err) {
     console.log(err);

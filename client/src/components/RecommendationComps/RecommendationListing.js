@@ -67,8 +67,6 @@ export default function RecommendationListings() {
       getrecommendation();
     }
   }, [recommended, user]);
-  console.log(user);
-  console.log(listingDetails);
 
   return (
     <>
