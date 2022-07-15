@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const MainContainer = styled.div`
-  width: 80vw;
-  height: 40vh;
+  width: 93vw;
+  height: 50vh;
   border-color: 2px black solid;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -10,17 +10,24 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
 `;
 const DescriptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 0 40%;
   align-items: center;
+
+  height: 100%;
 `;
 const Title = styled.h1`
   text-align: center;
-  font-size: 1.5em;
+  font-size: 2em;
   overflow-wrap: break-word;
+  background: linear-gradient(to right, black 79.5%, #eb8736 19.5%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 const Description = styled.p`
   text-align: center;
@@ -45,7 +52,9 @@ const ImageDiv = styled.div`
   height: 100%;
 `;
 const RewardImage = styled((props) => (
-    <ImageDiv><HtmlImage {...props} /></ImageDiv>
+  <ImageDiv>
+    <HtmlImage {...props} />
+  </ImageDiv>
 ))``;
 
 function DescriptionCard(props) {
@@ -53,14 +62,12 @@ function DescriptionCard(props) {
     <MainContainer>
       <DescriptionContainer>
         <Title>{props.title}</Title>
-        <Description>
-          {props.desc}
-        </Description>
+        <Description>{props.desc}</Description>
         {props.children}
       </DescriptionContainer>
       <RewardContainer>
         {props.imgs.map((img, index) => {
-          return <RewardImage key={index} src={img} />
+          return <RewardImage key={index} src={img} />;
         })}
       </RewardContainer>
     </MainContainer>

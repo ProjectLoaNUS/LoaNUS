@@ -23,8 +23,11 @@ const ListingsPaper = styled(Paper)`
   align-items: stretch;
   justify-content: space-between;
   padding: 1rem;
-  width: 85vw;
+  width: 93vw;
   height: 40vh;
+  border-color: 2px black solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
 export default function RecommendationListings() {
@@ -72,8 +75,8 @@ export default function RecommendationListings() {
     <>
       {user ? (
         <ListingsPaper>
-          <Typography align="left" variant="h4">
-            For you
+          <Typography align="left" variant="h4" color="#eb8736">
+            Recommendation for you
           </Typography>
           <ItemList
             ListContainer={ListingsGrid}
