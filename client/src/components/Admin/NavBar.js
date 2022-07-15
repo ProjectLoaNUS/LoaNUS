@@ -1,21 +1,27 @@
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
+import { AppBar, Box, Button, Divider, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { CREATE_REWARD, HOME } from "../../pages/routes";
+import { ADMIN, CREATE_REWARD, HOME } from "../../pages/routes";
 import AppBtn from "../NavBar/AppBtn/AppBtn";
 import ProfileBtn from "../NavBar/ProfileBtn";
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { theme } from "../Theme";
+import { useState } from "react";
 
 const MyAppBar = styled(AppBar)`
   height: 10vh;
+  flex: 0 0 auto;
 
   & .MuiToolbar-root {
     display: flex;
     height: 100%;
+    padding-left: 0;
+    padding-right: 1em;
   }
 `
 const ContrastBtn = styled(Button)`
   color: ${theme.palette.primary.contrastText};
+  border-radius: 0;
 `;
 const iconStyles = {
     alignSelf: "stretch",
@@ -23,6 +29,11 @@ const iconStyles = {
 };
 
 export default function NavBar() {
+    const [ selectedTab, setSelectedTab ] = useState(null);
+    const selectedTabStyle = {
+        borderBottom: `2px solid ${theme.palette.primary.contrastText}`
+    }
+
     return (
         <MyAppBar position="static">
             <Toolbar>
@@ -32,10 +43,35 @@ export default function NavBar() {
                   color="primary"
                   dark={true}
                   iconStyles={iconStyles} />
-                <Box sx={{display: "flex", flexGrow: "1"}}>
-                    <ContrastBtn>Overview</ContrastBtn>
-                    <ContrastBtn component={Link} to={CREATE_REWARD}>Add Reward</ContrastBtn>
+                <Box sx={{display: "flex", alignItems: "center", paddingLeft: "1em" }}>
+                    Admin Portal
+                    <ArrowRightIcon />
                 </Box>
+                <Stack
+                  direction="row"
+                  divider={
+                    <Divider
+                      orientation="vertical"
+                      flexItem
+                      sx={{borderColor: theme.palette.primary.contrastText}}/>
+                  }
+                  spacing={1}
+                  sx={{flexGrow: 1}}>
+                    <ContrastBtn
+                      onClick={() => setSelectedTab(0)}
+                      component={Link}
+                      to={ADMIN}
+                      sx={selectedTab === 0 ? selectedTabStyle : {}}>
+                        Overview
+                    </ContrastBtn>
+                    <ContrastBtn
+                      onClick={() => setSelectedTab(1)}
+                      component={Link}
+                      to={CREATE_REWARD}
+                      sx={selectedTab === 1 ? selectedTabStyle : {}}>
+                        Add Reward
+                    </ContrastBtn>
+                </Stack>
                 <ProfileBtn />
             </Toolbar>
         </MyAppBar>
