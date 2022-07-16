@@ -33,6 +33,7 @@ export default function CreateRewardCard() {
     const [ points, setPoints ] = useState("");
     const [ date, setDate ] = useState(new Date());
     const [ isFormError, setIsFormError ] = useState(false);
+    const [ isSubmitError, setIsSubmitError ] = useState(false);
     const [ image, setImage ] = useState(null);
     const [ redeemUrl, setRedeemUrl ] = useState("");
     const [ qrCodeImg, setQrCodeImg ] = useState(null);
@@ -49,6 +50,7 @@ export default function CreateRewardCard() {
         setPoints("");
         setDate(new Date());
         setIsFormError(false);
+        setIsSubmitError(false);
         setImage(null);
         chosenImg.current.value = null;
     };
@@ -72,6 +74,7 @@ export default function CreateRewardCard() {
           if (res.status !== 200) {
             const data = await res.json();
             console.log(data);
+            setIsSubmitError(true);
             setResultText("Error occurred in the backend while adding reward");
           } else {
             clearForm();
@@ -82,6 +85,8 @@ export default function CreateRewardCard() {
           }
         } catch (err) {
           console.log(err);
+          setIsAdding(false);
+          setIsSubmitError(true);
           setResultText("Error occurred while adding reward");
         }
     };
@@ -146,7 +151,7 @@ export default function CreateRewardCard() {
                 <Slide container={cardRef.current} direction="right" >
                   <Typography
                     align="center"
-                    color={isFormError ? "error" : "success.main"}>
+                    color={isSubmitError ? "error" : "success.main"}>
                       {resultText}
                   </Typography>
                 </Slide>
