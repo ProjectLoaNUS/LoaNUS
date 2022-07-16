@@ -7,6 +7,8 @@ import ProfileBtn from "../NavBar/ProfileBtn";
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { theme } from "../Theme";
 import { useState } from "react";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const MyAppBar = styled(AppBar)`
   height: 10vh;
@@ -28,11 +30,29 @@ const iconStyles = {
     preserveAspectRatio: "xMaxYMax meet"
 };
 
-export default function NavBar() {
+export default function NavBar(props) {
+    const {path} = props;
     const [ selectedTab, setSelectedTab ] = useState(null);
     const selectedTabStyle = {
         borderBottom: `2px solid ${theme.palette.primary.contrastText}`
     }
+
+    const checkPath = useCallback(async () => {
+      if (path) {
+        switch (path) {
+          case CREATE_REWARD:
+            setSelectedTab(1);
+            break;
+          case ADMIN:
+          default:
+            setSelectedTab(0);
+            break;
+        }
+      }
+    }, [path]);
+    useEffect(() => {
+      checkPath();
+    }, [checkPath]);
 
     return (
         <MyAppBar position="static">

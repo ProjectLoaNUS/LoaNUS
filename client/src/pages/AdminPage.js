@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import CreateRewardCard from "../components/Admin/CreateReward/CreateRewardCard";
@@ -13,10 +14,12 @@ const AdminContentContainer = styled(Box)`
 `;
 
 export default function AdminPage() {
+    const [ path, setPath ] = useState("");
+
     function AdminContent() {
         const location = useLocation();
-        const path = location.pathname;
-        switch (path) {
+        setPath(location.pathname);
+        switch (location.pathname) {
             case CREATE_REWARD:
                 return <CreateRewardCard />
             case ADMIN:
@@ -27,7 +30,7 @@ export default function AdminPage() {
 
     return (
         <Box sx={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
-            <NavBar />
+            <NavBar path={path} />
             <AdminContentContainer>
                 <AdminContent />
             </AdminContentContainer>
