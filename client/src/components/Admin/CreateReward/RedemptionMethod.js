@@ -1,9 +1,9 @@
-import { Button, Card, CardMedia, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardMedia, FormControl, Grow, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import styled from "styled-components";
 import { theme } from "../../Theme";
-import { useState } from "react";
+import { TransitionGroup } from 'react-transition-group';
 
 const ImageCard = styled(Card)`
   display: flex;
@@ -109,27 +109,30 @@ export default function RedemptionMethod(props) {
                   }
                   sx={{paddingRight: 0, display: "flex"}} />
             </FormControl>
-            { qrCode &&
-                <>
-                    <ImageCard>
-                        <MyIconButton
-                        size="small"
-                        color="primary"
-                        variant="filled"
-                        onClick={rmQrCode} >
-                            <CloseIcon fontSize="inherit" />
-                        </MyIconButton>
-                        <ImageDiv>
-                            <CardMedia
-                            component="img"
-                            image={getImgUrl(qrCode)}
-                            alt="Reward image"
-                            />
-                        </ImageDiv>
-                    </ImageCard>
-                    <Typography variant="subtitle2" align="center">Your Redemption QR Code</Typography>
-                </>
-            }
+            <TransitionGroup>
+                { qrCode &&
+                    <Grow in={!!qrCode} style={{transformOrigin: "center top"}} timeout={750}>
+                        <Box display="flex" flexDirection="column" alignItems="center">
+                            <ImageCard>
+                                <MyIconButton
+                                  size="small"
+                                  color="primary"
+                                  variant="filled"
+                                  onClick={rmQrCode} >
+                                    <CloseIcon fontSize="inherit" />
+                                </MyIconButton>
+                                <ImageDiv>
+                                    <CardMedia
+                                      component="img"
+                                      image={getImgUrl(qrCode)}
+                                      alt="Reward image" />
+                                </ImageDiv>
+                            </ImageCard>
+                            <Typography variant="subtitle2" align="center">Your Redemption QR Code</Typography>
+                        </Box>
+                    </Grow>
+                }
+            </TransitionGroup>
             <HiddenInput
               type="file"
               id="choose-qrcode"
