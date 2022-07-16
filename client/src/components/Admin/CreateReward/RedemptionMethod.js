@@ -142,7 +142,7 @@ export default function RedemptionMethod(props) {
             </FormControl>
             <TransitionGroup>
                 { qrCode &&
-                    <Grow in={!!qrCode} style={{transformOrigin: "center top"}} timeout={750}>
+                    <Grow style={{transformOrigin: "center top"}} timeout={750}>
                         <Box display="flex" flexDirection="column" alignItems="center">
                             <ImageCard>
                                 <MyIconButton
