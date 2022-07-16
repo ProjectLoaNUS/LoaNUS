@@ -105,6 +105,7 @@ export default function RewardsView(props) {
       setUser((prevUser) => {
         const newPoints = prevUser.points - points;
         const newUser = {...prevUser, points: newPoints};
+        localStorage.setItem("user", JSON.stringify(newUser));
         return newUser;
       });
     } catch (err) {
