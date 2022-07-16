@@ -9,7 +9,7 @@ export default function CategoryField(props) {
     }
 
     return (
-        <FormControl fullWidth>
+        <FormControl fullWidth required>
             <InputLabel id="category-label">{label}</InputLabel>
             <Select
               labelId="category-label"
