@@ -88,7 +88,7 @@ export default function RewardsView(props) {
   const [ qrCodeUrl, setQrCodeUrl ] = useState("");
   const [ showQrCode, setShowQrCode ] = useState(false);
 
-  const HandleClick = async () => {
+  const handleClick = async () => {
     try {
       let data = {
         item: itemId,
@@ -191,10 +191,10 @@ export default function RewardsView(props) {
 
         <ButtonGroup>
           <Button
-            disabled={user.points >= points ? false : true}
+            disabled={!howToRedeem && (user.points >= points ? false : true)}
             variant="contained"
             color={isActionError ? "error" : "primary"}
-            onClick={howToRedeem ? redeem : HandleClick}
+            onClick={howToRedeem ? redeem : handleClick}
           >
             {buttonText}
           </Button>
