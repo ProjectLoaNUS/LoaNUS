@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
 import { TransitionGroup } from 'react-transition-group';
+import RedemptionMethod from "./RedemptionMethod";
 
 const CreateCard = styled(Card)`
   display: flex;
@@ -32,9 +33,12 @@ export default function CreateRewardCard() {
     const [ date, setDate ] = useState(new Date());
     const [ isFormError, setIsFormError ] = useState(false);
     const [ image, setImage ] = useState(null);
+    const [ redeemUrl, setRedeemUrl ] = useState("");
+    const [ qrCodeImg, setQrCodeImg ] = useState(null);
     const [ isAdding, setIsAdding ] = useState(false);
     const [ resultText, setResultText ] = useState("");
     const chosenImg = useRef(null);
+    const qrCodeRef = useRef(null);
     const cardRef = useRef(null);
 
     const clearForm = () => {
@@ -122,6 +126,12 @@ export default function CreateRewardCard() {
               image={image}
               setImage={setImage}
               imageRef={chosenImg} />
+            <RedemptionMethod
+              redeemUrl={redeemUrl}
+              setRedeemUrl={setRedeemUrl}
+              qrCode={qrCodeImg}
+              setQrCode={setQrCodeImg}
+              qrCodeRef={qrCodeRef} />
             <SubmitButton
               type="submit"
               disabled={isFormError}
