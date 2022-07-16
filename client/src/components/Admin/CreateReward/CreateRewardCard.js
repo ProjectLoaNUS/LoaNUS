@@ -135,6 +135,8 @@ export default function CreateRewardCard() {
               setImage={setImage}
               imageRef={chosenImg} />
             <RedemptionMethod
+              isFormError={isFormError}
+              setIsFormError={setIsFormError}
               redeemUrl={redeemUrl}
               setRedeemUrl={setRedeemUrl}
               qrCode={qrCodeImg}

@@ -1,9 +1,10 @@
-import { Box, Button, Card, CardMedia, FormControl, Grow, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardMedia, FormControl, FormHelperText, Grow, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import styled from "styled-components";
 import { theme } from "../../Theme";
 import { TransitionGroup } from 'react-transition-group';
+import { useState } from "react";
 
 const ImageCard = styled(Card)`
   display: flex;
@@ -63,12 +64,24 @@ const HiddenInput = styled.input`
 `;
 
 export default function RedemptionMethod(props) {
-    const {redeemUrl, setRedeemUrl, qrCode, setQrCode, qrCodeRef} = props;
+    const {isFormError, setIsFormError, redeemUrl, setRedeemUrl, qrCode, setQrCode, qrCodeRef} = props;
+    const [ helperText, setHelperText ] = useState("");
     const label = "How to redeem";
     const placeholder = "Insert a redemption URL and/or qr code";
     
-    const onChangeUrl = (event) => {
-        setRedeemUrl(event.target.value);
+    const onChangeUrl = async (event) => {
+        const input = event.target.value;
+        setRedeemUrl(input);
+        let url;
+        try {
+            url = new URL(input);
+            setIsFormError(false);
+            setHelperText("");
+            setRedeemUrl(input);
+        } catch (err) {
+            setIsFormError(true);
+            setHelperText("Invalid URL");
+        }
     };
     const getImgUrl = (img) => {
         if (img) {
@@ -96,6 +109,7 @@ export default function RedemptionMethod(props) {
                 <InputLabel htmlFor="redeem">{label}</InputLabel>
                 <OutlinedInput
                   id="redeem"
+                  error={!!helperText}
                   label={label}
                   onChange={onChangeUrl}
                   placeholder={placeholder}
@@ -108,6 +122,9 @@ export default function RedemptionMethod(props) {
                     </InputAdornment>
                   }
                   sx={{paddingRight: 0, display: "flex"}} />
+                { helperText &&
+                    <FormHelperText error={!!helperText}>{helperText}</FormHelperText>
+                }
             </FormControl>
             <TransitionGroup>
                 { qrCode &&
