@@ -1,7 +1,17 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 
 export default function MyTextField(props) {
-    const { id, text, setText, fullWidth, label, minRows, multiline, placeholder } = props;
+    const {
+      id,
+      text,
+      setText,
+      fullWidth,
+      type,
+      label,
+      minRows,
+      multiline,
+      placeholder
+    } = props;
 
     const onChangeText = (event) => {
         setText(event.target.value);
@@ -14,6 +24,7 @@ export default function MyTextField(props) {
               id={id}
               required
               variant="outlined"
+              type={type}
               label={label}
               onChange={ onChangeText }
               placeholder={placeholder}

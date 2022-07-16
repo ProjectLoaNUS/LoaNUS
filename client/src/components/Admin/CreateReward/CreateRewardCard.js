@@ -122,6 +122,7 @@ export default function CreateRewardCard() {
               id="points"
               text={points}
               setText={setPoints}
+              type="number"
               label="Points required"
               placeholder="e.g. 90" />
             <DateField
