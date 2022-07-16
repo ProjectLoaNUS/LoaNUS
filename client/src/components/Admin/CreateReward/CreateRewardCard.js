@@ -53,6 +53,9 @@ export default function CreateRewardCard() {
         setIsSubmitError(false);
         setImage(null);
         chosenImg.current.value = null;
+        setRedeemUrl("");
+        setQrCodeImg(null);
+        qrCodeRef.current.value = null;
     };
 
     const handleSubmit = async (event) => {
