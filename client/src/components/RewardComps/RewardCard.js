@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import styled from "styled-components";
+import Loading from "../../assets/loading.svg";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -103,15 +104,13 @@ export default function RewardCard(props) {
     <ListCard>
       <ListingActionArea component="a" onClick={handleShowDetails}>
         <CardHeader title={title} />
-        {imgUrls?.length && (
-          <ImageDiv>
-            <CardMedia
-              component="img"
-              image={imgUrls[0]}
-              alt="Item listing image"
-            />
-          </ImageDiv>
-        )}
+        <ImageDiv>
+          <CardMedia
+            component="img"
+            image={imgUrls?.length ? imgUrls[0] : Loading}
+            alt="Item listing image"
+          />
+        </ImageDiv>
         <StyledCardActions>
           <CoinsContainer>
             <StyledCoin></StyledCoin>
