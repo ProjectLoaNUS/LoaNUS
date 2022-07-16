@@ -21,26 +21,6 @@ const ImageStack = styled(Stack)`
 export default function RewardImage(props) {
     const { image, setImage, imageRef } = props;
 
-    const getImgUrl = (img) => {
-      if (img) {
-        return URL.createObjectURL(img);
-      }
-      return "";
-    };
-
-    const handleChooseImg = () => {
-      imageRef.current.click();
-    };
-
-    const onImgChosen = (event) => {
-      setImage(event.target.files[0]);
-    };
-
-    const rmImage = () => {
-      imageRef.current.value = null;
-      setImage(null);
-    }
-
     return (
       <Box alignSelf="stretch" marginTop="-0.5em">
         <Typography align="left" variant="subtitle2" sx={{paddingLeft: "1em"}}>Image</Typography>
