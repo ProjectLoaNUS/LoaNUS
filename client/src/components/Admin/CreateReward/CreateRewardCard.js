@@ -10,6 +10,7 @@ import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
 import { TransitionGroup } from 'react-transition-group';
 import RedemptionMethod from "./RedemptionMethod";
+import CategoryField from "./CategoryField";
 
 const CreateCard = styled(Card)`
   display: flex;
@@ -97,12 +98,10 @@ export default function CreateRewardCard() {
               setText={setTitle}
               label="Title"
               placeholder="e.g. GrabFood $5 voucher" />
-            <MyTextField
-              id="category"
-              text={category}
-              setText={setCategory}
-              label="Category"
-              placeholder="Vouchers/Beverages/Others" />
+            <CategoryField
+              id="category-field"
+              category={category}
+              setCategory={setCategory} />
             <MyTextField
               id="description"
               text={description}
