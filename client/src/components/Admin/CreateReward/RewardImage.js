@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardActions, CardMedia, IconButton, Stack } from "@mui/material";
+import { Box, Card, CardActionArea, CardActions, CardMedia, IconButton, Stack, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CloseIcon from '@mui/icons-material/Close';
 import styled from "styled-components";
@@ -99,6 +99,8 @@ export default function RewardImage(props) {
     }
 
     return (
+      <Box alignSelf="stretch" marginTop="-0.5em">
+        <Typography align="left" variant="subtitle2" sx={{paddingLeft: "1em"}}>Image</Typography>
         <ImageStack direction="row">
             { image ?
               <ImageCard>
@@ -133,5 +135,6 @@ export default function RewardImage(props) {
               ref={imageRef}
             />
         </ImageStack>
+      </Box>
     );
 }
