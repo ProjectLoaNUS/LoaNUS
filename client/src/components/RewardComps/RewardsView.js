@@ -103,8 +103,8 @@ export default function RewardsView(props) {
         .catch((err) => console.log(err, "error occured"));
       setOpen(false);
       setUser((prevUser) => {
-        let newUser = structuredClone(prevUser);
-        newUser.points -= points;
+        const newPoints = prevUser.points - points;
+        const newUser = {...prevUser, points: newPoints};
         return newUser;
       });
     } catch (err) {
