@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Buffer } from "buffer";
 
@@ -69,14 +69,7 @@ const StyledCardActions = styled(CardActions)`
 export default function RewardCard(props) {
   const { itemDetails, buttonText, onActionDone, setReward, shouldRedeem } = props;
   const [open, setOpen] = useState(false);
-
-  const binary = Buffer.from(itemDetails.image.data.data);
-  const blob = new Blob([binary.buffer], {
-    type: itemDetails.image.contentType,
-  });
-  const url = URL.createObjectURL(blob);
-  let processedurl = [];
-  processedurl.push(url);
+  const [ imgUrls, setImgUrls ] = useState([]);
 
   const itemId = itemDetails._id;
   const deadline = new Date(itemDetails.deadline).toLocaleDateString(
@@ -93,15 +86,28 @@ export default function RewardCard(props) {
     setOpen(true);
   };
 
+  const processImgUrl = useCallback(async () => {
+    if (itemDetails?.image) {
+      const binary = Buffer.from(itemDetails.image.data.data);
+      const blob = new Blob([binary.buffer], {
+        type: itemDetails.image.contentType,
+      });
+      setImgUrls([URL.createObjectURL(blob)]);
+    }
+  }, [itemDetails]);
+  useEffect(() => {
+    processImgUrl();
+  }, [processImgUrl]);
+
   return (
     <ListCard>
       <ListingActionArea component="a" onClick={handleShowDetails}>
         <CardHeader title={title} />
-        {processedurl && (
+        {imgUrls?.length && (
           <ImageDiv>
             <CardMedia
               component="img"
-              image={processedurl[0]}
+              image={imgUrls[0]}
               alt="Item listing image"
             />
           </ImageDiv>
@@ -118,7 +124,7 @@ export default function RewardCard(props) {
       <RewardsDialog
         itemId={itemId}
         title={title}
-        imageUrls={processedurl}
+        imageUrls={imgUrls}
         category={category}
         description={description}
         deadline={deadline}
