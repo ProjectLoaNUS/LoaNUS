@@ -69,6 +69,12 @@ export default function CreateRewardCard() {
         formData.append("claimed", false);
         formData.append("points", points);
         formData.append("image", image);
+        if (redeemUrl) {
+          formData.append("howToRedeemUrl", redeemUrl);
+        }
+        if (qrCodeImg) {
+          formData.append("howToRedeemQrCode", qrCodeImg);
+        }
         try {  
           const res = await axios.post(`${BACKEND_URL}/api/reward/createreward`, formData, {
             headers: { "Content-Type": "multipart/form-data" },

@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
 
 const RewardsSchema = new mongoose.Schema({
-  image: {
-    data: Buffer,
-    contentType: String,
-    required: false,
-  },
-  deadline: {
+  title: {
     type: String,
     required: true,
   },
@@ -14,13 +9,22 @@ const RewardsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  title: {
-    type: String,
-    required: true,
-  },
   description: {
     type: String,
     required: true,
+  },
+  points: {
+    type: Number,
+    required: true,
+  },
+  deadline: {
+    type: String,
+    required: true,
+  },
+  image: {
+    data: Buffer,
+    contentType: String,
+    required: false,
   },
   location: {
     type: String,
@@ -29,10 +33,13 @@ const RewardsSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  points: {
-    type: Number,
-    required: true,
-  },
+  howToRedeem: {
+    url: String,
+    qrCode: {
+      data: Buffer,
+      contentType: String,
+    }
+  }
 });
 
 const RewardsModel = mongoose.model("rewards", RewardsSchema);

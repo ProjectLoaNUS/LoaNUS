@@ -11,27 +11,47 @@ const upload = multer({
 });
 
 //new reward
-router.post("/createreward", upload.single("image"), (req, res) => {
+const rewardImgs = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'howToRedeemQrCode', maxCount: 1 }
+]);
+router.post("/createreward", rewardImgs, (req, res) => {
   try {
+    const image = req.files['image'][0];
     const imageprop = {
-      data: req.file.buffer,
-      contentType: req.file.mimetype,
+      data: image.buffer,
+      contentType: image.mimetype,
     };
 
-    const data = {
-      description: req.body.description,
-      category: req.body.category,
+    let data = {
       title: req.body.title,
-      claimed: req.body.claimed,
+      category: req.body.category,
+      description: req.body.description,
       points: req.body.points,
-      image: imageprop,
       deadline: req.body.deadline,
+      image: imageprop,
+      claimed: req.body.claimed
     };
+    let howToRedeem = {};
+    const howToRedeemUrl = req.body.howToRedeemUrl;
+    if (howToRedeemUrl) {
+      howToRedeem.url = howToRedeemUrl;
+    }
+    console.log(req.files);
+    const howToRedeemQrCode = req.files['howToRedeemQrCode'];
+    if (howToRedeemQrCode?.length) {
+      howToRedeem.qrCode = {
+        data: howToRedeemQrCode[0].buffer,
+        contentType: howToRedeemQrCode[0].mimetype
+      };
+    }
+    data.howToRedeem = howToRedeem;
     const reward = new RewardsModel(data);
     const savedreward = reward.save();
 
     res.status(200).json(savedreward);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
