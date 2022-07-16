@@ -67,7 +67,7 @@ const StyledCardActions = styled(CardActions)`
 `;
 
 export default function RewardCard(props) {
-  const { itemDetails, buttonText, onActionDone, setReward } = props;
+  const { itemDetails, buttonText, onActionDone, setReward, shouldRedeem } = props;
   const [open, setOpen] = useState(false);
 
   const binary = Buffer.from(itemDetails.image.data.data);
@@ -87,6 +87,7 @@ export default function RewardCard(props) {
   const title = itemDetails.title;
   const description = itemDetails.description;
   const points = itemDetails.points;
+  const howToRedeem = shouldRedeem ? itemDetails.howToRedeem : null;
 
   const handleShowDetails = (event) => {
     setOpen(true);
@@ -127,6 +128,7 @@ export default function RewardCard(props) {
         buttonText={buttonText}
         setReward={setReward}
         points={points}
+        howToRedeem={howToRedeem}
       />
     </ListCard>
   );

@@ -1,7 +1,9 @@
 import {
+  Box,
   Button,
   DialogContent,
   DialogTitle,
+  Grow,
   IconButton,
   Slide,
   Typography,
@@ -14,6 +16,9 @@ import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
+import { Buffer } from "buffer";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -22,6 +27,14 @@ const DialogContainer = styled(DialogContent)`
   align-items: stretch;
   padding: 1rem;
   overflow-y: auto;
+
+  div:not([class]) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 0;
+    width: 100%;
+  }
 `;
 const Row = styled.div`
   display: flex;
@@ -36,6 +49,20 @@ const BoldedTypo = styled(Typography)`
 `;
 const ButtonGroup = styled(CentredDiv)`
   gap: 1rem;
+`;
+const ImageDiv = styled.div`
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  height: max(50vh, 300px);
+  aspect-ratio: 1 / 1;
+
+  img {
+    min-height: 0;
+    object-fit: contain;
+  }
 `;
 
 export default function RewardsView(props) {
@@ -54,8 +81,12 @@ export default function RewardsView(props) {
     itemId,
     user,
     points,
-    setUser,
+    howToRedeem,
+    setUser
   } = props;
+  const [ urlToRedeem, setUrlToRedeem ] = useState("");
+  const [ qrCodeUrl, setQrCodeUrl ] = useState("");
+  const [ showQrCode, setShowQrCode ] = useState(false);
 
   const HandleClick = async () => {
     try {
@@ -80,6 +111,34 @@ export default function RewardsView(props) {
       console.log(err);
     }
   };
+
+  const redeem = async () => {
+    if (qrCodeUrl) {
+      setShowQrCode(true);
+    } 
+    if (urlToRedeem) {
+      window.open(urlToRedeem,'_blank');
+    }
+  }
+
+  const imgToUrl = async (img) => {
+    const binary = Buffer.from(img.data);
+    const blob = new Blob([binary.buffer], {
+      type: img.contentType,
+    });
+    return URL.createObjectURL(blob);
+  };
+
+  useEffect(() => {
+    if (howToRedeem) {
+      if (howToRedeem.url) {
+        setUrlToRedeem(howToRedeem.url);
+      }
+      if (howToRedeem.qrCode) {
+        imgToUrl(howToRedeem.qrCode).then((url) => setQrCodeUrl(url));
+      }
+    }
+  }, [howToRedeem]);
 
   return (
     <>
@@ -135,7 +194,7 @@ export default function RewardsView(props) {
             disabled={user.points >= points ? false : true}
             variant="contained"
             color={isActionError ? "error" : "primary"}
-            onClick={HandleClick}
+            onClick={howToRedeem ? redeem : HandleClick}
           >
             {buttonText}
           </Button>
@@ -153,6 +212,16 @@ export default function RewardsView(props) {
             </Slide>
           )}
         </TransitionGroup>
+        <TransitionGroup>
+          {showQrCode &&
+            <Grow style={{transformOrigin: "center top"}} timeout={750}>
+              <ImageDiv>
+                <img src={qrCodeUrl} />
+              </ImageDiv>
+            </Grow>
+          }
+        </TransitionGroup>
+        
       </DialogContainer>
     </>
   );

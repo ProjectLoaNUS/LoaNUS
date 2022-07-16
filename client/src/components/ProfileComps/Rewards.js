@@ -86,6 +86,7 @@ export default function Rewards() {
                 itemDetails={r}
                 key={index}
                 setReward={setRewards}
+                shouldRedeem={true}
               />
             ))}
           </ItemsGrid>

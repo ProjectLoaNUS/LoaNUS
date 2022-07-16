@@ -33,18 +33,17 @@ export default function RewardsDialog(props) {
     onActionDone,
     buttonText,
     points,
+    howToRedeem
   } = props;
   const { user, setUser } = useAuth();
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [isActionError, setIsActionError] = useState(false);
   const [buttonHelperText, setButtonHelperText] = useState("");
-  const [isDetailsView, setIsDetailsView] = useState(true);
 
   const handleClose = () => {
     setButtonHelperText("");
     setIsActionError(false);
     setIsBtnDisabled(false);
-    setIsDetailsView(true);
     setOpen(false);
   };
 
@@ -54,6 +53,7 @@ export default function RewardsDialog(props) {
       onClose={handleClose}
       fullWidth={true}
       TransitionComponent={Transition}
+      scroll="paper"
     >
       <RewardsView
         imageUrls={imageUrls}
@@ -79,6 +79,7 @@ export default function RewardsDialog(props) {
         user={user}
         points={points}
         setUser={setUser}
+        howToRedeem={howToRedeem}
       />
     </StyledDialog>
   );
