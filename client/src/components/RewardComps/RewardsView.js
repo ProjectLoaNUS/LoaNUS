@@ -103,18 +103,25 @@ export default function RewardsView(props) {
         item: itemId,
         user: user.id,
       };
-      axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
-      setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
-      setTimeout(() => {
-        setOpen(false);
-      }, 2000);
-      setTimeout(() => {
-        onActionDone();
-      }, 3000);
-      setUserPoints(prevPoints => {
-        return prevPoints - points;
-      });
+      axios.post(`${BACKEND_URL}/api/reward/claimreward`, data)
+        .then(res => {
+          if (res.status === 200) {
+            setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
+            setTimeout(() => {
+              setOpen(false);
+            }, 2000);
+            setTimeout(() => {
+              onActionDone();
+            }, 3000);
+            setUserPoints(res.data.points);
+          } else {
+            setButtonHelperText("Error occurred while claiming reward");
+            setIsActionError(true);
+          }
+        });
     } catch (err) {
+      setButtonHelperText("Error occurred while claiming reward");
+      setIsActionError(true);
       console.log(err);
     }
   };
