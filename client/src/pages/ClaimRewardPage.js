@@ -6,6 +6,8 @@ import axios from "axios";
 import { BACKEND_URL } from "../database/const";
 import { useAuth } from "../database/auth";
 import { useCallback } from "react";
+import { Box, Typography } from "@mui/material";
+import { theme } from "../components/Theme";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -126,6 +128,11 @@ function ClaimRewardPage() {
         <HeaderContainer>
           Helped a friend? Claim your Rewards below!
         </HeaderContainer>
+        <Box width="100%">
+          <Typography variant="h5" align="center" sx={{color: theme.palette.success.main}}>
+            You have: {user?.points || '...'} points
+          </Typography>
+        </Box>
         <RewardContainer>
           <RewardType>Vouchers</RewardType>
           <RewardCardContainer>
