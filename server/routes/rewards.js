@@ -89,6 +89,20 @@ router.post("/claimreward", async (req, res) => {
   }
 });
 
+router.post("/rmreward", async (req, res) => {
+  try {
+    const rewardId = req.body.rewardId;
+    if (!rewardId) {
+      return res.status(500).json({message: "Reward ID not given"});
+    }
+    await RewardsModel.deleteOne({ _id: rewardId });
+    return res.status(200).json({message: "Reward deleted"});
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({message: err});
+  }
+});
+
 // get user rewards
 router.post("/getRewardsOfUser", async (req, res) => {
   if (!req.body.userId) {
