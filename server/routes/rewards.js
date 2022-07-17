@@ -37,7 +37,6 @@ router.post("/createreward", rewardImgs, (req, res) => {
     if (howToRedeemUrl) {
       howToRedeem.url = howToRedeemUrl;
     }
-    console.log(req.files);
     const howToRedeemQrCode = req.files['howToRedeemQrCode'];
     if (howToRedeemQrCode?.length) {
       howToRedeem.qrCode = {
