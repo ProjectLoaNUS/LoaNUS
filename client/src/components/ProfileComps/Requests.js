@@ -112,6 +112,7 @@ function Requests() {
         <ItemList
           ListContainer={RequestsGrid}
           isLoading={isLoading}
+          buttonText="Delete request"
           noItemsText="No item requests yet. Create one?"
           itemDatas={requests}
           setItemDatas={setRequests} />
