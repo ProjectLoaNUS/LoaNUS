@@ -71,16 +71,16 @@ const ImageDiv = styled.div`
 `;
 
 export default function ItemImages(props) {
-  const { images, setImages } = props;
-  const chosenImg = useRef(null);
+  const { images, setImages, imageRef } = props;
   const maxNumOfImages = 4;
 
   const handleChooseImg = () => {
-    chosenImg.current.click();
+    imageRef.current.click();
   };
 
   const onImgChosen = (event) => {
     setImages((prevImages) => [...prevImages, event.target.files[0]]);
+    imageRef.current.value = null;
   };
 
   const getImgUrl = (image) => {
@@ -147,7 +147,7 @@ export default function ItemImages(props) {
         id="choose-image"
         accept="image/gif,image/jpeg,image/png,image/svg+xml"
         onChange={onImgChosen}
-        ref={chosenImg}
+        ref={imageRef}
       />
     </ImageStack>
   );

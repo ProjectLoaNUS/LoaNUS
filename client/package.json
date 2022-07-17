@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.8.0",
+    "@mui/lab": "^5.0.0-alpha.90",
     "@mui/material": "^5.8.1",
     "@mui/styled-engine-sc": "^5.8.0",
     "@mui/x-date-pickers": "^5.0.0-alpha.6",
