@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
 import AboutLoanus from "../components/AboutLoanus";
+import BrowseCategory from "../components/BrowseCategoryComps/BrowseCategory";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -41,6 +42,7 @@ function HomePage() {
       <BodyContainer>
         <RecentListings />
         <AboutLoanus />
+        <BrowseCategory></BrowseCategory>
       </BodyContainer>
     </MainContainer>
   );

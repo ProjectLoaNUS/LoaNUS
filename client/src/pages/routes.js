@@ -4,6 +4,7 @@ export const PROFILE = "/profile";
 export const CHAT = "/chat";
 export const NEW_ITEM = "/new-item";
 export const SEARCH_LISTINGS = "/search-items";
+export const CATEGORY_LISTINGS = "/search-category";
 export const PROFILE_LISTINGS = "/profile/listings";
 export const PROFILE_BORROWED = "/profile/borrowed";
 export const PROFILE_POINTS = "/profile/points";
