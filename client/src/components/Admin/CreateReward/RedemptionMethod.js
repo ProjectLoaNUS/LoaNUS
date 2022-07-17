@@ -76,23 +76,42 @@ const HiddenInput = styled.input`
 `;
 
 export default function RedemptionMethod(props) {
-    const {isFormError, setIsFormError, redeemUrl, setRedeemUrl, qrCode, setQrCode, qrCodeRef} = props;
+    const {
+      isFormError,
+      setIsFormError,
+      redeemUrl,
+      setRedeemUrl,
+      qrCode,
+      setQrCode,
+      qrCodeRef,
+      isError,
+      setIsError
+    } = props;
     const [ helperText, setHelperText ] = useState("");
     const label = "How to redeem";
     const placeholder = "Insert a redemption URL and/or qr code";
     
+    const setError = async (isError, helperText) => {
+      setIsError(isError);
+      setIsFormError(isError);
+      setHelperText(helperText);
+    }
     const onChangeUrl = async (event) => {
         const input = event.target.value;
         setRedeemUrl(input);
-        let url;
-        try {
-            url = new URL(input);
-            setIsFormError(false);
-            setHelperText("");
-            setRedeemUrl(input);
-        } catch (err) {
-            setIsFormError(true);
-            setHelperText("Invalid URL");
+        if (input) {
+          let url;
+          try {
+              url = new URL(input);
+              setError(false, "");
+              setRedeemUrl(input);
+          } catch (err) {
+              setError(true, "Invalid URL");
+          }
+        } else {
+          if (!qrCode) {
+            setError(true, "Required field");
+          }
         }
     };
     const getImgUrl = (img) => {
@@ -108,20 +127,25 @@ export default function RedemptionMethod(props) {
         const files = event.target.files;
         if (files?.length) {
             setQrCode(files[0]);
+            if (!redeemUrl) {
+              setError(false, "");
+            }
         }
     };
     const rmQrCode = async () => {
         qrCodeRef.current.value = null;
         setQrCode(null);
+        if (!redeemUrl) {
+          setError(true, "Required field");
+        }
     };
 
     return (
         <>
-            <FormControl fullWidth focused variant="outlined">
+            <FormControl error={isError} fullWidth focused variant="outlined">
                 <InputLabel htmlFor="redeem">{label}</InputLabel>
                 <OutlinedInput
                   id="redeem"
-                  error={!!helperText}
                   label={label}
                   onChange={onChangeUrl}
                   placeholder={placeholder}

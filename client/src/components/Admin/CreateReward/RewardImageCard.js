@@ -61,7 +61,7 @@ const HiddenInput = styled.input`
 `;
 
 export default function RewardImageCard(props) {
-    const {image, setImage, imageRef} = props;
+    const {image, setImage, imageRef, setIsError} = props;
 
     const getImgUrl = (img) => {
         if (img) {
@@ -76,6 +76,7 @@ export default function RewardImageCard(props) {
 
     const onImgChosen = async (event) => {
         setImage(event.target.files[0]);
+        setIsError(false);
     };
 
     const rmImage = async () => {

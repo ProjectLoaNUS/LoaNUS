@@ -33,6 +33,8 @@ export default function CreateRewardCard() {
     const [ points, setPoints ] = useState("");
     const [ date, setDate ] = useState(new Date());
     const [ isFormError, setIsFormError ] = useState(false);
+    const [ isImageError, setIsImageError ] = useState(false);
+    const [ isHowToRedeemError, setIsHowToRedeemError ] = useState(false);
     const [ isSubmitError, setIsSubmitError ] = useState(false);
     const [ image, setImage ] = useState(null);
     const [ redeemUrl, setRedeemUrl ] = useState("");
@@ -50,6 +52,8 @@ export default function CreateRewardCard() {
         setPoints("");
         setDate(new Date());
         setIsFormError(false);
+        setIsImageError(false);
+        setIsHowToRedeemError(false);
         setIsSubmitError(false);
         setImage(null);
         chosenImg.current.value = null;
@@ -62,6 +66,7 @@ export default function CreateRewardCard() {
         event.preventDefault();
         if (!image) { // No reward image is selected
           setIsSubmitError(true);
+          setIsImageError(true);
           setIsFormError(true);
           setResultText("Image of reward missing");
           setTimeout(() => {
@@ -73,6 +78,7 @@ export default function CreateRewardCard() {
         }
         if (!redeemUrl && !qrCodeImg) { // Didn't include a way to redeem this reward
           setIsSubmitError(true);
+          setIsHowToRedeemError(true);
           setIsFormError(true);
           setResultText("Please provide a way to redeem this reward");
           setTimeout(() => {
@@ -162,7 +168,9 @@ export default function CreateRewardCard() {
             <RewardImage
               image={image}
               setImage={setImage}
-              imageRef={chosenImg} />
+              imageRef={chosenImg}
+              isError={isImageError}
+              setIsError={setIsImageError} />
             <RedemptionMethod
               isFormError={isFormError}
               setIsFormError={setIsFormError}
@@ -170,7 +178,9 @@ export default function CreateRewardCard() {
               setRedeemUrl={setRedeemUrl}
               qrCode={qrCodeImg}
               setQrCode={setQrCodeImg}
-              qrCodeRef={qrCodeRef} />
+              qrCodeRef={qrCodeRef}
+              isError={isHowToRedeemError}
+              setIsError={setIsHowToRedeemError} />
             <SubmitButton
               type="submit"
               disabled={isFormError}
