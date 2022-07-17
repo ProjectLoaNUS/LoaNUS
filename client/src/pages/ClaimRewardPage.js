@@ -4,6 +4,8 @@ import NavigationBar from "../components/NavBar/NavigationBar";
 import RewardCard from "../components/RewardComps/RewardCard";
 import axios from "axios";
 import { BACKEND_URL } from "../database/const";
+import { useAuth } from "../database/auth";
+import { useCallback } from "react";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -55,6 +57,7 @@ const RewardCardContainer = styled.div`
 `;
 
 function ClaimRewardPage() {
+  const { user, setUser } = useAuth();
   const [vouchers, setVouchers] = useState([]);
   const [beverages, setBeverages] = useState([]);
   const [otherrewards, setOtherrewards] = useState([]);
@@ -83,6 +86,34 @@ function ClaimRewardPage() {
       })
       .catch((err) => console.log(err, "error occured"));
   }, [otherrewards]);
+
+  const getUserPoints = useCallback(async () => {
+    if (user) {
+      fetch(`${BACKEND_URL}/api/user/getPoints`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          }),
+      })
+      .then(req => req.json())
+      .then(data => {
+          if (data.status === "ok" && data.points !== undefined) {
+              setUser(prevUser => {
+                return {...prevUser, points: data.points};
+              });
+          } else {
+              console.log("Error fetching user's points from backend");
+          }
+      });
+    }
+  }, [user]);
+  useEffect(() => {
+    getUserPoints();
+  }, [getUserPoints]);
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>

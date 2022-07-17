@@ -19,6 +19,7 @@ import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useCallback } from "react";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -107,7 +108,6 @@ export default function RewardsView(props) {
       setUser((prevUser) => {
         const newPoints = prevUser.points - points;
         const newUser = {...prevUser, points: newPoints};
-        localStorage.setItem("user", JSON.stringify(newUser));
         return newUser;
       });
     } catch (err) {
@@ -150,6 +150,33 @@ export default function RewardsView(props) {
       }
     }
   }, [howToRedeem]);
+
+  const getUserPoints = useCallback(async () => {
+    if (user) {
+      fetch(`${BACKEND_URL}/api/user/getPoints`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          }),
+      })
+      .then(req => req.json())
+      .then(data => {
+          if (data.status === "ok" && data.points !== undefined) {
+            setUser(prevUser => {
+              return {...prevUser, points: data.points};
+            });
+          } else {
+              console.log("Error fetching user's points from backend");
+          }
+      });
+    }
+  }, [user]);
+  useEffect(() => {
+    getUserPoints();
+  }, [getUserPoints]);
 
   return (
     <>
@@ -202,7 +229,7 @@ export default function RewardsView(props) {
 
         <ButtonGroup>
           <Button
-            disabled={!howToRedeem && (user.points >= points ? false : true)}
+            disabled={!howToRedeem && (user?.points >= points ? false : true)}
             variant="contained"
             color={isActionError ? "error" : "primary"}
             onClick={howToRedeem ? redeem : handleClick}
