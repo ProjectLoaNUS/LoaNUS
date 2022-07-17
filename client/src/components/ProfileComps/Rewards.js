@@ -9,6 +9,7 @@ import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { CLAIM_REWARD } from "../../pages/routes";
 import ButtonComponent from "../Button";
+import { useCallback } from "react";
 
 const RewardsContainer = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ export default function Rewards() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchRewards = useCallback(async () => {
     if (user) {
       const data = {
         userId: user.id,
@@ -65,6 +66,9 @@ export default function Rewards() {
         .catch((err) => console.log(err, "error occured"));
     }
   }, [user]);
+  useEffect(() => {
+    fetchRewards();
+  }, [fetchRewards]);
 
   const onClickClaim = () => {
     navigate(CLAIM_REWARD);
