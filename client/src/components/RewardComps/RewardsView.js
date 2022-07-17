@@ -82,22 +82,26 @@ export default function RewardsView(props) {
     setIsActionError,
     setOpen,
     itemId,
-    userId,
     points,
     onActionDone,
-    howToRedeem
+    howToRedeem,
+    userPoints,
+    setUserPoints
   } = props;
   const [ urlToRedeem, setUrlToRedeem ] = useState("");
   const [ qrCodeUrl, setQrCodeUrl ] = useState("");
   const [ showQrCode, setShowQrCode ] = useState(false);
   const [ showRmUi, setShowRmUi ] = useState(false);
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
 
   const handleClick = async () => {
+    if (!user) {
+      return;
+    }
     try {
       let data = {
         item: itemId,
-        user: userId,
+        user: user.id,
       };
       axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
       setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
@@ -107,10 +111,8 @@ export default function RewardsView(props) {
       setTimeout(() => {
         onActionDone();
       }, 3000);
-      setUser((prevUser) => {
-        const newPoints = prevUser.points - points;
-        const newUser = {...prevUser, points: newPoints};
-        return newUser;
+      setUserPoints(prevPoints => {
+        return prevPoints - points;
       });
     } catch (err) {
       console.log(err);
@@ -185,28 +187,26 @@ export default function RewardsView(props) {
   }, [howToRedeem]);
 
   const getUserPoints = useCallback(async () => {
-    if (userId) {
+    if (user) {
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: userId
+            userId: user.id
           }),
       })
       .then(req => req.json())
       .then(data => {
           if (data.status === "ok" && data.points !== undefined) {
-            setUser(prevUser => {
-              return {...prevUser, points: data.points};
-            });
+            setUserPoints(data.points);
           } else {
               console.log("Error fetching user's points from backend");
           }
       });
     }
-  }, [userId]);
+  }, [user]);
   useEffect(() => {
     if (!howToRedeem) {
       getUserPoints();
@@ -264,7 +264,7 @@ export default function RewardsView(props) {
 
         <ButtonGroup>
           <Button
-            disabled={!howToRedeem && (user?.points >= points ? false : true)}
+            disabled={(!howToRedeem && userPoints) && (userPoints >= points ? false : true)}
             variant="contained"
             color={isActionError ? "error" : "primary"}
             onClick={howToRedeem ? redeem : handleClick}

@@ -68,7 +68,7 @@ const StyledCardActions = styled(CardActions)`
 `;
 
 export default function RewardCard(props) {
-  const { itemDetails, buttonText, setRewards, shouldRedeem } = props;
+  const { itemDetails, buttonText, setRewards, shouldRedeem, userPoints, setUserPoints } = props;
   const [open, setOpen] = useState(false);
   const [ imgUrls, setImgUrls ] = useState([]);
 
@@ -139,6 +139,8 @@ export default function RewardCard(props) {
         buttonText={buttonText}
         points={points}
         howToRedeem={howToRedeem}
+        userPoints={userPoints}
+        setUserPoints={setUserPoints}
       />
     </ListCard>
   );

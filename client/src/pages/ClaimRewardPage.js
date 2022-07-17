@@ -59,10 +59,11 @@ const RewardCardContainer = styled.div`
 `;
 
 function ClaimRewardPage() {
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const [vouchers, setVouchers] = useState([]);
   const [beverages, setBeverages] = useState([]);
   const [otherrewards, setOtherrewards] = useState([]);
+  const [userPoints, setUserPoints] = useState(null);
 
   const fetchVouchers = useCallback(async () => {
     axios
@@ -108,9 +109,7 @@ function ClaimRewardPage() {
       .then(req => req.json())
       .then(data => {
           if (data.status === "ok" && data.points !== undefined) {
-              setUser(prevUser => {
-                return {...prevUser, points: data.points};
-              });
+              setUserPoints(data.points);
           } else {
               console.log("Error fetching user's points from backend");
           }
@@ -130,7 +129,7 @@ function ClaimRewardPage() {
         </HeaderContainer>
         <Box width="100%">
           <Typography variant="h5" align="center" sx={{color: theme.palette.success.main}}>
-            You have: {user?.points || '...'} points
+            You have: {userPoints || '...'} points
           </Typography>
         </Box>
         <RewardContainer>
@@ -143,6 +142,8 @@ function ClaimRewardPage() {
                   itemDetails={r}
                   key={index}
                   setRewards={setVouchers}
+                  userPoints={userPoints}
+                  setUserPoints={setUserPoints}
                 />
               ) : null
             )}
@@ -158,6 +159,8 @@ function ClaimRewardPage() {
                   itemDetails={r}
                   key={index}
                   setRewards={setBeverages}
+                  userPoints={userPoints}
+                  setUserPoints={setUserPoints}
                 />
               ) : null
             )}
@@ -173,6 +176,8 @@ function ClaimRewardPage() {
                   itemDetails={r}
                   key={index}
                   setRewards={setOtherrewards}
+                  userPoints={userPoints}
+                  setUserPoints={setUserPoints}
                 />
               ) : null
             )}

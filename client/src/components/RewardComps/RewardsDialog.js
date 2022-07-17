@@ -32,9 +32,11 @@ export default function RewardsDialog(props) {
     onActionDone,
     buttonText,
     points,
-    howToRedeem
+    howToRedeem,
+    userPoints,
+    setUserPoints
   } = props;
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [isActionError, setIsActionError] = useState(false);
   const [buttonHelperText, setButtonHelperText] = useState("");
@@ -77,6 +79,8 @@ export default function RewardsDialog(props) {
         userId={user?.id}
         points={points}
         howToRedeem={howToRedeem}
+        userPoints={userPoints}
+        setUserPoints={setUserPoints}
       />
     </StyledDialog>
   );

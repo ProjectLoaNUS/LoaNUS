@@ -46,6 +46,7 @@ const ItemsGrid = styled.div`
 `;
 export default function Rewards() {
   const [rewards, setRewards] = useState(null);
+  const [userPoints, setUserPoints] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -70,6 +71,29 @@ export default function Rewards() {
     fetchRewards();
   }, [fetchRewards]);
 
+  const fetchPoints = useCallback(async () => {
+    fetch(`${BACKEND_URL}/api/user/getPoints`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id
+        }),
+    })
+    .then(req => req.json())
+    .then(data => {
+        if (data.status === "ok" && data.points !== undefined) {
+          setUserPoints(data.points);
+        } else {
+            console.log("Error fetching user's points from backend");
+        }
+    });
+  }, [user]);
+  useEffect(() => {
+    fetchPoints();
+  }, [fetchPoints]);
+
   const onClickClaim = () => {
     navigate(CLAIM_REWARD);
   };
@@ -91,6 +115,8 @@ export default function Rewards() {
                 key={index}
                 setRewards={setRewards}
                 shouldRedeem={true}
+                userPoints={userPoints}
+                setUserPoints={setUserPoints}
               />
             ))}
           </ItemsGrid>
