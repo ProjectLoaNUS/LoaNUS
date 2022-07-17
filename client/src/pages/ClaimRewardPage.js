@@ -8,6 +8,8 @@ import { useAuth } from "../database/auth";
 import { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { theme } from "../components/Theme";
+import LoadingRewardCards from "../components/RewardComps/LoadingRewardCards";
+import LoadingRewardCard from "../components/RewardComps/LoadingRewardCard";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -60,9 +62,9 @@ const RewardCardContainer = styled.div`
 
 function ClaimRewardPage() {
   const { user } = useAuth();
-  const [vouchers, setVouchers] = useState([]);
-  const [beverages, setBeverages] = useState([]);
-  const [otherrewards, setOtherrewards] = useState([]);
+  const [vouchers, setVouchers] = useState(null);
+  const [beverages, setBeverages] = useState(null);
+  const [otherrewards, setOtherrewards] = useState(null);
   const [userPoints, setUserPoints] = useState(null);
 
   const fetchVouchers = useCallback(async () => {
@@ -120,6 +122,43 @@ function ClaimRewardPage() {
     getUserPoints();
   }, [getUserPoints]);
 
+  function Rewards(props) {
+    const {rewards, setRewards} = props;
+
+    return (
+      <>
+        {
+          rewards.map((r, index) =>
+            !r.claimed ? (
+              <RewardCard
+                buttonText={"Claim it!"}
+                itemDetails={r}
+                key={index}
+                setRewards={setRewards}
+                userPoints={userPoints}
+                setUserPoints={setUserPoints} />
+            ) :
+            null 
+          )
+        }
+      </>
+    );
+  }
+
+  function LoadingRewards(props) {
+    const numOfRewards = props.numOfRewards || 3;
+
+    return (
+      <>
+        {
+          [...Array(numOfRewards)].map((r, index) => {
+            return <LoadingRewardCard key={index} />
+          })
+        }
+      </>
+    );
+  }
+
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>
@@ -134,54 +173,42 @@ function ClaimRewardPage() {
         </Box>
         <RewardContainer>
           <RewardType>Vouchers</RewardType>
-          <RewardCardContainer>
-            {vouchers.map((r, index) =>
-              !r.claimed ? (
-                <RewardCard
-                  buttonText={"Claim it!"}
-                  itemDetails={r}
-                  key={index}
-                  setRewards={setVouchers}
-                  userPoints={userPoints}
-                  setUserPoints={setUserPoints}
-                />
-              ) : null
-            )}
-          </RewardCardContainer>
+          { vouchers ?
+            vouchers.length ?
+              <RewardCardContainer>
+                <Rewards rewards={vouchers} setRewards={setVouchers} />
+              </RewardCardContainer>
+            :
+              <Typography align="center" variant="subtitle1">No vouchers yet</Typography>
+          :
+            <RewardCardContainer><LoadingRewards /></RewardCardContainer>
+          }
         </RewardContainer>
         <RewardContainer>
           <RewardType>Beverages</RewardType>
-          <RewardCardContainer>
-            {beverages.map((r, index) =>
-              !r.claimed ? (
-                <RewardCard
-                  buttonText={"Claim it!"}
-                  itemDetails={r}
-                  key={index}
-                  setRewards={setBeverages}
-                  userPoints={userPoints}
-                  setUserPoints={setUserPoints}
-                />
-              ) : null
-            )}
-          </RewardCardContainer>
+          { beverages ?
+            beverages.length ?
+              <RewardCardContainer>
+                <Rewards rewards={beverages} setRewards={setBeverages} />
+              </RewardCardContainer>
+            :
+              <Typography align="center" variant="subtitle1">No beverage rewards yet</Typography>
+          :
+            <RewardCardContainer><LoadingRewards /></RewardCardContainer>
+          }
         </RewardContainer>
         <RewardContainer>
           <RewardType>Others</RewardType>
-          <RewardCardContainer>
-            {otherrewards.map((r, index) =>
-              !r.claimed ? (
-                <RewardCard
-                  buttonText={"Claim it!"}
-                  itemDetails={r}
-                  key={index}
-                  setRewards={setOtherrewards}
-                  userPoints={userPoints}
-                  setUserPoints={setUserPoints}
-                />
-              ) : null
-            )}
-          </RewardCardContainer>
+          { otherrewards ?
+            otherrewards.length ?
+              <RewardCardContainer>
+                <Rewards rewards={otherrewards} setRewards={setOtherrewards} />
+              </RewardCardContainer>
+            :
+              <Typography align="center" variant="subtitle1">No 'Other' rewards yet</Typography>
+          :
+            <RewardCardContainer><LoadingRewards /></RewardCardContainer>
+          }
         </RewardContainer>
       </BelowNavBarContainer>
     </MainContainer>
