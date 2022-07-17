@@ -75,7 +75,9 @@ export default function RewardsView(props) {
     deadline,
     buttonText,
     buttonHelperText,
+    setButtonHelperText,
     isActionError,
+    setIsActionError,
     setOpen,
     setReward,
     itemId,
@@ -119,6 +121,14 @@ export default function RewardsView(props) {
     } 
     if (urlToRedeem) {
       window.open(urlToRedeem,'_blank');
+    }
+    if (!qrCodeUrl && !urlToRedeem) {
+      setButtonHelperText("Reward provider did not indicate a way for redeeming this");
+      setIsActionError(true);
+      setTimeout(() => {
+        setButtonHelperText("");
+        setIsActionError(false);
+      }, 6000);
     }
   }
 
