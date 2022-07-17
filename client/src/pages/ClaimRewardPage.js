@@ -62,30 +62,35 @@ function ClaimRewardPage() {
   const [beverages, setBeverages] = useState([]);
   const [otherrewards, setOtherrewards] = useState([]);
 
-  useEffect(() => {
+  const fetchVouchers = useCallback(async () => {
     axios
       .get(`${BACKEND_URL}/api/reward/getrewards?category=Vouchers`)
       .then((res) => {
         setVouchers(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
-  }, [vouchers]);
-  useEffect(() => {
+  }, []);
+  const fetchBeverages = useCallback(async () => {
     axios
       .get(`${BACKEND_URL}/api/reward/getrewards?category=Beverages`)
       .then((res) => {
         setBeverages(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
-  }, [beverages]);
-  useEffect(() => {
+  }, []);
+  const fetchOthers = useCallback(async () => {
     axios
       .get(`${BACKEND_URL}/api/reward/getrewards?category=Others`)
       .then((res) => {
         setOtherrewards(res.data);
       })
       .catch((err) => console.log(err, "error occured"));
-  }, [otherrewards]);
+  }, []);
+  useEffect(() => {
+    fetchVouchers();
+    fetchBeverages();
+    fetchOthers();
+  }, []);
 
   const getUserPoints = useCallback(async () => {
     if (user) {
