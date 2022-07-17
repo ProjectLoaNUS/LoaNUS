@@ -74,7 +74,7 @@ export default function ItemCard(props) {
   const owner = itemDetails.listedBy;
   const description = itemDetails.description;
   const location = itemDetails.location;
-  const isOwner = isUserListingRelated(user, {listedBy: owner});
+  const [isOwner, setIsOwner] = useState(false);
 
   const handleShowDetails = (event) => {
     setOpen(true);
@@ -96,6 +96,12 @@ export default function ItemCard(props) {
           return borrowAction;
       }
   }
+
+  useEffect(() => {
+    if (user && owner) {
+      setIsOwner(isUserListingRelated(user, {listedBy: owner}));
+    }
+  }, [user, owner]);
 
   useEffect(() => {
     if (!!owner) {
