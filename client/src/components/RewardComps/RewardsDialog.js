@@ -19,12 +19,9 @@ const StyledDialog = styled(Dialog)`
 export default function RewardsDialog(props) {
   const {
     itemId,
-    date,
-    owner,
     title,
     category,
     description,
-    location,
     imageUrls,
     deadline,
     open,
@@ -36,15 +33,12 @@ export default function RewardsDialog(props) {
     userPoints,
     setUserPoints
   } = props;
-  const { user } = useAuth();
-  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [isActionError, setIsActionError] = useState(false);
   const [buttonHelperText, setButtonHelperText] = useState("");
 
   const handleClose = () => {
     setButtonHelperText("");
     setIsActionError(false);
-    setIsBtnDisabled(false);
     setOpen(false);
   };
 
@@ -60,23 +54,17 @@ export default function RewardsDialog(props) {
         imageUrls={imageUrls}
         handleClose={handleClose}
         title={title}
-        date={date}
-        owner={owner}
         category={category}
         description={description}
         deadline={deadline}
-        location={location}
         onActionDone={onActionDone}
         buttonText={buttonText}
         buttonHelperText={buttonHelperText}
         setButtonHelperText={setButtonHelperText}
         isActionError={isActionError}
         setIsActionError={setIsActionError}
-        isBtnDisabled={isBtnDisabled}
-        setIsBtnDisabled={setIsBtnDisabled}
         setOpen={setOpen}
         itemId={itemId}
-        userId={user?.id}
         points={points}
         howToRedeem={howToRedeem}
         userPoints={userPoints}
