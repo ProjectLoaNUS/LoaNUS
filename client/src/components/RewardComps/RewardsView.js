@@ -99,8 +99,13 @@ export default function RewardsView(props) {
         user: userId,
       };
       axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
-      setOpen(false);
-      onActionDone();
+      setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
+      setTimeout(() => {
+        setOpen(false);
+      }, 2000);
+      setTimeout(() => {
+        onActionDone();
+      }, 3000);
       setUser((prevUser) => {
         const newPoints = prevUser.points - points;
         const newUser = {...prevUser, points: newPoints};
