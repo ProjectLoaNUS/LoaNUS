@@ -135,7 +135,7 @@ function ClaimRewardPage() {
                   buttonText={"Claim it!"}
                   itemDetails={r}
                   key={index}
-                  setReward={setVouchers}
+                  setRewards={setVouchers}
                 />
               ) : null
             )}
@@ -150,7 +150,7 @@ function ClaimRewardPage() {
                   buttonText={"Claim it!"}
                   itemDetails={r}
                   key={index}
-                  setReward={setBeverages}
+                  setRewards={setBeverages}
                 />
               ) : null
             )}
@@ -165,7 +165,7 @@ function ClaimRewardPage() {
                   buttonText={"Claim it!"}
                   itemDetails={r}
                   key={index}
-                  setReward={setOtherrewards}
+                  setRewards={setOtherrewards}
                 />
               ) : null
             )}

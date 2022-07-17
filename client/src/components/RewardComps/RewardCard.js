@@ -68,7 +68,7 @@ const StyledCardActions = styled(CardActions)`
 `;
 
 export default function RewardCard(props) {
-  const { itemDetails, buttonText, onActionDone, setReward, shouldRedeem } = props;
+  const { itemDetails, buttonText, setRewards, shouldRedeem } = props;
   const [open, setOpen] = useState(false);
   const [ imgUrls, setImgUrls ] = useState([]);
 
@@ -86,6 +86,12 @@ export default function RewardCard(props) {
   const handleShowDetails = (event) => {
     setOpen(true);
   };
+
+  const onActionDone = async () => {
+    setRewards(prevRewards => {
+      return prevRewards.filter(other => other !== itemDetails);
+    });
+  }
 
   const processImgUrl = useCallback(async () => {
     if (itemDetails?.image) {
@@ -131,7 +137,6 @@ export default function RewardCard(props) {
         setOpen={setOpen}
         onActionDone={onActionDone}
         buttonText={buttonText}
-        setReward={setReward}
         points={points}
         howToRedeem={howToRedeem}
       />

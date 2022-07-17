@@ -80,10 +80,10 @@ export default function RewardsView(props) {
     isActionError,
     setIsActionError,
     setOpen,
-    setReward,
     itemId,
     user,
     points,
+    onActionDone,
     howToRedeem,
     setUser
   } = props;
@@ -98,13 +98,8 @@ export default function RewardsView(props) {
         user: user.id,
       };
       axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
-      await axios
-        .get(`${BACKEND_URL}/api/reward/getrewards?category=` + category)
-        .then((res) => {
-          setReward(res.data);
-        })
-        .catch((err) => console.log(err, "error occured"));
       setOpen(false);
+      onActionDone();
       setUser((prevUser) => {
         const newPoints = prevUser.points - points;
         const newUser = {...prevUser, points: newPoints};

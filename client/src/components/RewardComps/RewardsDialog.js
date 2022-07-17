@@ -29,7 +29,6 @@ export default function RewardsDialog(props) {
     deadline,
     open,
     setOpen,
-    setReward,
     onActionDone,
     buttonText,
     points,
@@ -74,7 +73,6 @@ export default function RewardsDialog(props) {
         isBtnDisabled={isBtnDisabled}
         setIsBtnDisabled={setIsBtnDisabled}
         setOpen={setOpen}
-        setReward={setReward}
         itemId={itemId}
         user={user}
         points={points}

@@ -89,7 +89,7 @@ export default function Rewards() {
                 buttonText={"Use it!"}
                 itemDetails={r}
                 key={index}
-                setReward={setRewards}
+                setRewards={setRewards}
                 shouldRedeem={true}
               />
             ))}
