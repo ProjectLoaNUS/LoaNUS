@@ -60,43 +60,54 @@ export default function CreateRewardCard() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsAdding(true);
-        let formData = new FormData();
-        formData.append("deadline", date);
-        formData.append("category", category);
-        formData.append("title", title);
-        formData.append("description", description);
-        formData.append("claimed", false);
-        formData.append("points", points);
-        formData.append("image", image);
-        if (redeemUrl) {
-          formData.append("howToRedeemUrl", redeemUrl);
-        }
-        if (qrCodeImg) {
-          formData.append("howToRedeemQrCode", qrCodeImg);
-        }
-        try {  
-          const res = await axios.post(`${BACKEND_URL}/api/reward/createreward`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-          setIsAdding(false);
-          if (res.status !== 200) {
-            const data = await res.json();
-            console.log(data);
-            setIsSubmitError(true);
-            setResultText("Error occurred in the backend while adding reward");
-          } else {
-            clearForm();
-            setResultText("Reward added into the system");
-            setTimeout(() => {
-              setResultText("");
-            }, 6000);
+        if (image) {
+          setIsAdding(true);
+          let formData = new FormData();
+          formData.append("deadline", date);
+          formData.append("category", category);
+          formData.append("title", title);
+          formData.append("description", description);
+          formData.append("claimed", false);
+          formData.append("points", points);
+          formData.append("image", image);
+          if (redeemUrl) {
+            formData.append("howToRedeemUrl", redeemUrl);
           }
-        } catch (err) {
-          console.log(err);
-          setIsAdding(false);
+          if (qrCodeImg) {
+            formData.append("howToRedeemQrCode", qrCodeImg);
+          }
+          try {  
+            const res = await axios.post(`${BACKEND_URL}/api/reward/createreward`, formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+            setIsAdding(false);
+            if (res.status !== 200) {
+              const data = await res.json();
+              console.log(data);
+              setIsSubmitError(true);
+              setResultText("Error occurred in the backend while adding reward");
+            } else {
+              clearForm();
+              setResultText("Reward added into the system");
+              setTimeout(() => {
+                setResultText("");
+              }, 6000);
+            }
+          } catch (err) {
+            console.log(err);
+            setIsAdding(false);
+            setIsSubmitError(true);
+            setResultText("Error occurred while adding reward");
+          }
+        } else {
           setIsSubmitError(true);
-          setResultText("Error occurred while adding reward");
+          setIsFormError(true);
+          setResultText("Image of reward missing");
+          setTimeout(() => {
+            setIsSubmitError(false);
+            setIsFormError(false);
+            setResultText("");
+          }, 6000);
         }
     };
 
