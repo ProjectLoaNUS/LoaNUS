@@ -52,9 +52,9 @@ function Conversation({ conversation, currentuser }) {
 
   return (
     <ConversationContainer>
-      <Avatar
-        src={Bintourl(user?.user.photodata, user?.user.photoformat)}
-      ></Avatar>
+      <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
+        {user?.user.displayName[0]}
+      </Avatar>
       <Name>{user?.user.displayName}</Name>
     </ConversationContainer>
   );
