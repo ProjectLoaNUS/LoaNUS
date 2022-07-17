@@ -83,7 +83,7 @@ router.post("/claimreward", async (req, res) => {
     rewardmodel.claimed = true;
     await usermodel.save();
     await rewardmodel.save();
-    res.status(200);
+    res.status(200).json({points: usermodel.points});
   } catch (err) {
     res.status(500).json(err);
   }
