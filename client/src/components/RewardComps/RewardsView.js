@@ -90,6 +90,7 @@ export default function RewardsView(props) {
   const [ urlToRedeem, setUrlToRedeem ] = useState("");
   const [ qrCodeUrl, setQrCodeUrl ] = useState("");
   const [ showQrCode, setShowQrCode ] = useState(false);
+  const [ showRmUi, setShowRmUi ] = useState(false);
   const { user, setUser } = useAuth();
 
   const handleClick = async () => {
@@ -130,7 +131,38 @@ export default function RewardsView(props) {
         setButtonHelperText("");
         setIsActionError(false);
       }, 6000);
+    } else {
+      setShowRmUi(true);
     }
+  };
+
+  const onClickRmReward = async () => {
+    setShowRmUi(false);
+    fetch(`${BACKEND_URL}/api/reward/rmreward`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        rewardId: itemId
+      })
+    })
+    .then(res => {
+      res.json().then(data => {
+        if (res.status === 200) {
+          setShowQrCode(false);
+          setButtonHelperText("Enjoy your reward :)");
+          setTimeout(() => {
+            setOpen(false);
+          }, 2000);
+          setTimeout(() => {
+            onActionDone();
+          }, 3000);
+        } else {
+          setButtonHelperText("Something went wrong... Don't worry, your reward is still here");
+        }
+      });
+    })
   }
 
   const imgToUrl = async (img) => {
@@ -259,6 +291,16 @@ export default function RewardsView(props) {
               <ImageDiv>
                 <img src={qrCodeUrl} />
               </ImageDiv>
+            </Grow>
+          }
+        </TransitionGroup>
+        <TransitionGroup>
+          {showRmUi &&
+            <Grow style={{transformOrigin: "center top"}} timeout={750}>
+              <Box display="flex" flexDirection="column">
+                <Typography variant="subtitle2" align="center">Reward redeemed already?</Typography>
+                <Button color="primary" variant="outlined" onClick={onClickRmReward}>Yes</Button>
+              </Box>
             </Grow>
           }
         </TransitionGroup>
