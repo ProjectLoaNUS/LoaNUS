@@ -89,4 +89,28 @@ router.get("/getfollowers", async (req, res) => {
   }
 });
 
+//get following id
+
+router.get("/getfollowingid", async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.query.userId);
+    let followingarray = user.following;
+
+    res.status(200).json(followingarray);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+//get followers id
+router.get("/getfollowersid", async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.query.userId);
+    let followersarray = user.followers;
+
+    res.status(200).send(followersarray);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
