@@ -20,6 +20,7 @@ import { Buffer } from "buffer";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useCallback } from "react";
+import { useAuth } from "../../database/auth";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -81,21 +82,21 @@ export default function RewardsView(props) {
     setIsActionError,
     setOpen,
     itemId,
-    user,
+    userId,
     points,
     onActionDone,
-    howToRedeem,
-    setUser
+    howToRedeem
   } = props;
   const [ urlToRedeem, setUrlToRedeem ] = useState("");
   const [ qrCodeUrl, setQrCodeUrl ] = useState("");
   const [ showQrCode, setShowQrCode ] = useState(false);
+  const { user, setUser } = useAuth();
 
   const handleClick = async () => {
     try {
       let data = {
         item: itemId,
-        user: user.id,
+        user: userId,
       };
       axios.post(`${BACKEND_URL}/api/reward/claimreward`, data);
       setOpen(false);
@@ -147,14 +148,14 @@ export default function RewardsView(props) {
   }, [howToRedeem]);
 
   const getUserPoints = useCallback(async () => {
-    if (user) {
+    if (userId) {
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id
+            userId: userId
           }),
       })
       .then(req => req.json())
@@ -168,9 +169,11 @@ export default function RewardsView(props) {
           }
       });
     }
-  }, [user]);
+  }, [userId]);
   useEffect(() => {
-    getUserPoints();
+    if (!howToRedeem) {
+      getUserPoints();
+    }
   }, [getUserPoints]);
 
   return (

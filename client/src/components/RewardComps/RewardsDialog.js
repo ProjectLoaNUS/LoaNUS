@@ -74,9 +74,8 @@ export default function RewardsDialog(props) {
         setIsBtnDisabled={setIsBtnDisabled}
         setOpen={setOpen}
         itemId={itemId}
-        user={user}
+        userId={user?.id}
         points={points}
-        setUser={setUser}
         howToRedeem={howToRedeem}
       />
     </StyledDialog>
