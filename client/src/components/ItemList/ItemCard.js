@@ -81,7 +81,7 @@ export default function ItemCard(props) {
   const location = itemDetails.location;
   const [isOwner, setIsOwner] = useState(false);
 
-  const handleShowDetails = (category, userid) => {
+  const handleShowDetails = async (category, userid) => {
     setOpen(true);
     try {
       let data = {
