@@ -22,7 +22,8 @@ const ListingsGrid = styled.div`
   flex: 1 1 auto;
   display: grid;
   grid-auto-flow: column;
-  justify-items: stretch;
+  align-items: stretch;
+  padding-top: 0.5em;
   overflow-x: auto;
 `;
 

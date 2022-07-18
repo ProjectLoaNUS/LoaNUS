@@ -8,9 +8,10 @@ import { Avatar, Box, Typography } from "@mui/material";
 const CategoryCard = styled.div`
   display: flex;
   flex-direction: column;
-  height: 20vh;
   width: 12vw;
   cursor: pointer;
+  align-items: center;
+  padding: 0 0.5em;
 `;
 const CategoryImage = styled(Avatar)`
   width: 100%;
@@ -26,6 +27,7 @@ const CategoryText = styled(Typography)`
   text-align: center;
   width: 80%;
   flex: 0 1 auto;
+  word-break: break-word;
 `;
 
 function Category({ categorydetails }) {
