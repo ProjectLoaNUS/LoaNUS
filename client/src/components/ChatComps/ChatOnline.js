@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar } from "@mui/material";
+import { Avatar, Badge } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
 import axios from "axios";
@@ -16,19 +16,12 @@ const OnlineContainer = styled.div`
   margin-top: 10px;
   padding: 10px;
 `;
-const ImageContainer = styled.div`
-  position: relative;
-  margin-right: 10px;
-`;
-const OnlineIcon = styled.div`
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: limegreen;
-  top: 2px;
-  right: 2px;
-`;
+const OnlineBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#00e676',
+    color: '#00e676',
+  }
+}));
 const Name = styled.span``;
 
 function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
@@ -66,12 +59,15 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
               HandleClick(user._id);
             }}
           >
-            <ImageContainer>
+            <OnlineBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
               <Avatar src={Bintourl(user.image)}>
                 {user && !user.image ? user.name[0] : "U"}
               </Avatar>
-              <OnlineIcon></OnlineIcon>
-            </ImageContainer>
+            </OnlineBadge>
             <Name>{user.name}</Name>
           </OnlineContainer>
         ))}
