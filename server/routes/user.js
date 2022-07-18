@@ -165,11 +165,8 @@ router.post("/signUp", async (req, res) => {
     password: hashedPassword,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
-<<<<<<< HEAD
-=======
     recommendation: [],
     admin: false
->>>>>>> main
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -240,11 +237,7 @@ router.post("/getNamesOf", async (req, res) => {
   }
   const userDetails = await UserModel.find(
     { _id: { $in: users.map((user) => user.userId) } },
-<<<<<<< HEAD
     ["_id", "name", "image"]
-=======
-    ["_id", "name"]
->>>>>>> main
   );
   return res.json({ status: "ok", userDetails: userDetails });
 });
