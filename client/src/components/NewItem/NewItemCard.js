@@ -69,6 +69,7 @@ export default function NewItemCard() {
     const [ isSubmitError, setIsSubmitError ] = useState(false);
 
     const itemCardRef = useRef(null);
+    const chosenImg = useRef(null);
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -83,6 +84,7 @@ export default function NewItemCard() {
         setLocation("");
         if (!isRequest) {    
             setImages([]);
+            chosenImg.current.value = null;
             setReturnDate(new Date());
         }
     }
@@ -159,7 +161,7 @@ export default function NewItemCard() {
                 { !isRequest &&
                     (<GrowDown timeout={750}>
                         <FormDiv>
-                            <ItemImages images={images} setImages={setImages} />
+                            <ItemImages images={images} setImages={setImages} imageRef={chosenImg} />
                         </FormDiv>
                     </GrowDown>)
                 }
