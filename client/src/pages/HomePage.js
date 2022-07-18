@@ -3,6 +3,7 @@ import NavigationBar from "../components/NavBar/NavigationBar";
 import { useEffect } from "react";
 import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
+import RecommendationListings from "../components/RecommendationComps/RecommendationListing";
 import AboutLoanus from "../components/AboutLoanus";
 
 const MainContainer = styled.div`
@@ -39,8 +40,9 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <RecentListings />
         <AboutLoanus />
+        <RecentListings />
+        <RecommendationListings />
       </BodyContainer>
     </MainContainer>
   );

@@ -12,12 +12,17 @@ import styled from "styled-components";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useEffect, useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
-import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import {
+  borrowAction,
+  deleteListingAction,
+  isUserListingRelated,
+} from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
+import axios from "axios";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -52,23 +57,23 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 
 export default function ItemCard(props) {
-  const {
-    itemDetails,
-    imageUrls,
-    buttonText,
-    onActionDone,
-    onClickAction
-  } = props;
+  const { itemDetails, imageUrls, buttonText, onActionDone, onClickAction } =
+    props;
   const [open, setOpen] = useState(false);
-  const [ ownerPicUrl, setOwnerPicUrl ] = useState("");
+  const [ownerPicUrl, setOwnerPicUrl] = useState("");
   const { user, setUser } = useAuth();
-  const processedImageUrls = imageUrls && ( imageUrls.length === 0 ? [NoImage] : imageUrls );
-  
+  const processedImageUrls =
+    imageUrls && (imageUrls.length === 0 ? [NoImage] : imageUrls);
+
   const itemId = itemDetails._id;
-  const date = new Date(itemDetails.date).toLocaleDateString({}, 
-    {year: 'numeric', month: 'short', day: 'numeric'});
-  const deadline = new Date(itemDetails.deadline).toLocaleDateString({}, 
-    {year: 'numeric', month: 'short', day: 'numeric'});
+  const date = new Date(itemDetails.date).toLocaleDateString(
+    {},
+    { year: "numeric", month: "short", day: "numeric" }
+  );
+  const deadline = new Date(itemDetails.deadline).toLocaleDateString(
+    {},
+    { year: "numeric", month: "short", day: "numeric" }
+  );
   const category = CATEGORIES[itemDetails.category];
   const title = itemDetails.title;
   const owner = itemDetails.listedBy;
@@ -76,8 +81,20 @@ export default function ItemCard(props) {
   const location = itemDetails.location;
   const [isOwner, setIsOwner] = useState(false);
 
-  const handleShowDetails = (event) => {
+  const handleShowDetails = async (category, userid) => {
     setOpen(true);
+    // Don't update user's interested categories if he/she is the owner or this is an item request
+    if (!isOwner && itemDetails?.deadline) {
+      try {
+        let data = {
+          itemcategory: category,
+          userid: userid,
+        };
+        axios.post(`${BACKEND_URL}/api/user/updaterecommendation`, data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
   const handleLike = (event) => {
@@ -90,12 +107,12 @@ export default function ItemCard(props) {
   };
 
   const getItemCardAction = () => {
-      if (isOwner) {
-          return deleteListingAction;
-      } else {
-          return borrowAction;
-      }
-  }
+    if (isOwner) {
+      return deleteListingAction;
+    } else {
+      return borrowAction;
+    }
+  };
 
   useEffect(() => {
     if (user && owner) {
@@ -105,42 +122,46 @@ export default function ItemCard(props) {
 
   useEffect(() => {
     if (!!owner) {
-      if (!isOwner) {  
+      if (!isOwner) {
         fetch(`${BACKEND_URL}/api/user/getProfilePic`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: owner.id
-          })
+            userId: owner.id,
+          }),
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "ok") {  
-            const image = data.image;
-            if (!!image) {
-              try {
-                const binary = Buffer.from(image.data);
-                const blob = new Blob([binary.buffer], {type: image.contentType});
-                const url = URL.createObjectURL(blob);
-                setOwnerPicUrl(url);
-              } catch(err) {
-                console.log(err);
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              const image = data.image;
+              if (!!image) {
+                try {
+                  const binary = Buffer.from(image.data);
+                  const blob = new Blob([binary.buffer], {
+                    type: image.contentType,
+                  });
+                  const url = URL.createObjectURL(blob);
+                  setOwnerPicUrl(url);
+                } catch (err) {
+                  console.log(err);
+                }
               }
+            } else {
+              console.log(
+                `Error occurred while loading profile picture of user named "${owner.name}"`
+              );
             }
-          } else {
-            console.log(`Error occurred while loading profile picture of user named "${owner.name}"`);
-          }
-        });
+          });
       } else {
         let photoURL;
-        if (!user.photoURL && (user.photodata && user.photoformat)) {
+        if (!user.photoURL && user.photodata && user.photoformat) {
           const binary = Buffer.from(user.photodata);
           const blob = new Blob([binary.buffer], { type: user.photoformat });
           photoURL = URL.createObjectURL(blob);
-          setUser(prevUser => {
-            return {...prevUser, photoURL: photoURL};
+          setUser((prevUser) => {
+            return { ...prevUser, photoURL: photoURL };
           });
         } else if (user.photoURL) {
           photoURL = user.photoURL;
@@ -154,25 +175,34 @@ export default function ItemCard(props) {
 
   return (
     <ListCard>
-      <ListingActionArea component="a" onClick={handleShowDetails}>
-        <CardHeader 
+      <ListingActionArea
+        component="a"
+        onClick={() => handleShowDetails(itemDetails.category, user?.id)}
+      >
+        <CardHeader
           avatar={
-            <Avatar src={ownerPicUrl}>{!ownerPicUrl && ( owner && (owner.name && owner.name.charAt(0)) )}</Avatar>
+            <Avatar src={ownerPicUrl}>
+              {!ownerPicUrl && owner && owner.name && owner.name.charAt(0)}
+            </Avatar>
           }
           title={owner && owner.name}
-          subheader={date} />
-        {processedImageUrls &&
+          subheader={date}
+        />
+        {processedImageUrls && (
           <ImageDiv>
-            <CardMedia 
+            <CardMedia
               component="img"
               image={processedImageUrls[0]}
-              alt="Item listing image" />
+              alt="Item listing image"
+            />
           </ImageDiv>
-        }
+        )}
         <CardActions>
-          <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
-            <FavoriteBorderIcon />
-          </IconButton>
+          { itemDetails?.deadline &&
+            <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
+              <FavoriteBorderIcon />
+            </IconButton>
+          }
           <Typography align="center" variant="caption">
             {title}
           </Typography>
@@ -192,7 +222,8 @@ export default function ItemCard(props) {
         setOpen={setOpen}
         onActionDone={onActionDone}
         buttonAction={onClickAction || getItemCardAction()}
-        buttonText={buttonText || (isOwner ? "Delete Listing" : "Borrow It!")} />
+        buttonText={buttonText || (isOwner ? "Delete Listing" : "Borrow It!")}
+      />
     </ListCard>
   );
 }
