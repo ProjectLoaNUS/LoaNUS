@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
-
 import axios from "axios";
 
 const MainOnlineContainer = styled.div`
@@ -61,6 +60,7 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
       {onlineUsers &&
         onlineUsers.map((user, index) => (
           <OnlineContainer
+            data-testid="online"
             key={index}
             onClick={() => {
               HandleClick(user._id);

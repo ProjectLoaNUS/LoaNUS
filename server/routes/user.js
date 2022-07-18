@@ -101,7 +101,9 @@ router.post("/login", async (req, res) => {
           email: givenUser.email,
           photodata: givenUser.image.data,
           photoformat: givenUser.image.contentType,
-          id: givenUser._id,
+          followers: givenUser.followers,
+          following: givenUser.following,
+          admin: givenUser.admin
         },
       });
     }
@@ -163,6 +165,11 @@ router.post("/signUp", async (req, res) => {
     password: hashedPassword,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
+<<<<<<< HEAD
+=======
+    recommendation: [],
+    admin: false
+>>>>>>> main
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -233,7 +240,11 @@ router.post("/getNamesOf", async (req, res) => {
   }
   const userDetails = await UserModel.find(
     { _id: { $in: users.map((user) => user.userId) } },
+<<<<<<< HEAD
     ["_id", "name", "image"]
+=======
+    ["_id", "name"]
+>>>>>>> main
   );
   return res.json({ status: "ok", userDetails: userDetails });
 });
@@ -343,6 +354,69 @@ router.get("/search", async (request, response) => {
   } catch (error) {
     console.log(error);
     response.json({ status: "error" });
+  }
+});
+
+//update recommendation
+router.post("/updaterecommendation", async (req, res) => {
+  try {
+    if (!req.body.userid) {
+      return res.json({ status: "error", message: "user not found" });
+    }
+    const category = req.body.itemcategory;
+    const userId = req.body.userid;
+    const user = await UserModel.findById(userId);
+    if (user.recommendation.length < 10) {
+      user.recommendation.unshift(category);
+    } else {
+      user.recommendation.pop();
+      user.recommendation.unshift(category);
+    }
+    user.save();
+    res.json({ status: "recommendation updated" });
+  } catch (err) {
+    console.log(err);
+    res.json({ status: "error", message: err });
+  }
+});
+
+router.get("/getrecommendation", async (req, res) => {
+  try {
+    function mostFrequent(arr, n) {
+      if (n === 0) {
+        return null;
+      }
+      arr.sort();
+      let max_count = 1,
+        res = arr[0];
+      let curr_count = 1;
+
+      for (let i = 1; i < n; i++) {
+        if (arr[i] == arr[i - 1]) curr_count++;
+        else curr_count = 1;
+
+        if (curr_count > max_count) {
+          max_count = curr_count;
+          res = arr[i - 1];
+        }
+      }
+      return res;
+    }
+
+    const userid = req.query.userid;
+    if (!userid) {
+      return res.json({ status: 'error' });
+    }
+    const user = await UserModel.findById(userid);
+
+    let recommended = mostFrequent(
+      user.recommendation,
+      user.recommendation.length
+    );
+    res.json({ status: "success", recommended: recommended });
+  } catch (err) {
+    console.log(err);
+    res.json({ status: "error" });
   }
 });
 

@@ -104,11 +104,12 @@ function ProfilePage() {
             <ProfileLink link={PROFILE_REQUESTS} text={"Requests"} />
             <ProfileLink link={PROFILE_POINTS} text={"Points"} />
             <ProfileLink link={PROFILE_FOLLOW} text={"Followers/Following"} />
-            {/*<ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} />
             <ProfileLink
               link={PROFILE_REWARDS_CLAIMED}
               text={"Rewards Claimed"}
-            />*/}
+            />
+
+            {/*<ProfileLink link={PROFILE_REVIEWS} text={"Reviews"} /> */}
           </ProfileNavBar>
           <InformationDisplayContainer>
             <InformationDisplay />
