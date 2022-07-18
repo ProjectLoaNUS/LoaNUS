@@ -8,13 +8,13 @@ import { Avatar, Box, Typography } from "@mui/material";
 const CategoryCard = styled.div`
   display: flex;
   flex-direction: column;
-  width: 12vw;
+  width: max(100px, 12vw);
   cursor: pointer;
   align-items: center;
   padding: 0 0.5em;
 `;
 const CategoryImage = styled(Avatar)`
-  width: 100%;
+  width: min(100px, 100%);
   height: auto;
   aspect-ratio: 1 / 1;
 `;
