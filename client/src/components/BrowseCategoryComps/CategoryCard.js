@@ -28,11 +28,10 @@ const CategoryText = styled.div`
 `;
 
 function Category({ categorydetails }) {
-  const [queryText, setQueryText] = useState(null);
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
-    setQueryText(categorydetails.number);
+    const queryText = categorydetails?.number;
     if (queryText) {
       navigate(CATEGORY_LISTINGS, { state: { queryText: queryText } });
     }
