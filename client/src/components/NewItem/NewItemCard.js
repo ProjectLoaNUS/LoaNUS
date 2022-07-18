@@ -110,6 +110,28 @@ export default function NewItemCard() {
                 date: date,
                 listedBy: thisUser
             });
+            // Update user's categories of interest, adding in this request's category
+            try {
+                let data = {
+                  itemcategory: category,
+                  userid: user.id,
+                };
+                fetch(`${BACKEND_URL}/api/user/updaterecommendation`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "error") {
+                        console.log("Error while updating user's recommendations in the backend");
+                    }
+                });
+            } catch (err) {
+                console.log(err);
+            }
         } else {
             const itemData = new FormData();
             images.forEach((image) => {
