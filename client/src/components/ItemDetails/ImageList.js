@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { theme } from "../Theme";
 
 const ImageStack = styled(Stack)`
+    flex: 0 0 auto;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -22,7 +23,7 @@ const ImageDiv = styled.div`
     justify-content: center;
     flex: 1 1 0;
     min-height: 0;
-    width: 40%;
+    width: max(40%, 300px);
     img {
         min-height: 0;
         object-fit: contain;

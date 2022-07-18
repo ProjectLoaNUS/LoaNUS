@@ -40,6 +40,9 @@ app.use("/api/messages", messageRoutes);
 const followingRoutes = require("./routes/following");
 app.use("/api/follow", followingRoutes);
 
+const rewardRoutes = require("./routes/rewards");
+app.use("/api/reward", rewardRoutes);
+
 const server = app.listen(PORT, () => {
   console.log(`SERVER RUNNING ON PORT ${PORT}`);
 });

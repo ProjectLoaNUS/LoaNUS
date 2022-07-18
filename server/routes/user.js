@@ -101,7 +101,9 @@ router.post("/login", async (req, res) => {
           email: givenUser.email,
           photodata: givenUser.image.data,
           photoformat: givenUser.image.contentType,
-          id: givenUser._id,
+          followers: givenUser.followers,
+          following: givenUser.following,
+          admin: givenUser.admin
         },
       });
     }
@@ -164,6 +166,7 @@ router.post("/signUp", async (req, res) => {
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
     recommendation: [],
+    admin: false
   });
   await newUser.save({}, (err) => {
     if (err) {

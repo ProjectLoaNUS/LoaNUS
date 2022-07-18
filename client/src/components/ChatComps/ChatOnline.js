@@ -4,7 +4,6 @@ import { Avatar } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 
 import axios from "axios";
-import { current } from "@reduxjs/toolkit";
 const MainOnlineContainer = styled.div`
   flex: 3;
   overflow-y: auto;
@@ -38,11 +37,7 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
       receiverId: otherId,
     };
     try {
-      axios.post(
-        `${BACKEND_URL}/api/conversations`,
-        convoUsers
-      )
-      .then(res => {
+      axios.post(`${BACKEND_URL}/api/conversations`, convoUsers).then((res) => {
         setCurrentChat(res.data);
       });
     } catch (err) {
@@ -51,20 +46,22 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
   };
   return (
     <MainOnlineContainer>
-      {onlineUsers && onlineUsers.map((user, index) => (
-        <OnlineContainer
-          key={index}
-          onClick={() => {
-            HandleClick(user._id);
-          }}
-        >
-          <ImageContainer>
-            <Avatar></Avatar>
-            <OnlineIcon></OnlineIcon>
-          </ImageContainer>
-          <Name>{user.name}</Name>
-        </OnlineContainer>
-      ))}
+      {onlineUsers &&
+        onlineUsers.map((user, index) => (
+          <OnlineContainer
+            data-testid="online"
+            key={index}
+            onClick={() => {
+              HandleClick(user._id);
+            }}
+          >
+            <ImageContainer>
+              <Avatar></Avatar>
+              <OnlineIcon></OnlineIcon>
+            </ImageContainer>
+            <Name>{user.name}</Name>
+          </OnlineContainer>
+        ))}
     </MainOnlineContainer>
   );
 }

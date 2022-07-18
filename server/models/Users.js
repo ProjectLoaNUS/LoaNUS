@@ -51,6 +51,13 @@ const UserSchema = new mongoose.Schema({
     required: true,
     maxlength: 10,
   },
+  admin: {
+    type: Boolean,
+    required: true,
+  },
+  rewards: {
+    type: Array,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);

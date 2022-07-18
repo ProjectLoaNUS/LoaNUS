@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 import React from "react";
 
 const LinkContainer = styled.div`
+  flex: 1 1 0;
   height: 5vh;
-  //border: 2px solid green;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,6 +12,7 @@ const LinkContainer = styled.div`
 const StyledLink = styled(NavLink)`
   color: #2d3c4a;
   font-size: 20px;
+  text-align: center;
 
   &:active {
     color: #eb8736;
