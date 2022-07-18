@@ -83,7 +83,8 @@ export default function ItemCard(props) {
 
   const handleShowDetails = async (category, userid) => {
     setOpen(true);
-    if (!isOwner) {
+    // Don't update user's interested categories if he/she is the owner or this is an item request
+    if (!isOwner && itemDetails?.deadline) {
       try {
         let data = {
           itemcategory: category,
