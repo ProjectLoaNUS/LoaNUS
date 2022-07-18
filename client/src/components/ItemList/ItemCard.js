@@ -83,14 +83,16 @@ export default function ItemCard(props) {
 
   const handleShowDetails = async (category, userid) => {
     setOpen(true);
-    try {
-      let data = {
-        itemcategory: category,
-        userid: userid,
-      };
-      axios.post(`${BACKEND_URL}/api/user/updaterecommendation`, data);
-    } catch (err) {
-      console.log(err);
+    if (!isOwner) {
+      try {
+        let data = {
+          itemcategory: category,
+          userid: userid,
+        };
+        axios.post(`${BACKEND_URL}/api/user/updaterecommendation`, data);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
