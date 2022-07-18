@@ -3,6 +3,7 @@ import NavigationBar from "../components/NavBar/NavigationBar";
 import { useEffect } from "react";
 import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
+import RecommendationListings from "../components/RecommendationComps/RecommendationListing";
 import AboutLoanus from "../components/AboutLoanus";
 import BrowseCategory from "../components/BrowseCategoryComps/BrowseCategory";
 
@@ -40,9 +41,10 @@ function HomePage() {
     <MainContainer>
       <NavigationBar></NavigationBar>
       <BodyContainer>
-        <RecentListings />
         <AboutLoanus />
         <BrowseCategory></BrowseCategory>
+        <RecommendationListings />
+        <RecentListings />
       </BodyContainer>
     </MainContainer>
   );

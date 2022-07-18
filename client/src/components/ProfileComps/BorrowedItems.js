@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
+import { returnItemAction } from "../ItemDetails/detailsDialogActions";
 import ItemList from "../ItemList/ItemList";
 
 export default function BorrowedItems(props) {
@@ -47,6 +48,8 @@ export default function BorrowedItems(props) {
       <ItemList
         isLoading={isLoading}
         noItemsText="No items borrowed. Check out recent item listings for some options!"
+        buttonText="Return it"
+        onClickAction={returnItemAction}
         itemImages={borrowedImgs}
         itemDatas={borrowedTexts}
         setItemDatas={setBorrowedTexts} />

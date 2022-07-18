@@ -18,7 +18,11 @@ import {
   SEARCH_LISTINGS,
   CHAT,
   CATEGORY_LISTINGS,
+  CLAIM_REWARD,
+  ADMIN,
 } from "./pages/routes";
+import ClaimRewardPage from "./pages/ClaimRewardPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
@@ -26,11 +30,13 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path={SIGN_IN} element={<SignInPage />} />
+          <Route path={CLAIM_REWARD} element={<ClaimRewardPage />} />
           <Route path={CHAT} element={<ChatPage />} />
           <Route path={`${PROFILE}/*`} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />
           <Route path={CATEGORY_LISTINGS} element={<CategoryListings />} />
+          <Route path={`${ADMIN}/*`} element={<AdminPage />} />
           <Route exact path={HOME} element={<HomePage />} />
         </Routes>
       </ThemeProvider>

@@ -46,6 +46,18 @@ const UserSchema = new mongoose.Schema({
   following: {
     type: Array,
   },
+  recommendation: {
+    type: Array,
+    required: true,
+    maxlength: 10,
+  },
+  admin: {
+    type: Boolean,
+    required: true,
+  },
+  rewards: {
+    type: Array,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);

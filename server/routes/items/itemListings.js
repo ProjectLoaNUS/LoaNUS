@@ -334,8 +334,8 @@ router.post("/returnItem", async (req, res) => {
 
   return res.json({ status: "ok", statusCode: RETURN_STATUS_CODES.SUCCESS });
 });
-// get category texts
 
+// get category texts
 router.get("/getCategoryListingsTexts", (req, res) => {
   ItemListingsModel.find(
     { category: req.query.category },
@@ -369,6 +369,48 @@ router.get("/getCategoryListingsImgs", (req, res) => {
     (err, images) => {
       if (err) {
         res.status(500).send("An error occurred", err);
+      } else {
+        res.json({ status: "ok", images: images });
+      }
+    }
+  );
+});
+
+//get recommendation listings
+router.get("/getRecommendationTexts", (req, res) => {
+  const category = req.query.category;
+  ItemListingsModel.find(
+    { category: category },
+    [
+      "_id",
+      "category",
+      "title",
+      "deadline",
+      "description",
+      "location",
+      "date",
+      "listedBy",
+      "borrowedBy",
+    ],
+    null,
+    (err, listings) => {
+      if (err) {
+        res.json({ status: "error occured" });
+      } else {
+        res.json({ status: "ok", listings: listings });
+      }
+    }
+  );
+});
+router.get("/getRecommendationImgs", (req, res) => {
+  const category = req.query.category;
+  ItemListingsModel.find(
+    { category: category },
+    ["images"],
+    null,
+    (err, images) => {
+      if (err) {
+        res.json({ status: "error occured" });
       } else {
         res.json({ status: "ok", images: images });
       }
