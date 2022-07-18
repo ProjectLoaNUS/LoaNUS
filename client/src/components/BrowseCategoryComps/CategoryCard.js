@@ -3,21 +3,21 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 import { CATEGORY_LISTINGS } from "../../pages/routes";
+import { Avatar, Box, Typography } from "@mui/material";
 
 const CategoryCard = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 20vh;
   width: 12vw;
   cursor: pointer;
 `;
-const ImageContainer = styled.img`
-  vertical-align: middle;
-  width: 80%;
-  height: 90%;
-  overflow: hidden;
-  border-radius: 50%;
+const CategoryImage = styled(Avatar)`
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
 `;
-
-const CategoryText = styled.div`
+const CategoryText = styled(Typography)`
   font-weight: 650;
   font-size: larger;
   color: #2d3c4a;
@@ -25,6 +25,7 @@ const CategoryText = styled.div`
   justify-content: center;
   text-align: center;
   width: 80%;
+  flex: 0 1 auto;
 `;
 
 function Category({ categorydetails }) {
@@ -38,8 +39,12 @@ function Category({ categorydetails }) {
   };
   return (
     <CategoryCard onClick={handleSubmit}>
-      <ImageContainer src={categorydetails.image} alt="Coffee"></ImageContainer>
-      <CategoryText>{CATEGORIES[categorydetails.number]}</CategoryText>
+      <CategoryImage
+        src={categorydetails.image}
+        alt={CATEGORIES[categorydetails.number]}>
+          C
+      </CategoryImage>
+      <CategoryText align="center">{CATEGORIES[categorydetails.number]}</CategoryText>
     </CategoryCard>
   );
 }
