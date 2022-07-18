@@ -353,8 +353,8 @@ router.get("/search", async (request, response) => {
 //update recommendation
 router.post("/updaterecommendation", async (req, res) => {
   try {
-    if (req.body.userid === null) {
-      res.json({ status: "user not found" });
+    if (!req.body.userid) {
+      return res.json({ status: "error", message: "user not found" });
     }
     const category = req.body.itemcategory;
     const userId = req.body.userid;
@@ -369,7 +369,7 @@ router.post("/updaterecommendation", async (req, res) => {
     res.json({ status: "recommendation updated" });
   } catch (err) {
     console.log(err);
-    res.json({ status: "error" });
+    res.json({ status: "error", message: err });
   }
 });
 
@@ -397,6 +397,9 @@ router.get("/getrecommendation", async (req, res) => {
     }
 
     const userid = req.query.userid;
+    if (!userid) {
+      return res.json({ status: 'error' });
+    }
     const user = await UserModel.findById(userid);
 
     let recommended = mostFrequent(
