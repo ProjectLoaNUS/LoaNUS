@@ -197,9 +197,11 @@ export default function ItemCard(props) {
           </ImageDiv>
         )}
         <CardActions>
-          <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
-            <FavoriteBorderIcon />
-          </IconButton>
+          { itemDetails?.deadline &&
+            <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
+              <FavoriteBorderIcon />
+            </IconButton>
+          }
           <Typography align="center" variant="caption">
             {title}
           </Typography>
