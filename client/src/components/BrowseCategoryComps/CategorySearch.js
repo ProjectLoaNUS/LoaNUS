@@ -11,7 +11,7 @@ const CategoryResults = (props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (queryText) {
+    if (queryText !== undefined) {
       // Images of search result items
       axios
         .get(

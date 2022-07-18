@@ -32,7 +32,7 @@ function Category({ categorydetails }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const queryText = categorydetails?.number;
-    if (queryText) {
+    if (queryText !== undefined) {
       navigate(CATEGORY_LISTINGS, { state: { queryText: queryText } });
     }
   };
