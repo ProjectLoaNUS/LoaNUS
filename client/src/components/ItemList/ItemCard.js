@@ -88,7 +88,6 @@ export default function ItemCard(props) {
         itemcategory: category,
         userid: userid,
       };
-      console.log(data);
       axios.post(`${BACKEND_URL}/api/user/updaterecommendation`, data);
     } catch (err) {
       console.log(err);

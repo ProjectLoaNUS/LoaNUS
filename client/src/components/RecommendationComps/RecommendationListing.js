@@ -42,7 +42,6 @@ export default function RecommendationListings() {
       await axios
         .get(`${BACKEND_URL}/api/user/getrecommendation?userid=` + user?.id)
         .then((res) => setRecommended(res.data.recommended));
-      console.log(recommended);
     };
     const getrecommendation = async () => {
       axios
