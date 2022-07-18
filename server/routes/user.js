@@ -403,7 +403,6 @@ router.get("/getrecommendation", async (req, res) => {
       user.recommendation,
       user.recommendation.length
     );
-    console.log(recommended);
     res.json({ status: "success", recommended: recommended });
   } catch (err) {
     console.log(err);
