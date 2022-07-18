@@ -6,6 +6,7 @@ import ProfilePage from "./pages/ProfilePage";
 import NewItemPage from "./pages/NewItemPage";
 import SignInPage from "./pages/SignInPage";
 import ChatPage from "./pages/ChatPage";
+import CategoryListings from "./pages/CategoryPage";
 import SearchedListings from "./pages/ListingSearchPage";
 import { theme } from "./components/Theme";
 import { ThemeProvider } from "@mui/material";
@@ -16,8 +17,8 @@ import {
   SIGN_IN,
   SEARCH_LISTINGS,
   CHAT,
+  CATEGORY_LISTINGS,
   CLAIM_REWARD,
-  CREATE_REWARD,
   ADMIN,
 } from "./pages/routes";
 import ClaimRewardPage from "./pages/ClaimRewardPage";
@@ -34,6 +35,7 @@ function App() {
           <Route path={`${PROFILE}/*`} element={<ProfilePage />} />
           <Route path={NEW_ITEM} element={<NewItemPage />} />
           <Route path={SEARCH_LISTINGS} element={<SearchedListings />} />
+          <Route path={CATEGORY_LISTINGS} element={<CategoryListings />} />
           <Route path={`${ADMIN}/*`} element={<AdminPage />} />
           <Route exact path={HOME} element={<HomePage />} />
         </Routes>

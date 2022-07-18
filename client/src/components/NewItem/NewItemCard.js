@@ -84,7 +84,9 @@ export default function NewItemCard() {
         setLocation("");
         if (!isRequest) {    
             setImages([]);
-            chosenImg.current.value = null;
+            if (chosenImg) {
+                chosenImg.current.value = null;
+            }
             setReturnDate(new Date());
         }
     }

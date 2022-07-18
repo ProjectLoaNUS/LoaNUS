@@ -5,6 +5,7 @@ import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
 import RecommendationListings from "../components/RecommendationComps/RecommendationListing";
 import AboutLoanus from "../components/AboutLoanus";
+import BrowseCategory from "../components/BrowseCategoryComps/BrowseCategory";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -41,8 +42,9 @@ function HomePage() {
       <NavigationBar></NavigationBar>
       <BodyContainer>
         <AboutLoanus />
-        <RecentListings />
+        <BrowseCategory></BrowseCategory>
         <RecommendationListings />
+        <RecentListings />
       </BodyContainer>
     </MainContainer>
   );

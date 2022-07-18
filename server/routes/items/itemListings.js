@@ -335,6 +335,47 @@ router.post("/returnItem", async (req, res) => {
   return res.json({ status: "ok", statusCode: RETURN_STATUS_CODES.SUCCESS });
 });
 
+// get category texts
+router.get("/getCategoryListingsTexts", (req, res) => {
+  ItemListingsModel.find(
+    { category: req.query.category },
+    [
+      "_id",
+      "category",
+      "title",
+      "deadline",
+      "description",
+      "location",
+      "date",
+      "listedBy",
+      "borrowedBy",
+    ],
+    null,
+    (err, listings) => {
+      if (err) {
+        res.status(500).send("An error occurred", err);
+      } else {
+        res.json({ status: "ok", listings: listings });
+      }
+    }
+  );
+});
+//get category image
+router.get("/getCategoryListingsImgs", (req, res) => {
+  ItemListingsModel.find(
+    { category: req.query.category },
+    ["images"],
+    null,
+    (err, images) => {
+      if (err) {
+        res.status(500).send("An error occurred", err);
+      } else {
+        res.json({ status: "ok", images: images });
+      }
+    }
+  );
+});
+
 //get recommendation listings
 router.get("/getRecommendationTexts", (req, res) => {
   const category = req.query.category;

@@ -4,6 +4,7 @@ export const CLAIM_REWARD = "/claim-reward";
 export const CHAT = "/chat";
 export const NEW_ITEM = "/new-item";
 export const SEARCH_LISTINGS = "/search-items";
+export const CATEGORY_LISTINGS = "/search-category";
 export const PROFILE = "/profile";
 export const PROFILE_LISTINGS = `${PROFILE}/listings`;
 export const PROFILE_BORROWED = `${PROFILE}/borrowed`;
