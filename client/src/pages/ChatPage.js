@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
@@ -7,10 +7,6 @@ import axios from "axios";
 import ChatOnline from "../components/ChatComps/ChatOnline";
 import { BACKEND_URL } from "../database/const";
 import Conversation from "../components/ChatComps/Conversation";
-<<<<<<< HEAD
-import { io } from "socket.io-client";
-=======
->>>>>>> 2b4a890 (Encapsulate message fetching and receiving logic within ChatBox component to greatly simplify the code of ChatPage and ChatView components)
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
 import ChatBox from "../components/ChatComps/ChatBox";

@@ -15,7 +15,6 @@ import DetailsDialog from "../ItemDetails/DetailsDialog";
 import {
   borrowAction,
   deleteListingAction,
-  isUserListingRelated,
 } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
 import { Buffer } from "buffer";
@@ -23,6 +22,7 @@ import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
 import { getProfilePicUrl } from "../../utils/getProfilePic";
+import axios from "axios";
 
 const ListCard = styled(Card)`
   display: flex;
