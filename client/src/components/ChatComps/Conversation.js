@@ -4,6 +4,7 @@ import { Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
+import { Buffer } from "buffer";
 
 const ConversationContainer = styled.div`
   display: flex;
@@ -28,7 +29,9 @@ function Conversation({ conversation, currentuser }) {
 
     const getUser = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/api/user/getUserDetails?userId=` + friendId);
+        const res = await axios.get(
+          `${BACKEND_URL}/api/user/getUserDetails?userId=` + friendId
+        );
         setUser(res.data);
       } catch (err) {
         console.log(err);
@@ -36,10 +39,22 @@ function Conversation({ conversation, currentuser }) {
     };
     getUser();
   }, [currentuser, conversation]);
+  const Bintourl = (data, contentType) => {
+    if (data && contentType) {
+      const binary = Buffer.from(data);
+      const blob = new Blob([binary.buffer], { type: contentType });
+      const url = URL.createObjectURL(blob);
+      return url;
+    } else {
+      return null;
+    }
+  };
 
   return (
     <ConversationContainer>
-      <Avatar></Avatar>
+      <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
+        {user?.user.displayName[0]}
+      </Avatar>
       <Name>{user?.user.displayName}</Name>
     </ConversationContainer>
   );

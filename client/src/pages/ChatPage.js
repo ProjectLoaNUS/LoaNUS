@@ -4,14 +4,10 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
 import axios from "axios";
-import Message from "../components/ChatComps/Message";
 import ChatOnline from "../components/ChatComps/ChatOnline";
 import { BACKEND_URL } from "../database/const";
 import Conversation from "../components/ChatComps/Conversation";
-import ButtonComponent from "../components/Button";
-import { Avatar } from "@mui/material";
 import { io } from "socket.io-client";
-import { CollectionsBookmarkOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
 import ChatBox from "../components/ChatComps/ChatBox";
@@ -49,61 +45,6 @@ const ChatBoxContainer = styled.div`
   flex: 5.5;
   padding-bottom: 1ch;
 `;
-const NoConversationDisplay = styled.span`
-  position: absolute;
-  top: 20%;
-  font-size: 50px;
-  color: lightgray;
-  text-align: center;
-`;
-const ChatBoxWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  position: relative;
-`;
-const ChatTop = styled.div`
-  height: 100%;
-  overflow-y: scroll;
-  padding-right: 10px;
-`;
-const ChatBottom = styled.div`
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-const TextBox = styled.textarea`
-  width: 80%;
-  height: 90px;
-  padding: 10px;
-`;
-//Online
-const MainOnlineContainer = styled.div`
-  flex: 3;
-`;
-const OnlineContainer = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  margin-top: 10px;
-  padding: 10px;
-`;
-const ImageContainer = styled.div`
-  position: relative;
-  margin-right: 10px;
-`;
-const OnlineIcon = styled.div`
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: limegreen;
-  top: 2px;
-  right: 2px;
-`;
-const Name = styled.span``;
 
 function ChatPage() {
   const { user, setUser } = useAuth();
@@ -112,6 +53,8 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [arrivalmessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [followers, setFollowers] = useState([]);
   const socket = useRef();
   const navigate = useNavigate();
 
@@ -125,10 +68,41 @@ function ChatPage() {
           console.log(err);
         }
       } else {
-        navigate(SIGN_IN, {state: {open: true, message: "Sign in before chatting with other users"}});
+        navigate(SIGN_IN, {
+          state: {
+            open: true,
+            message: "Sign in before chatting with other users",
+          },
+        });
       }
     }
-  }, [user, setUser]);
+  }, [user, setUser, navigate]);
+  useEffect(() => {
+    const getfollowing = async () => {
+      try {
+        const res = await axios.get(
+          `${BACKEND_URL}/api/follow/getfollowingid?userId=` + user.id
+        );
+        setFollowing(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getfollowing();
+  }, [user]);
+  useEffect(() => {
+    const getfollowers = async () => {
+      try {
+        const res = await axios.get(
+          `${BACKEND_URL}/api/follow/getfollowersid?userId=` + user.id
+        );
+        setFollowers(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getfollowers();
+  }, [user]);
 
   useEffect(() => {
     socket.current = io(BACKEND_URL);
@@ -142,7 +116,7 @@ function ChatPage() {
 
     return () => {
       socket.current.disconnect();
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -160,23 +134,25 @@ function ChatPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          users: users.filter(otherUser => otherUser.userId !== user.id)
-        })
+          users: users.filter(
+            (otherUser) =>
+              otherUser.userId !== user?.id &&
+              (followers.includes(otherUser.userId) ||
+                following.includes(otherUser.userId))
+          ),
+        }),
       })
-      .then(res => res.json())
-      .then(data => {
-        setOnlineUsers(data.userDetails);
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          setOnlineUsers(data.userDetails);
+        });
     });
-  }, [user]);
+  }, [user, followers, following]);
 
   useEffect(() => {
     const getConversations = async () => {
       try {
-        axios.get(
-          `${BACKEND_URL}/api/conversations/` + user.id
-        )
-        .then(res => {
+        axios.get(`${BACKEND_URL}/api/conversations/` + user.id).then((res) => {
           setConversations(res.data);
         });
       } catch (err) {
@@ -189,12 +165,11 @@ function ChatPage() {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        axios.get(
-          `${BACKEND_URL}/api/messages/` + currentChat?._id
-        )
-        .then(res => {
-          setMessages(res.data);
-        });
+        axios
+          .get(`${BACKEND_URL}/api/messages/` + currentChat?._id)
+          .then((res) => {
+            setMessages(res.data);
+          });
       } catch (err) {
         console.log(err);
       }
@@ -222,9 +197,14 @@ function ChatPage() {
             messages={messages}
             setMessages={setMessages}
             socket={socket}
-            user={user} />
+            user={user}
+          />
         </ChatBoxContainer>
-        <ChatOnline currentId={user?.id} setCurrentChat={setCurrentChat} onlineUsers={onlineUsers} />
+        <ChatOnline
+          currentId={user?.id}
+          setCurrentChat={setCurrentChat}
+          onlineUsers={onlineUsers}
+        />
       </ChatContainer>
     </PageContainer>
   );

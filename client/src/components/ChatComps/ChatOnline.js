@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
-
+import { Buffer } from "buffer";
 import axios from "axios";
+
 const MainOnlineContainer = styled.div`
   flex: 3;
   overflow-y: auto;
@@ -44,6 +45,16 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
       console.log(err);
     }
   };
+  const Bintourl = (image) => {
+    if (image) {
+      const binary = Buffer.from(image.data);
+      const blob = new Blob([binary.buffer], { type: image.contentType });
+      const url = URL.createObjectURL(blob);
+      return url;
+    } else {
+      return null;
+    }
+  };
   return (
     <MainOnlineContainer>
       {onlineUsers &&
@@ -56,7 +67,9 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
             }}
           >
             <ImageContainer>
-              <Avatar></Avatar>
+              <Avatar src={Bintourl(user.image)}>
+                {user && !user.image ? user.name[0] : "U"}
+              </Avatar>
               <OnlineIcon></OnlineIcon>
             </ImageContainer>
             <Name>{user.name}</Name>
