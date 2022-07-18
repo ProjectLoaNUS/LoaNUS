@@ -142,7 +142,7 @@ export default function ItemList(props) {
           <ItemCardList itemsDatas={itemDatas} />
         </ItemListContainer>
       ) : (
-        <NoItemsTypo variant="subtitle1">
+        <NoItemsTypo align="center" variant="subtitle1">
           {noItemsText || "No items to display"}
         </NoItemsTypo>
       )}

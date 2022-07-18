@@ -1,4 +1,4 @@
-import { Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
@@ -78,14 +78,16 @@ export default function RecommendationListings() {
           <Typography align="left" variant="h4" color="#eb8736">
             Recommendation for you
           </Typography>
-          <ItemList
-            ListContainer={ListingsGrid}
-            isLoading={isLoading}
-            noItemsText="No recommendations yet, view some items!"
-            itemImages={listingImgs}
-            itemDatas={listingDetails}
-            setItemDatas={setListingDetails}
-          />
+          <Box flex="1 1 auto" display="flex" flexDirection="column">
+            <ItemList
+              ListContainer={ListingsGrid}
+              isLoading={isLoading}
+              noItemsText="No recommendations yet, view some items!"
+              itemImages={listingImgs}
+              itemDatas={listingDetails}
+              setItemDatas={setListingDetails}
+            />
+          </Box>
         </ListingsPaper>
       ) : (
         <ListingsPaper>
