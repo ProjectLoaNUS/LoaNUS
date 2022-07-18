@@ -2,11 +2,11 @@ import Audio from "../../assets/CategoryImages/Audio.jpg";
 import Beauty from "../../assets/CategoryImages/Beauty.jpg";
 import Car from "../../assets/CategoryImages/Car.jpg";
 import Computers from "../../assets/CategoryImages/Computers.jpg";
+import Education from "../../assets/CategoryImages/Education.jpg";
 import Food from "../../assets/CategoryImages/Food.jpg";
 import Furniture from "../../assets/CategoryImages/Furniture.jpg";
 import Health from "../../assets/CategoryImages/Health.jpg";
 import Hobbies from "../../assets/CategoryImages/Hobbies.jpg";
-import Learning from "../../assets/CategoryImages/Learning.jpg";
 import Luxury from "../../assets/CategoryImages/Luxury.jpg";
 import Men from "../../assets/CategoryImages/Men Fashion.jpg";
 import Mobile from "../../assets/CategoryImages/Mobile Phone.jpg";
@@ -23,11 +23,11 @@ const CategoryDetails = [
   { image: Beauty, number: 1 },
   { image: Car, number: 2 },
   { image: Computers, number: 3 },
-  { image: Food, number: 4 },
-  { image: Furniture, number: 5 },
-  { image: Health, number: 6 },
-  { image: Hobbies, number: 7 },
-  { image: Learning, number: 8 },
+  { image: Education, number: 4 },
+  { image: Food, number: 5 },
+  { image: Furniture, number: 6 },
+  { image: Health, number: 7 },
+  { image: Hobbies, number: 8 },
   { image: Luxury, number: 9 },
   { image: Men, number: 10 },
   { image: Mobile, number: 11 },
