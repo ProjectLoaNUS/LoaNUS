@@ -1,13 +1,35 @@
 import styled from "styled-components";
 import React from "react";
-import { Card, CardContent, CardActions, Avatar } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  CardActionArea,
+  Avatar,
+  Dialog,
+  Grow,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  TextField,
+  Button,
+  DialogContentText,
+  Rating,
+} from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import ButtonComponent from "../Button";
 import { useAuth } from "../../database/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import { Buffer } from "buffer";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
+
+const ActionArea = styled(CardActionArea)`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+`;
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
@@ -30,10 +52,34 @@ const Ratings = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+const StyledDialog = styled(Dialog)`
+  & .MuiDialog-paper {
+    overflow-y: hidden;
+  }
+`;
+const GrowUp = styled(Grow)`
+  transform-origin: bottom center;
+`;
+const Transition = forwardRef(function Transition(props, ref) {
+  return <GrowUp ref={ref} {...props} />;
+});
+const StyledRating = styled(Rating)`
+  color: #eb8736;
+`;
 function UserCard(props) {
   const { user } = useAuth();
   const [followed, setFollowed] = useState(false);
-  const [ profilePicUrl, setProfilePicUrl ] = useState("");
+  const [open, setOpen] = useState(false);
+  const [rating, setRating] = useState(null);
+  const [review, setReview] = useState("");
+  const [profilePicUrl, setProfilePicUrl] = useState("");
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   useEffect(() => {
     if (props.otheruser.image) {
@@ -78,37 +124,76 @@ function UserCard(props) {
       console.log(err);
     }
   };
+  console.log(open);
+  console.log(rating);
+  console.log(review);
   return (
     <StyledCard variant="outlined">
-      <Avatar src={profilePicUrl || null} sx={{ width: 140, height: 140 }}>
-        {props.otheruser && !profilePicUrl
-          ? props.otheruser.name
-            ? props.otheruser.name[0]
-            : "U"
-          : ""}
-      </Avatar>
-      <StyledContent>
-        <UserName>{props.otheruser.name}</UserName>
-        <Ratings>
-          4.5
-          <StarRateIcon></StarRateIcon>
-        </Ratings>
-      </StyledContent>
-      <CardActions>
-        {followed ? (
-          <ButtonComponent
-            state="primary"
-            text="Unfollow"
-            onClick={() => handleUnfollow(props.otheruser)}
-          ></ButtonComponent>
-        ) : (
-          <ButtonComponent
-            state="primary"
-            text="Follow"
-            onClick={() => handleFollow(props.otheruser)}
-          ></ButtonComponent>
-        )}
-      </CardActions>
+      <ActionArea onClick={handleOpen}>
+        <Avatar src={profilePicUrl || null} sx={{ width: 140, height: 140 }}>
+          {props.otheruser && !profilePicUrl
+            ? props.otheruser.name
+              ? props.otheruser.name[0]
+              : "U"
+            : ""}
+        </Avatar>
+        <StyledContent>
+          <UserName>{props.otheruser.name}</UserName>
+          <Ratings>
+            4.5
+            <StarRateIcon></StarRateIcon>
+          </Ratings>
+        </StyledContent>
+        <CardActions>
+          {followed ? (
+            <ButtonComponent
+              state="primary"
+              text="Unfollow"
+              onClick={() => handleUnfollow(props.otheruser)}
+            ></ButtonComponent>
+          ) : (
+            <ButtonComponent
+              state="primary"
+              text="Follow"
+              onClick={() => handleFollow(props.otheruser)}
+            ></ButtonComponent>
+          )}
+        </CardActions>
+      </ActionArea>
+      <StyledDialog
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <DialogTitle>Review</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Leave a review for {props.otheruser.name}!
+          </DialogContentText>
+          <StyledRating
+            name="size-medium"
+            defaultValue={0}
+            value={rating}
+            onChange={(event, newRating) => {
+              setRating(newRating);
+            }}
+          ></StyledRating>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="review"
+            label="Comments"
+            type="input"
+            fullWidth
+            variant="standard"
+            onChange={(event) => setReview(event.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Subscribe</Button>
+        </DialogActions>
+      </StyledDialog>
     </StyledCard>
   );
 }
