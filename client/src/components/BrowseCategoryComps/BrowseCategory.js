@@ -10,7 +10,7 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  width: 92vw;
+  width: 93vw;
   height: 35vh;
   border-color: 2px black solid;
   border-radius: 10px;
@@ -30,7 +30,7 @@ const ListingsGrid = styled.div`
 function BrowseCategory() {
   return (
     <MainContainer>
-      <Typography align="left" variant="h4">
+      <Typography align="left" variant="h4" color="#eb8736">
         Browse by Category
       </Typography>
       <ListingsGrid>
