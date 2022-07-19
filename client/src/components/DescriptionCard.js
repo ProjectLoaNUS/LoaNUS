@@ -16,7 +16,7 @@ const MainContainer = styled.div`
 const DescriptionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1 0 40%;
+  flex: 1 0 50%;
   align-items: center;
 
   height: 100%;
@@ -30,8 +30,9 @@ const Title = styled.h1`
   -webkit-text-fill-color: transparent;
 `;
 const Description = styled.p`
-  text-align: center;
+  text-align: left;
   overflow-wrap: break-word;
+  font-weight: 550;
 `;
 const RewardContainer = styled.div`
   display: flex;
@@ -40,6 +41,7 @@ const RewardContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 80%;
+  overflow-x: auto;
 `;
 const HtmlImage = styled.img`
   width: 100%;
@@ -62,7 +64,10 @@ function DescriptionCard(props) {
     <MainContainer>
       <DescriptionContainer>
         <Title>{props.title}</Title>
-        <Description>{props.desc}</Description>
+        <Description>{props.para1}</Description>
+        <Description>{props.para2}</Description>
+        <Description>{props.para3}</Description>
+        <Description>{props.para4}</Description>
         {props.children}
       </DescriptionContainer>
       <RewardContainer>
