@@ -10,6 +10,7 @@ import AppBtn from "./AppBtn/AppBtn";
 import ChatBtn from "./ChatBtn";
 import { AppBar, Stack, Toolbar } from "@mui/material";
 import { HOME } from "../../pages/routes";
+import NotificationsBtn from "./NotificationsBtn";
 
 const MyAppBar = styled(AppBar)`
   height: 10vh;
@@ -44,6 +45,7 @@ function NavigationBar() {
           <Stack direction="row">
             <CreateBtn />
             <ChatBtn />
+            <NotificationsBtn />
             <ProfileBtn />
           </Stack>
         :
