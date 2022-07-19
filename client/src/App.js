@@ -25,10 +25,12 @@ import ClaimRewardPage from "./pages/ClaimRewardPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./database/auth";
 import { useSocket } from "./utils/socketContext";
+import { useNotifications } from "./utils/notificationsContext";
 
 function App() {
   const { user, setUser, setIsUserLoaded } = useAuth();
   const { socket, connectSocket, disconnectSocket } = useSocket();
+  const { startNotifications } = useNotifications();
   const [ isInitialised, setIsInitialised ] = useState(false);
 
   useEffect(() => {
@@ -55,8 +57,10 @@ function App() {
         if (socket) {
           disconnectSocket();
         }
-        connectSocket(user);
-        setIsInitialised(true);
+        connectSocket(user).then(socket => {
+          startNotifications(socket);
+          setIsInitialised(true);
+        });
       }
     } else {
       if (socket) {
