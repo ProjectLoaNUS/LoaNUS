@@ -52,7 +52,7 @@ function useSocketProvider() {
         updateOnlineUsers(mySocket, user);
     }
 
-    const connectSocket = (myUser) => {
+    const connectSocket = async (myUser) => {
         const mySocket = io(BACKEND_URL);
         setSocket(mySocket);
         postConnectSocket(mySocket, myUser);
