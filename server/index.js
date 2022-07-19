@@ -48,4 +48,4 @@ const server = app.listen(PORT, () => {
 });
 
 // Socket.io server
-const io = require("./routes/socket")(app, server);
+const socketUtils = require("./routes/socket")(app, server);
