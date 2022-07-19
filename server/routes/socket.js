@@ -23,6 +23,12 @@ const socketServer = (app, server) => {
     const getUser = (userId) => {
         return users.find((user) => user.userId === userId);
     };
+    const notifications = require("../utils/notifications")({
+        io: io,
+        addUser: addUser,
+        getUser: getUser,
+        removeUser: removeUser
+    });
     io.on("connection", (socket) => {
         //When connect
         console.log("socket-io: A user just got connected");
@@ -30,6 +36,9 @@ const socketServer = (app, server) => {
         socket.on("addUser", (userId) => {
             addUser(userId, socket.id);
             io.emit("getUsers", users);
+        });
+        socket.on("notify", ({senderId, receiverId, message, targetUrl}) => {
+            notifications.notify(senderId, receiverId, message, targetUrl);
         });
         //Send and get message
         socket.on("sendMessage", ({ senderId, receiverId, text }) => {
