@@ -50,6 +50,7 @@ const socketServer = (app, server) => {
             io.emit("getUsers", users);
         });
     });
+    return io;
 };
 
 module.exports = socketServer;
