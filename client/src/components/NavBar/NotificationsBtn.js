@@ -46,7 +46,7 @@ export default function NotificationsBtn() {
                                 <Typography variant="subtitle2" align="left" noWrap>
                                     {notification.message}
                                 </Typography>
-                                <Typography variant="caption" align="left" noWrap>
+                                <Typography variant="caption" align="left" noWrap sx={{fontStyle: "italic"}}>
                                     { format(notification.date) }
                                 </Typography>
                             </MenuItem>
