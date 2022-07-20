@@ -68,26 +68,30 @@ function ChatPage() {
 
   useEffect(() => {
     const getfollowing = async () => {
-      try {
-        const res = await axios.get(
-          `${BACKEND_URL}/api/follow/getfollowingid?userId=` + user.id
-        );
-        setFollowing(res.data);
-      } catch (err) {
-        console.log(err);
+      if (user) {
+        try {
+          const res = await axios.get(
+            `${BACKEND_URL}/api/follow/getfollowingid?userId=` + user.id
+          );
+          setFollowing(res.data);
+        } catch (err) {
+          console.log(err);
+        }
       }
     };
     getfollowing();
   }, [user]);
   useEffect(() => {
     const getfollowers = async () => {
-      try {
-        const res = await axios.get(
-          `${BACKEND_URL}/api/follow/getfollowersid?userId=` + user.id
-        );
-        setFollowers(res.data);
-      } catch (err) {
-        console.log(err);
+      if (user) {
+        try {
+          const res = await axios.get(
+            `${BACKEND_URL}/api/follow/getfollowersid?userId=` + user.id
+          );
+          setFollowers(res.data);
+        } catch (err) {
+          console.log(err);
+        }
       }
     };
     getfollowers();
