@@ -2,14 +2,17 @@ const { createContext, useState, useContext } = require("react");
 
 const notificationsContext = createContext({
     notifications: [],
-    startNotifications: null
+    startNotifications: null,
+    notify: null
 });
 
 function useNotificationsProvider() {
     const [ notifications, setNotifications ] = useState([]);
+    const [ socket, setSocket ] = useState(null);
 
     const startNotifications = async (socket) => {
         if (socket) {
+            setSocket(socket);
             socket.on("notification", ({senderId, message, targetUrl}) => {
                 setNotifications(prevNotifs => {
                     return [
@@ -23,9 +26,18 @@ function useNotificationsProvider() {
         }
     }
 
+    const notify = async (senderId, receiverId, message, targetUrl) => {
+        if (socket) {
+            socket.emit("notify", {senderId, receiverId, message, targetUrl});
+        } else {
+            console.log("Error while sending notification in notificationsContext.js: 'socket' object is invalid");
+        }
+    }
+
     return {
         notifications,
-        startNotifications
+        startNotifications,
+        notify
     };
 }
 
