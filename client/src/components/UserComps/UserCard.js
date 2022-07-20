@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardActions,
-  CardActionArea,
   Avatar,
   Dialog,
   Grow,
@@ -12,7 +11,6 @@ import {
   DialogTitle,
   DialogActions,
   TextField,
-  Button,
   DialogContentText,
   Rating,
 } from "@mui/material";
@@ -23,13 +21,7 @@ import { useState, useEffect, forwardRef } from "react";
 import { Buffer } from "buffer";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
-
-const ActionArea = styled(CardActionArea)`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-`;
+import ReviewList from "./ReviewList";
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
@@ -56,7 +48,6 @@ const Ratings = styled.div`
 `;
 const StyledIcon = styled(StarRateIcon)`
   color: #eb8736;
-  padding-bottom: 5px;
 `;
 
 const StyledDialog = styled(Dialog)`
@@ -76,6 +67,7 @@ const StyledRating = styled(Rating)`
 function UserCard(props) {
   const { user } = useAuth();
   const [followed, setFollowed] = useState(false);
+  const [following, setFollowing] = useState([]);
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(null);
   const [getrating, setGetRating] = useState(null);
@@ -100,19 +92,30 @@ function UserCard(props) {
       setProfilePicUrl(URL.createObjectURL(blob));
     }
   }, [props.otheruser]);
+
   useEffect(() => {
     if (props.otheruser._id) {
       try {
         axios
           .get(
-            `${BACKEND_URL}/api/user/getrating?userid=` + props.otheruser._id
+            `${BACKEND_URL}/api/user/getrating?userId=` + props.otheruser._id
           )
           .then((res) => setGetRating(res.data.rating));
+
+        axios
+          .get(`${BACKEND_URL}/api/follow/getfollowingid?userId=` + user.id)
+          .then((res) => setFollowing(res.data));
       } catch (error) {
         console.log(error);
       }
     }
-  }, [props.otheruser]);
+  }, [props.otheruser, user]);
+
+  useEffect(() => {
+    if (props.otheruser._id && following.includes(props.otheruser._id)) {
+      setFollowed(true);
+    }
+  }, [following, props.otheruser._id]);
 
   const handleFollow = async (otheruser) => {
     let friends = {
@@ -147,7 +150,9 @@ function UserCard(props) {
   const handleCreate = async (otheruser) => {
     let data = {
       userId: user.id,
+      userName: user.displayName,
       otheruserId: otheruser._id,
+      otheruserName: otheruser.name,
       rating: rating,
       comments: review,
     };
@@ -158,47 +163,51 @@ function UserCard(props) {
       console.log(err);
     }
   };
-  console.log(open);
-  console.log(rating);
-  console.log(review);
   return (
     <StyledCard variant="outlined">
-      <ActionArea onClick={handleOpen}>
-        <Avatar src={profilePicUrl || null} sx={{ width: 140, height: 140 }}>
-          {props.otheruser && !profilePicUrl
-            ? props.otheruser.name
-              ? props.otheruser.name[0]
-              : "U"
-            : ""}
-        </Avatar>
-        <StyledContent>
-          <UserName>{props.otheruser.name}</UserName>
-          <Ratings>
-            {getrating}
-            <StyledIcon></StyledIcon>
-          </Ratings>
-        </StyledContent>
-        <CardActions>
-          {followed ? (
-            <ButtonComponent
-              state="primary"
-              text="Unfollow"
-              onClick={() => handleUnfollow(props.otheruser)}
-            ></ButtonComponent>
-          ) : (
-            <ButtonComponent
-              state="primary"
-              text="Follow"
-              onClick={() => handleFollow(props.otheruser)}
-            ></ButtonComponent>
-          )}
-        </CardActions>
-      </ActionArea>
+      <Avatar src={profilePicUrl || null} sx={{ width: 140, height: 140 }}>
+        {props.otheruser && !profilePicUrl
+          ? props.otheruser.name
+            ? props.otheruser.name[0]
+            : "U"
+          : ""}
+      </Avatar>
+      <StyledContent>
+        <UserName>{props.otheruser.name}</UserName>
+        <Ratings>
+          {getrating}
+          <StyledIcon></StyledIcon>
+        </Ratings>
+      </StyledContent>
+      <CardActions>
+        {followed ? (
+          <ButtonComponent
+            state="primary"
+            text="Unfollow"
+            size="small"
+            onClick={() => handleUnfollow(props.otheruser)}
+          ></ButtonComponent>
+        ) : (
+          <ButtonComponent
+            state="primary"
+            text="Follow"
+            size="small"
+            onClick={() => handleFollow(props.otheruser)}
+          ></ButtonComponent>
+        )}
+        <ButtonComponent
+          text="review"
+          size="small"
+          onClick={handleOpen}
+        ></ButtonComponent>
+      </CardActions>
+
       <StyledDialog
         open={open}
         onClose={handleClose}
         TransitionComponent={Transition}
       >
+        <ReviewList otheruser={props.otheruser}></ReviewList>
         <DialogTitle>Review</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -206,6 +215,7 @@ function UserCard(props) {
           </DialogContentText>
           <StyledRating
             name="size-medium"
+            precision={0.5}
             defaultValue={0}
             value={rating}
             onChange={(event, newRating) => {

@@ -7,6 +7,7 @@ import ButtonComponent from "../Button";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { BACKEND_URL } from "../../database/const";
+import { format } from "timeago.js";
 
 const MainContainer = styled.div`
   display: flex;
@@ -75,7 +76,7 @@ function AvatarCard(props) {
     if (user) {
       try {
         axios
-          .get(`${BACKEND_URL}/api/user/getrating?userid=` + user.id)
+          .get(`${BACKEND_URL}/api/user/getrating?userId=` + user.id)
           .then((res) => setRating(res.data.rating));
       } catch (error) {
         console.log(error);
@@ -139,7 +140,9 @@ function AvatarCard(props) {
       <UserName>{user && user.displayName}</UserName>
       <Email>{user && user.email}</Email>
       <StyledRating value={rating} precision={0.1} readOnly />
-      <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
+      <LocationDateContainer>
+        Singapore, Joined {format(user?.createdat)}{" "}
+      </LocationDateContainer>
       <FollowContainer>
         {user?.followers ? user?.followers.length : 0} Followers{" "}
         {user?.following ? user?.following.length : 0} Following

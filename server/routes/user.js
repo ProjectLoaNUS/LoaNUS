@@ -104,6 +104,7 @@ router.post("/login", async (req, res) => {
           followers: givenUser.followers,
           following: givenUser.following,
           admin: givenUser.admin,
+          createdat: givenUser.createdAt,
         },
       });
     }
@@ -423,11 +424,13 @@ router.post("/createreview", async (req, res) => {
     const otheruser = await UserModel.findById(otheruserId);
     const reviewer = {
       reviewee: otheruserId,
+      revieweeName: req.body.otheruserName,
       rating: req.body.rating,
       comments: req.body.comments,
     };
     const reviewee = {
       reviewer: userId,
+      reviewerName: req.body.userName,
       rating: req.body.rating,
       comments: req.body.comments,
     };
@@ -444,8 +447,8 @@ router.post("/createreview", async (req, res) => {
 //get rating
 router.get("/getrating", async (req, res) => {
   try {
-    const userid = req.query.userid;
-    const user = await UserModel.findById(userid);
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
     const reviews = user.reviews;
     let array = [];
     reviews.forEach((element) => array.unshift(element["rating"]));
@@ -454,6 +457,18 @@ router.get("/getrating", async (req, res) => {
     res.status(200).json({ status: "success", rating: avg });
   } catch (err) {
     console.log(err);
+    res.status(500).json({ status: "error" });
+  }
+});
+
+router.get("/getreviews", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    res.status(200).json({ status: "success", reviews: reviews });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ status: "error" });
   }
 });

@@ -11,6 +11,7 @@ const ConversationContainer = styled.div`
   align-items: center;
   padding: 10px;
   margin-top: 15px;
+  cursor: pointer;
 
   &:hover {
     background-color: #d3d3d3;
