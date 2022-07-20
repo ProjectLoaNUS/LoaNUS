@@ -237,7 +237,7 @@ router.post("/getNamesOf", async (req, res) => {
   }
   const userDetails = await UserModel.find(
     { _id: { $in: users.map((user) => user.userId) } },
-    ["_id", "name", "image"]
+    ["_id", "name"]
   );
   return res.json({ status: "ok", userDetails: userDetails });
 });
