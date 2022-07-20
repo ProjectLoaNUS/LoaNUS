@@ -44,11 +44,15 @@ const ImageUploadContainer = styled.div`
 const HiddenInput = styled.input`
   display: none;
 `;
+const StyledRating = styled(Rating)`
+  color: #eb8736;
+`;
 
 function AvatarCard(props) {
-  const [ showAlert, setShowAlert ] = useState(false);
-  const [ alertMessage, setAlertMessage ] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const [profileimage, setProfileImage] = useState();
+  const [rating, setRating] = useState(null);
   const { user, setUser } = useAuth();
 
   const hiddenFileInput = React.useRef(null);
@@ -67,11 +71,20 @@ function AvatarCard(props) {
       }
     }
   }, [user, setUser]);
+  useEffect(() => {
+    try {
+      axios
+        .get(`${BACKEND_URL}/api/user/getrating?userid=` + user.id)
+        .then((res) => setRating(res.data.rating));
+    } catch (error) {
+      console.log(error);
+    }
+  }, [user]);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
     setAlertMessage("");
-  }
+  };
   const handleClick = () => {
     hiddenFileInput.current.click();
   };
@@ -123,7 +136,7 @@ function AvatarCard(props) {
       </Avatar>
       <UserName>{user && user.displayName}</UserName>
       <Email>{user && user.email}</Email>
-      <Rating name="size-medium" defaultValue={3} />
+      <StyledRating value={rating} precision={0.1} readOnly />
       <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
       <FollowContainer>
         {user?.followers ? user?.followers.length : 0} Followers{" "}
@@ -159,7 +172,7 @@ function AvatarCard(props) {
         open={showAlert}
         autoHideDuration={6000}
         onClose={(event, reason) => {
-          if (reason === 'escapeKeyDown') {
+          if (reason === "escapeKeyDown") {
             event.preventDefault();
           }
           handleCloseAlert(event);
@@ -169,7 +182,8 @@ function AvatarCard(props) {
           <Button color="secondary" size="small" onClick={handleCloseAlert}>
             DISMISS
           </Button>
-        } />
+        }
+      />
     </MainContainer>
   );
 }

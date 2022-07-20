@@ -58,6 +58,12 @@ const UserSchema = new mongoose.Schema({
   rewards: {
     type: Array,
   },
+  reviews: {
+    type: Array,
+  },
+  reviewscreated: {
+    type: Array,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);

@@ -124,6 +124,20 @@ function UserCard(props) {
       console.log(err);
     }
   };
+  const handleCreate = async (otheruser) => {
+    let data = {
+      userId: user.id,
+      otheruserId: otheruser._id,
+      rating: rating,
+      comments: review,
+    };
+    try {
+      await axios.post(`${BACKEND_URL}/api/user/createreview`, data);
+      setOpen(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   console.log(open);
   console.log(rating);
   console.log(review);
@@ -190,8 +204,13 @@ function UserCard(props) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <ButtonComponent onClick={handleClose} text="CANCEL" size="small" />
+          <ButtonComponent
+            onClick={() => handleCreate(props.otheruser)}
+            text="CREATE"
+            state="primary"
+            size="small"
+          />
         </DialogActions>
       </StyledDialog>
     </StyledCard>
