@@ -6,6 +6,8 @@ import { BACKEND_URL } from "../../database/const";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "../../utils/socketContext";
 import { useAuth } from "../../database/auth";
+import { useNotifications } from "../../utils/notificationsContext";
+import { CHAT } from "../../pages/routes";
 
 const ChatBoxWrapper = styled.div`
   display: flex;
@@ -44,6 +46,7 @@ export default function ChatBox(props) {
     const { currentChat } = props;
     const { user } = useAuth();
     const { socket } = useSocket();
+    const { notify } = useNotifications();
     const [ messages, setMessages ] = useState([]);
     const [ arrivalMessage, setArrivalMessage ] = useState(null);
     const [ newMessage, setNewMessage ] = useState("");
@@ -108,6 +111,14 @@ export default function ChatBox(props) {
             setMessages([...messages, res.data]);
             setNewMessage("");
           });
+          axios.post(`${BACKEND_URL}/api/user/getNamesOf`, {users: [{userId: receiverId}]})
+            .then(res => {
+              if (res.data.status === 'ok') {
+                notify(user.id, receiverId, `New chat message from ${res.data.userDetails[0].name}`, CHAT);
+              } else {
+                console.log("Error fetching chat message sender name from backend");
+              }
+            });
         } catch (err) {
           console.log(err);
         }
