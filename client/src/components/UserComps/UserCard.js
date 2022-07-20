@@ -51,6 +51,12 @@ const Ratings = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: larger;
+  font-weight: 600;
+`;
+const StyledIcon = styled(StarRateIcon)`
+  color: #eb8736;
+  padding-bottom: 5px;
 `;
 
 const StyledDialog = styled(Dialog)`
@@ -72,6 +78,7 @@ function UserCard(props) {
   const [followed, setFollowed] = useState(false);
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(null);
+  const [getrating, setGetRating] = useState(null);
   const [review, setReview] = useState("");
   const [profilePicUrl, setProfilePicUrl] = useState("");
   const handleClose = () => {
@@ -91,6 +98,19 @@ function UserCard(props) {
         type: ctype,
       });
       setProfilePicUrl(URL.createObjectURL(blob));
+    }
+  }, [props.otheruser]);
+  useEffect(() => {
+    if (props.otheruser._id) {
+      try {
+        axios
+          .get(
+            `${BACKEND_URL}/api/user/getrating?userid=` + props.otheruser._id
+          )
+          .then((res) => setGetRating(res.data.rating));
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [props.otheruser]);
 
@@ -154,8 +174,8 @@ function UserCard(props) {
         <StyledContent>
           <UserName>{props.otheruser.name}</UserName>
           <Ratings>
-            4.5
-            <StarRateIcon></StarRateIcon>
+            {getrating}
+            <StyledIcon></StyledIcon>
           </Ratings>
         </StyledContent>
         <CardActions>

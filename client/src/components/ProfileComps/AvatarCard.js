@@ -72,12 +72,14 @@ function AvatarCard(props) {
     }
   }, [user, setUser]);
   useEffect(() => {
-    try {
-      axios
-        .get(`${BACKEND_URL}/api/user/getrating?userid=` + user.id)
-        .then((res) => setRating(res.data.rating));
-    } catch (error) {
-      console.log(error);
+    if (user) {
+      try {
+        axios
+          .get(`${BACKEND_URL}/api/user/getrating?userid=` + user.id)
+          .then((res) => setRating(res.data.rating));
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [user]);
 
