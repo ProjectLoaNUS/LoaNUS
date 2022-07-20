@@ -3,7 +3,8 @@ const { createContext, useState, useContext } = require("react");
 const notificationsContext = createContext({
     notifications: [],
     startNotifications: null,
-    notify: null
+    notify: null,
+    clearNotifications: null
 });
 
 function useNotificationsProvider() {
@@ -34,10 +35,15 @@ function useNotificationsProvider() {
         }
     }
 
+    const clearNotifications = async () => {
+        setNotifications([]);
+    }
+
     return {
         notifications,
         startNotifications,
-        notify
+        notify,
+        clearNotifications
     };
 }
 
