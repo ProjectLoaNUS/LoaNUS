@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { theme } from "../Theme";
 import { format } from "timeago.js";
 import { useNotifications } from "../../utils/notificationsContext";
+import { useNavigate } from "react-router-dom";
 
 const ContrastIconBtn = styled(IconButton)`
     color: ${theme.palette.primary.contrastText};
@@ -12,6 +13,7 @@ const ContrastIconBtn = styled(IconButton)`
 
 export default function NotificationsBtn() {
     const {notifications} = useNotifications();
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -21,6 +23,9 @@ export default function NotificationsBtn() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const onClickNotif = (url) => {
+        navigate(url);
+    }
 
     return (
         <>
@@ -42,7 +47,8 @@ export default function NotificationsBtn() {
                         return (
                             <MenuItem
                               key={index}
-                              sx={{display: "flex", flexDirection: "column"}}>
+                              sx={{display: "flex", flexDirection: "column"}}
+                              onClick={() => onClickNotif(notification.targetUrl)}>
                                 <Typography variant="subtitle2" align="left" noWrap>
                                     {notification.message}
                                 </Typography>
