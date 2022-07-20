@@ -1,4 +1,4 @@
-import { Badge, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Badge, Box, Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useState } from "react";
 import styled from "styled-components";
@@ -12,7 +12,7 @@ const ContrastIconBtn = styled(IconButton)`
 `;
 
 export default function NotificationsBtn() {
-    const {notifications} = useNotifications();
+    const {notifications, clearNotifications} = useNotifications();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -61,6 +61,18 @@ export default function NotificationsBtn() {
                     <MenuItem>
                         <Typography align="left">No notifications</Typography>
                     </MenuItem>
+                }
+                { notifications.length ?
+                        <Box display="flex" justifyContent="center" width="100%">
+                            <Button
+                              color="primary"
+                              variant="outlined"
+                              size="small"
+                              onClick={clearNotifications}>
+                                Clear all
+                            </Button>
+                        </Box>
+                    : null
                 }
             </Menu>
         </>
