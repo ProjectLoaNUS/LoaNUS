@@ -163,7 +163,66 @@ router.post("/getListingsImgsOfUser", async (req, res) => {
   return res.json({ status: "ok", listingsImgs: listingsImgs });
 });
 
-router.post("/borrowItem", async (req, res) => {
+router.post("/requestBorrowItem", async (req, res) => {
+  const userId = req.body.userId;
+  const itemId = req.body.itemId;
+  if (!userId) {
+    return res.json({ status: "error", statusCode: 4 });
+  }
+  if (!itemId) {
+    return res.json({ status: "error", statusCode: 3 });
+  }
+  const user = await UserModel.findOne({
+    _id: userId,
+  });
+  const item = await ItemListingsModel.findOne({ _id: itemId });
+  if (!user) {
+    return res.json({ status: "error", statusCode: 4 });
+  }
+  if (!item) {
+    return res.json({ status: "error", statusCode: 3 });
+  }
+  if (item.borrowedBy) {
+    // Item is already borrowed by someone. Major error
+    return res.json({ status: "error", statusCode: 1 });
+  }
+  item.borrowRequests.push(userId);
+  item.save();
+  let itemBorrowRequests = user.itemBorrowRequests;
+  if (!itemBorrowRequests) {
+    user.itemBorrowRequests = [itemId];
+    user.save();
+  } else if (!itemBorrowRequests.includes(itemId)) {
+    itemBorrowRequests.push(itemId);
+    user.itemBorrowRequests = itemBorrowRequests;
+    user.save();
+  } else {
+    // This user has already requested to borrow this item. Major error
+    return res.json({ status: "error", statusCode: 2 });
+  }
+  return res.json({ status: "ok", statusCode: 0 });
+});
+
+const rmBorrowRequests = async (userIds, itemId) => {
+  if (userIds && itemId) {
+    userIds.forEach(userId => {
+      const user = await UserModel.findOne({
+        _id: userId,
+      });
+      if (user) {
+        user.itemBorrowRequests = user.itemBorrowRequests.filter(requestId => requestId !== itemId);
+        user.save();
+      } else {
+        console.log(`rmBorrowRequests: Cannot identify user with ID ${userId}`);
+      }
+    });
+  } else if (!userIds) {
+    console.log(`rmBorrowRequests: Invalid user IDs given`);
+  } else if (!itemId) {
+    console.log(`rmBorrowRequests: Invalid item ID given`);
+  }
+}
+router.post("/approveBorrowItem", async (req, res) => {
   const userId = req.body.userId;
   const itemId = req.body.itemId;
   if (!userId) {
@@ -187,6 +246,10 @@ router.post("/borrowItem", async (req, res) => {
     return res.json({ status: "error", statusCode: 1 });
   }
   item.borrowedBy = userId;
+  // Clear all borrow requests from other users
+  const requestUsers = item.borrowRequests;
+  rmBorrowRequests(requestUsers, itemId);
+  item.borrowRequests = undefined;
   item.save();
   let itemsBorrowed = user.itemsBorrowed;
   if (!itemsBorrowed) {
@@ -201,6 +264,25 @@ router.post("/borrowItem", async (req, res) => {
     return res.json({ status: "error", statusCode: 2 });
   }
   return res.json({ status: "ok", statusCode: 0 });
+});
+
+router.post("/denyBorrowItem", async (req, res) => {
+  const userId = req.body.userId;
+  const itemId = req.body.itemId;
+  if (!userId) {
+    return res.json({status: 'error'});
+  }
+  if (!itemId) {
+    return res.json({status: 'error'});
+  }
+  rmBorrowRequests([userId], itemId);
+  const item = await ItemListingsModel.findOne({ _id: itemId });
+  if (!item) {
+    return res.json({status: 'error'});
+  }
+  item.borrowRequests = item.borrowRequests.filter(requestId => requestId !== userId);
+  await item.save();
+  return res.json({status: 'ok'});
 });
 
 router.post("/getBorrowedTextsOfUser", async (req, res) => {
