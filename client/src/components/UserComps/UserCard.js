@@ -175,7 +175,7 @@ function UserCard(props) {
       <StyledContent>
         <UserName>{props.otheruser.name}</UserName>
         <Ratings>
-          {getrating}
+          {Math.round(getrating * 10) / 10}
           <StyledIcon></StyledIcon>
         </Ratings>
       </StyledContent>

@@ -12,6 +12,27 @@ import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
 import { Buffer } from "buffer";
 import StarRateIcon from "@mui/icons-material/StarRate";
+import styled from "styled-components";
+
+const ListTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  margin-top: 1vh;
+`;
+const RatingDisplay = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 2vh;
+`;
+const Rating = styled.h4`
+  height: auto;
+`;
+const StyledIcon = styled(StarRateIcon)`
+  color: #eb8736;
+  transform: scale(0.75);
+`;
 
 function ReviewCard({ review }) {
   const [profilePicUrl, setProfilePicUrl] = useState("");
@@ -42,23 +63,27 @@ function ReviewCard({ review }) {
       <ListItemAvatar>
         <Avatar alt="User Image" src={profilePicUrl} />
       </ListItemAvatar>
-      <ListItemText
-        primary={"Rating:" + " " + review.rating}
-        secondary={
-          <React.Fragment>
-            <Typography
-              sx={{ display: "inline" }}
-              component="span"
-              variant="body2"
-              color="text.primary"
-            >
-              {review.reviewerName}
-            </Typography>
-            {" — " + review.comments}
-          </React.Fragment>
-        }
-      />
-      <ListItemText />
+      <ListTextContainer>
+        <RatingDisplay>
+          <Rating>{review.rating}</Rating>
+          <StyledIcon></StyledIcon>
+        </RatingDisplay>
+        <ListItemText
+          secondary={
+            <React.Fragment>
+              <Typography
+                sx={{ display: "inline" }}
+                component="span"
+                variant="body2"
+                color="text.primary"
+              >
+                {review.reviewerName}
+              </Typography>
+              {" — " + review.comments}
+            </React.Fragment>
+          }
+        />
+      </ListTextContainer>
     </ListItem>
   );
 }

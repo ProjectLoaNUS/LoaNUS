@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import { useState, useEffect } from "react";
-import { List } from "@mui/material";
+import { List, Divider } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
 import ReviewCard from "./ReviewCard";
