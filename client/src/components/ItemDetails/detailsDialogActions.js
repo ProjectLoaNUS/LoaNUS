@@ -2,7 +2,7 @@ import { BACKEND_URL } from "../../database/const";
 
 export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
-        const BORROW_RES_TEXT = [
+        const REQ_RES_TEXT = [
             "Requested to borrow item!",
             "Already borrowed by another user",
             "You already requested to borrow",
@@ -24,9 +24,9 @@ export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
             });
             const data = await req.json();
             if (data.status !== "ok") {
-                setError(true, BORROW_RES_TEXT[data.statusCode]);
+                setError(true, REQ_RES_TEXT[data.statusCode]);
             } else {
-                setError(false, BORROW_RES_TEXT[data.statusCode]);
+                setError(false, REQ_RES_TEXT[data.statusCode]);
                 setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
@@ -45,7 +45,7 @@ export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
 
 export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
-        const BORROW_RES_TEXT = [
+        const APPROVE_RES_TEXT = [
             "Item lent to user!",
             "Already borrowed by another user(somehow)",
             "Did you borrow this item(somehow)?",
@@ -67,9 +67,9 @@ export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
             });
             const data = await req.json();
             if (data.status !== "ok") {
-                setError(true, BORROW_RES_TEXT[data.statusCode]);
+                setError(true, APPROVE_RES_TEXT[data.statusCode]);
             } else {
-                setError(false, BORROW_RES_TEXT[data.statusCode]);
+                setError(false, APPROVE_RES_TEXT[data.statusCode]);
                 setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
@@ -108,9 +108,9 @@ export const denyBorrowAction = (setError, setIsButtonEnabled, setOpen, onAction
             });
             const data = await req.json();
             if (data.status !== "ok") {
-                setError(true, BORROW_RES_TEXT[data.statusCode]);
+                setError(true, DENY_RES_TEXT[data.statusCode]);
             } else {
-                setError(false, BORROW_RES_TEXT[data.statusCode]);
+                setError(false, DENY_RES_TEXT[data.statusCode]);
                 setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
