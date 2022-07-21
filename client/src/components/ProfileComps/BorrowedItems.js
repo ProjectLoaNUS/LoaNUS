@@ -5,53 +5,56 @@ import { returnItemAction } from "../ItemDetails/detailsDialogActions";
 import ItemList from "../ItemList/ItemList";
 
 export default function BorrowedItems(props) {
-    const { user } = useAuth();
-    const [ borrowedTexts, setBorrowedTexts ] = useState([]);
-    const [ borrowedImgs, setBorrowedImgs ] = useState([]);
-    const [ isLoading, setIsLoading ] = useState(true);
+  const { user } = useAuth();
+  const [borrowedTexts, setBorrowedTexts] = useState([]);
+  const [borrowedImgs, setBorrowedImgs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+  useEffect(() => {
+    if (user) {
       fetch(`${BACKEND_URL}/api/items/getBorrowedImgsOfUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: user.id
+          userId: user.id,
         }),
       })
-      .then(req => req.json())
-      .then(data => {
-        if (data.status === "ok") {
-          setBorrowedImgs(data.borrowedImgs);
-        }
-      });
+        .then((req) => req.json())
+        .then((data) => {
+          if (data.status === "ok") {
+            setBorrowedImgs(data.borrowedImgs);
+          }
+        });
       fetch(`${BACKEND_URL}/api/items/getBorrowedTextsOfUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: user.id
+          userId: user.id,
         }),
       })
-      .then(req => req.json())
-      .then(data => {
-        if (data.status === "ok") {
-          setBorrowedTexts(data.borrowedTexts);
-          setIsLoading(false);
-        }
-      });
-    }, [user]);
+        .then((req) => req.json())
+        .then((data) => {
+          if (data.status === "ok") {
+            setBorrowedTexts(data.borrowedTexts);
+            setIsLoading(false);
+          }
+        });
+    }
+  }, [user]);
 
-    return (
-      <ItemList
-        isLoading={isLoading}
-        noItemsText="No items borrowed. Check out recent item listings for some options!"
-        buttonText="Return it"
-        onClickAction={returnItemAction}
-        itemImages={borrowedImgs}
-        itemDatas={borrowedTexts}
-        setItemDatas={setBorrowedTexts} />
-    );
+  return (
+    <ItemList
+      isLoading={isLoading}
+      noItemsText="No items borrowed. Check out recent item listings for some options!"
+      buttonText="Return it"
+      onClickAction={returnItemAction}
+      itemImages={borrowedImgs}
+      itemDatas={borrowedTexts}
+      setItemDatas={setBorrowedTexts}
+    />
+  );
 }
