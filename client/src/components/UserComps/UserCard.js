@@ -208,7 +208,9 @@ function UserCard(props) {
         TransitionComponent={Transition}
       >
         <ReviewList userid={props.otheruser._id}></ReviewList>
-        <DialogTitle>Review</DialogTitle>
+        <DialogTitle style={{ fontWeight: 650, color: "#2d3c4a" }}>
+          Review
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Leave a review for {props.otheruser.name}!

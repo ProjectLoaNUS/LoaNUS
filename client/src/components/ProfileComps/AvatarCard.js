@@ -238,11 +238,13 @@ function AvatarCard(props) {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <DialogTitle>Reviews of you</DialogTitle>
+        <DialogTitle style={{ fontWeight: 650, color: "#2d3c4a" }}>
+          Reviews of you
+        </DialogTitle>
         <DialogContent>
           <ReviewList userid={user?.id}></ReviewList>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ justifyContent: "center" }}>
           <ButtonComponent
             state="primary"
             onClick={handleClose}
