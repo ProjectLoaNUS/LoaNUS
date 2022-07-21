@@ -163,48 +163,17 @@ router.post("/getListingsImgsOfUser", async (req, res) => {
   return res.json({ status: "ok", listingsImgs: listingsImgs });
 });
 
-router.post("/getBorrowRequestsTextsOfUser", async (req, res) => {
-  if (!req.body.userId) {
-    return res.json({ status: "error" });
+router.post("/getBorrowRequestUsers", async (req, res) => {
+  const itemId = req.body.itemId;
+  if (!itemId) {
+    return res.json({status: 'error'});
   }
-  const user = await UserModel.findOne({
-    _id: req.body.userId,
-  });
-  if (!user) {
-    return res.json({ status: "error" });
+  const item = await ItemListingsModel.findOne({ _id: itemId });
+  if (!item) {
+    return res.json({status: 'error'});
   }
-  const listingIds = user.itemBorrowRequests;
-  let listingsTexts = await ItemListingsModel.find(
-    { _id: { $in: listingIds } },
-    [
-      "_id",
-      "category",
-      "title",
-      "deadline",
-      "description",
-      "location",
-      "date",
-      "listedBy",
-    ]
-  );
-  return res.json({ status: "ok", listingsTexts: listingsTexts });
-});
-router.post("/getBorrowRequestsImgsOfUser", async (req, res) => {
-  if (!req.body.userId) {
-    return res.json({ status: "error" });
-  }
-  const user = await UserModel.findOne({
-    _id: req.body.userId,
-  });
-  if (!user) {
-    return res.json({ status: "error" });
-  }
-  const listingIds = user.itemBorrowRequests;
-  let listingsImgs = await ItemListingsModel.find(
-    { _id: { $in: listingIds } },
-    ["images"]
-  );
-  return res.json({ status: "ok", listingsImgs: listingsImgs });
+  const userIds = item.borrowRequests;
+  return res.json({status: 'ok', userIds: userIds});
 });
 
 router.post("/requestBorrowItem", async (req, res) => {
