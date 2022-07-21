@@ -1,18 +1,54 @@
 import { BACKEND_URL } from "../../database/const";
 
+export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+    return async () => {
+        const BORROW_RES_TEXT = [
+            "Requested to borrow item!",
+            "Already borrowed by another user",
+            "You already requested to borrow",
+            "Cannot find this item in database",
+            "Cannot authenticate you"
+        ];
+    
+        if (user) {
+            const url = `${BACKEND_URL}/api/items/requestBorrowItem`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    itemId: itemId
+                })
+            });
+            const data = await req.json();
+            if (data.status !== "ok") {
+                setError(true, BORROW_RES_TEXT[data.statusCode]);
+            } else {
+                setError(false, BORROW_RES_TEXT[data.statusCode]);
+                setIsButtonEnabled(false);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 5000);
+                if (onActionDone) {
+                    setTimeout(() => {
+                        onActionDone();
+                    }, 7000);
+                }
+            }
+        } else {
+            setError(true, "Please log in before requesting to borrow this");
+        }
+    }
+}
+
 export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
-        const BORROW_RES_CODES = {
-            SUCCESS: 0,
-            BORROWED_BY_ANOTHER: 1,
-            ALR_BORROWED_BY_U: 2,
-            NO_SUCH_ITEM: 3,
-            NO_SUCH_USER: 4
-        };
         const BORROW_RES_TEXT = [
-            "Item borrowed!",
-            "Already borrowed by another user",
-            "Already borrowed by you",
+            "Item lent to user!",
+            "Already borrowed by another user(somehow)",
+            "Did you borrow this item(somehow)?",
             "Cannot find this item in database",
             "Cannot authenticate you"
         ];
@@ -45,7 +81,48 @@ export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
                 }
             }
         } else {
-            setError(true, "Please log in before borrowing");
+            setError(true, "Cannot identify the user being approved");
+        }
+    }
+}
+
+export const denyBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+    return async () => {
+        const DENY_RES_TEXT = [
+            "Item request rejected!",
+            "Cannot authenticate you",
+            "Cannot find this item in database"
+        ];
+    
+        if (user) {
+            const url = `${BACKEND_URL}/api/items/denyBorrowItem`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    itemId: itemId
+                })
+            });
+            const data = await req.json();
+            if (data.status !== "ok") {
+                setError(true, BORROW_RES_TEXT[data.statusCode]);
+            } else {
+                setError(false, BORROW_RES_TEXT[data.statusCode]);
+                setIsButtonEnabled(false);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 5000);
+                if (onActionDone) {
+                    setTimeout(() => {
+                        onActionDone();
+                    }, 7000);
+                }
+            }
+        } else {
+            setError(true, "Cannot identify the user being rejected");
         }
     }
 }
