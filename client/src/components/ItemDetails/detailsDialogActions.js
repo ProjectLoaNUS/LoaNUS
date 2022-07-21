@@ -1,6 +1,6 @@
 import { BACKEND_URL } from "../../database/const";
 
-export const borrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
         const BORROW_RES_CODES = {
             SUCCESS: 0,

@@ -13,7 +13,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useEffect, useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
 import {
-  borrowAction,
+  approveBorrowAction,
   deleteListingAction,
 } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
@@ -117,7 +117,7 @@ export default function ItemCard(props) {
       if (isOwner) {
           return isOwnerOnClickAction || deleteListingAction;
       } else {
-          return onClickAction || borrowAction;
+          return onClickAction || approveBorrowAction;
       }
   }
 

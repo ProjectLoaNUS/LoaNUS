@@ -15,7 +15,7 @@ import { Buffer } from 'buffer';
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
-import { borrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import { approveBorrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
 
 const ContrastIconBtn = styled(IconButton)`
@@ -80,7 +80,7 @@ export default function SearchTextField() {
     if (isOwner) {
       return deleteListingAction;
     } else {
-      return borrowAction;
+      return approveBorrowAction;
     }
   }
 
