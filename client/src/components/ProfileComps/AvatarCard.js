@@ -1,6 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, forwardRef } from "react";
 import styled from "styled-components";
-import { Avatar, Button, Rating, Snackbar, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Rating,
+  Snackbar,
+  Typography,
+  Dialog,
+  Grow,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
+import PreviewIcon from "@mui/icons-material/Preview";
 import { useAuth } from "../../database/auth";
 import { useState } from "react";
 import ButtonComponent from "../Button";
@@ -8,6 +21,7 @@ import axios from "axios";
 import { Buffer } from "buffer";
 import { BACKEND_URL } from "../../database/const";
 import { format } from "timeago.js";
+import ReviewList from "../UserComps/ReviewList";
 
 const MainContainer = styled.div`
   display: flex;
@@ -48,13 +62,37 @@ const HiddenInput = styled.input`
 const StyledRating = styled(Rating)`
   color: #eb8736;
 `;
+const RatingContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const StyledDialog = styled(Dialog)`
+  & .MuiDialog-paper {
+    overflow-y: hidden;
+  }
+`;
+const GrowUp = styled(Grow)`
+  transform-origin: bottom center;
+`;
+const Transition = forwardRef(function Transition(props, ref) {
+  return <GrowUp ref={ref} {...props} />;
+});
 
 function AvatarCard(props) {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [profileimage, setProfileImage] = useState();
   const [rating, setRating] = useState(null);
+  const [open, setOpen] = useState(false);
   const { user, setUser } = useAuth();
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const hiddenFileInput = React.useRef(null);
 
@@ -139,7 +177,13 @@ function AvatarCard(props) {
       </Avatar>
       <UserName>{user && user.displayName}</UserName>
       <Email>{user && user.email}</Email>
-      <StyledRating value={rating} precision={0.1} readOnly />
+      <RatingContainer>
+        <StyledRating value={rating} precision={0.1} readOnly />
+        <IconButton onClick={handleOpen}>
+          <PreviewIcon fontSize="large" color="primary" />
+        </IconButton>
+      </RatingContainer>
+
       <LocationDateContainer>
         Singapore, Joined {format(user?.createdat)}{" "}
       </LocationDateContainer>
@@ -189,6 +233,24 @@ function AvatarCard(props) {
           </Button>
         }
       />
+      <StyledDialog
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <DialogTitle>Reviews of you</DialogTitle>
+        <DialogContent>
+          <ReviewList userid={user?.id}></ReviewList>
+        </DialogContent>
+        <DialogActions>
+          <ButtonComponent
+            state="primary"
+            onClick={handleClose}
+            text="Close"
+            size="small"
+          />
+        </DialogActions>
+      </StyledDialog>
     </MainContainer>
   );
 }

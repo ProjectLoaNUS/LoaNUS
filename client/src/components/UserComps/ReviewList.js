@@ -1,17 +1,17 @@
 import styled from "styled-components";
 import React from "react";
 import { useState, useEffect } from "react";
-import { List, Divider } from "@mui/material";
+import { List } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
 import ReviewCard from "./ReviewCard";
 
-function ReviewList({ otheruser }) {
+function ReviewList({ userid }) {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/api/user/getreviews?userId=` + otheruser._id)
+      .get(`${BACKEND_URL}/api/user/getreviews?userId=` + userid)
       .then((res) => setReviews(res.data.reviews));
   });
   return (

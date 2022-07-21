@@ -42,8 +42,8 @@ function ReviewCard({ review }) {
     };
     try {
       axios.post(`${BACKEND_URL}/api/user/getProfilePic`, data).then((res) => {
-        if (res.data.image) {
-          const userimage = res.data.image;
+        const userimage = res.data.image;
+        if (Object.keys(userimage).length !== 0) {
           const bin = userimage.data;
           const ctype = userimage.contentType;
           const binary = Buffer.from(bin, "base64");
@@ -51,13 +51,14 @@ function ReviewCard({ review }) {
             type: ctype,
           });
           setProfilePicUrl(URL.createObjectURL(blob));
+        } else {
+          setProfilePicUrl(null);
         }
       });
     } catch (error) {
       console.log(error);
     }
   });
-  console.log(profilePicUrl);
   return (
     <ListItem alignItems="flex-start">
       <ListItemAvatar>

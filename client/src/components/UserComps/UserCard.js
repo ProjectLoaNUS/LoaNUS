@@ -207,7 +207,7 @@ function UserCard(props) {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <ReviewList otheruser={props.otheruser}></ReviewList>
+        <ReviewList userid={props.otheruser._id}></ReviewList>
         <DialogTitle>Review</DialogTitle>
         <DialogContent>
           <DialogContentText>
