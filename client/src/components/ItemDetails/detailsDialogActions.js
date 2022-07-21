@@ -18,7 +18,7 @@ export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
         ];
     
         if (user) {
-            const url = `${BACKEND_URL}/api/items/borrowItem`;
+            const url = `${BACKEND_URL}/api/items/approveBorrowItem`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
