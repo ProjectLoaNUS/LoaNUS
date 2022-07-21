@@ -213,15 +213,17 @@ router.post("/requestBorrowItem", async (req, res) => {
 const rmBorrowRequests = async (userIds, itemId) => {
   if (userIds && itemId) {
     userIds.forEach(userId => {
-      const user = await UserModel.findOne({
+      UserModel.findOne({
         _id: userId,
-      });
-      if (user) {
-        user.itemBorrowRequests = user.itemBorrowRequests.filter(requestId => requestId !== itemId);
-        user.save();
-      } else {
-        console.log(`rmBorrowRequests: Cannot identify user with ID ${userId}`);
-      }
+      })
+        .then(user => {
+          if (user) {
+            user.itemBorrowRequests = user.itemBorrowRequests.filter(requestId => requestId !== itemId);
+            user.save();
+          } else {
+            console.log(`rmBorrowRequests: Cannot identify user with ID ${userId}`);
+          }
+        });
     });
   } else if (!userIds) {
     console.log(`rmBorrowRequests: Invalid user IDs given`);
