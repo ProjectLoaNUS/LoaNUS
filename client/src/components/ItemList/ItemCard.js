@@ -15,6 +15,7 @@ import DetailsDialog from "../ItemDetails/DetailsDialog";
 import {
   requestBorrowAction,
   deleteListingAction,
+  isUserListingRelated,
 } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
 import { Buffer } from "buffer";
@@ -128,6 +129,12 @@ export default function ItemCard(props) {
       return buttonText;
     }
   }
+
+  useEffect(() => {
+    if (user && owner) {
+      setIsOwner(isUserListingRelated(user, {listedBy: owner}));
+    }
+  }, [user, owner]);
 
   useEffect(() => {
     if (!!owner) {
