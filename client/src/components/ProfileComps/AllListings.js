@@ -3,7 +3,7 @@ import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
 
-export default function Listings(props) {
+export default function AllListings(props) {
   const { user } = useAuth();
   const [listingTexts, setListingTexts] = useState(null);
   const [listingImgs, setListingImgs] = useState(null);
