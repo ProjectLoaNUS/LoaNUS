@@ -23,7 +23,7 @@ const Name = styled.span`
   margin-left: 20px;
 `;
 
-function Conversation({ conversation, currentuser }) {
+function Conversation({ conversation, currentuser, search }) {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== currentuser.id);
@@ -51,14 +51,17 @@ function Conversation({ conversation, currentuser }) {
     }
   };
 
-  return (
-    <ConversationContainer>
-      <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
-        {user?.user.displayName[0]}
-      </Avatar>
-      <Name>{user?.user.displayName}</Name>
-    </ConversationContainer>
-  );
+  if (user?.user.displayName.toLowerCase().includes(search.toLowerCase())) {
+    return (
+      <ConversationContainer>
+        <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
+          {user?.user.displayName[0]}
+        </Avatar>
+        <Name>{user?.user.displayName}</Name>
+      </ConversationContainer>
+    );
+  }
+  return null;
 }
 
 export default Conversation;

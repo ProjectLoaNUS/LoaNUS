@@ -35,7 +35,7 @@ const MenuWrapper = styled.div`
 `;
 const ChatMenuInput = styled.input`
   width: 90%;
-  padding: 10px 0;
+  padding: 10px;
   border: none;
   border-bottom: 1px solid gray;
   flex: 0 0 auto;
@@ -55,6 +55,7 @@ function ChatPage() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [followers, setFollowers] = useState([]);
+  const [search, setSearch] = useState("");
   const socket = useRef();
   const navigate = useNavigate();
 
@@ -182,11 +183,21 @@ function ChatPage() {
       <NavigationBar></NavigationBar>
       <ChatContainer>
         <ChatMenuContainer>
-          <ChatMenuInput placeholder="Search for friends" />
+          <ChatMenuInput
+            placeholder="Search for friends"
+            type="text"
+            onChange={(event) => {
+              setSearch(event.target.value);
+            }}
+          />
           <MenuWrapper>
             {conversations.map((conv, index) => (
               <div key={index} onClick={() => setCurrentChat(conv)}>
-                <Conversation conversation={conv} currentuser={user} />
+                <Conversation
+                  conversation={conv}
+                  currentuser={user}
+                  search={search}
+                />
               </div>
             ))}
           </MenuWrapper>
