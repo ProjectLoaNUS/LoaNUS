@@ -3,7 +3,6 @@ import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
 import ProfileLink from "../components/ProfileComps/ProfileLink";
 import AvatarCard from "../components/ProfileComps/AvatarCard";
-import Listings from "../components/ProfileComps/Listings";
 import {
   PROFILE,
   PROFILE_BORROWED,
@@ -22,6 +21,7 @@ import Rewards from "../components/ProfileComps/Rewards";
 import BorrowedItems from "../components/ProfileComps/BorrowedItems";
 import Follow from "../components/ProfileComps/FollowComps/Follow";
 import { useEffect } from "react";
+import Listings from "../components/ProfileComps/Listings";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
