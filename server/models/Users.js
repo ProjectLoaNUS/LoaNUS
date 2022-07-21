@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     required: false,
   },
+  itemBorrowRequests: {
+    type: [String],
+    required: false
+  },
   itemsListed: {
     type: [String],
     required: false,
