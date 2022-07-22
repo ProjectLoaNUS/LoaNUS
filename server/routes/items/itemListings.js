@@ -141,6 +141,7 @@ router.post("/getListingsTextsOfUser", async (req, res) => {
       "location",
       "date",
       "listedBy",
+      "borrowRequests"
     ]
   );
   return res.json({ status: "ok", listingsTexts: listingsTexts });
