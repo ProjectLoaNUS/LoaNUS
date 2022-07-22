@@ -14,6 +14,7 @@ import { theme } from "../Theme";
 import ImageList from "./ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
+import BorrowRequestUsers from "./BorrowRequestUsers";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -139,6 +140,7 @@ export default function DetailsView(props) {
         <Typography variant="body1" align="left">
           {location}
         </Typography>
+        <BorrowRequestUsers isOwner={isOwner} itemId={itemId} />
         <ButtonGroup>
           {!isOwner && (
             <Button variant="outlined" color="primary" onClick={openChat}>
