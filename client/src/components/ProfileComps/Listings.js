@@ -1,6 +1,8 @@
 import { Box, Container, Tab, Tabs } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAuth } from "../../database/auth";
+import { BACKEND_URL } from "../../database/const";
 import AllListings from "./AllListings";
 import ListingsToApprove from "./ListingsToApprove";
 
@@ -23,10 +25,55 @@ const TabsView = styled.div`
 `;
 
 export default function Listings() {
+    const { user } = useAuth();
+    const [listingTexts, setListingTexts] = useState(null);
+    const [listingImgs, setListingImgs] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedTab, setSelectedTab] = useState(0);
+  
     const handleChange = (event, newValue) => {
         setSelectedTab(newValue);
     };
+
+    useEffect(() => {
+      if (user) {
+        if (listingImgs === null) {
+          fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user?.id,
+            }),
+          })
+          .then((req) => req.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              setListingImgs(data.listingsImgs);
+            }
+          });
+        }
+        if (listingTexts === null) {
+          fetch(`${BACKEND_URL}/api/items/getListingsTextsOfUser`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user?.id,
+            }),
+          })
+          .then((req) => req.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              setListingTexts(data.listingsTexts);
+              setIsLoading(false);
+            }
+          });
+        }
+      }
+    }, [user]);
 
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -51,10 +98,18 @@ export default function Listings() {
                 <Tab label="Pending Approval" />
             </Tabs>
             <TabPanel value={selectedTab} index={0} sx={{flex: selectedTab === 0 ? "1 1 auto" : "0 0 0"}}>
-                <AllListings />
+                <AllListings
+                  listingTexts={listingTexts}
+                  setListingTexts={setListingTexts}
+                  listingImgs={listingImgs}
+                  isLoading={isLoading} />
             </TabPanel>
             <TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
-                <ListingsToApprove />
+                <ListingsToApprove
+                  listingTexts={listingTexts}
+                  setListingTexts={setListingTexts}
+                  listingImgs={listingImgs}
+                  isLoading={isLoading} />
             </TabPanel>
         </TabsView>
     );
