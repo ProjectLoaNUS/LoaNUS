@@ -103,7 +103,7 @@ router.post("/login", async (req, res) => {
           photoformat: givenUser.image.contentType,
           followers: givenUser.followers,
           following: givenUser.following,
-          admin: givenUser.admin
+          admin: givenUser.admin,
         },
       });
     }
@@ -166,7 +166,7 @@ router.post("/signUp", async (req, res) => {
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
     recommendation: [],
-    admin: false
+    admin: false,
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -398,7 +398,7 @@ router.get("/getrecommendation", async (req, res) => {
 
     const userid = req.query.userid;
     if (!userid) {
-      return res.json({ status: 'error' });
+      return res.json({ status: "error" });
     }
     const user = await UserModel.findById(userid);
 
