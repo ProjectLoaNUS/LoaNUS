@@ -36,6 +36,9 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     required: false,
   },
+  itemsLiked: {
+    type: [String],
+  },
   points: {
     type: Number,
     required: true,

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useEffect, useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
 import {
@@ -61,6 +62,8 @@ export default function ItemCard(props) {
     props;
   const [open, setOpen] = useState(false);
   const [ownerPicUrl, setOwnerPicUrl] = useState("");
+  const [liked, setLiked] = useState(false);
+  const [likeditems, setLikedItems] = useState([]);
   const { user, setUser } = useAuth();
   const processedImageUrls =
     imageUrls && (imageUrls.length === 0 ? [NoImage] : imageUrls);
@@ -100,6 +103,26 @@ export default function ItemCard(props) {
   const handleLike = (event) => {
     event.stopPropagation();
     event.preventDefault();
+    let data = {
+      itemId: itemId,
+      userId: user.id,
+    };
+    if (liked) {
+      try {
+        axios.post(`${BACKEND_URL}/api/items/unlikeitem`, data);
+      } catch (error) {
+        console.log(error);
+      }
+      setLiked(false);
+    } else {
+      try {
+        axios.post(`${BACKEND_URL}/api/items/likeitem`, data);
+      } catch (error) {
+        console.log(error);
+      }
+
+      setLiked(true);
+    }
   };
 
   const handleMouseDown = (event) => {
@@ -116,9 +139,19 @@ export default function ItemCard(props) {
 
   useEffect(() => {
     if (user && owner) {
-      setIsOwner(isUserListingRelated(user, {listedBy: owner}));
+      setIsOwner(isUserListingRelated(user, { listedBy: owner }));
     }
   }, [user, owner]);
+
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/api/items/getlikeditems?userId=` + user.id)
+      .then((res) => {
+        if (res.data.items.includes(itemId)) {
+          setLiked(true);
+        }
+      });
+  }, [user, itemId]);
 
   useEffect(() => {
     if (!!owner) {
@@ -198,11 +231,15 @@ export default function ItemCard(props) {
           </ImageDiv>
         )}
         <CardActions>
-          { itemDetails?.deadline &&
+          {itemDetails?.deadline && (
             <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
-              <FavoriteBorderIcon />
+              {liked ? (
+                <FavoriteIcon style={{ color: "#f24464" }}></FavoriteIcon>
+              ) : (
+                <FavoriteBorderIcon />
+              )}
             </IconButton>
-          }
+          )}
           <Typography align="center" variant="caption">
             {title}
           </Typography>

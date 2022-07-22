@@ -30,15 +30,11 @@ router.post("/unfollowuser", async (req, res) => {
   let usermodel = await UserModel.findById(user);
   let otherusermodel = await UserModel.findById(followeduser);
   if (usermodel.following.includes(followeduser)) {
-    let index = usermodel.following.indexOf(followeduser);
-
     usermodel.following = usermodel.following.filter(function (item) {
       return item !== followeduser;
     });
   }
   if (otherusermodel.followers.includes(user)) {
-    let index = otherusermodel.followers.indexOf(user);
-
     otherusermodel.followers = otherusermodel.followers.filter(function (item) {
       return item !== user;
     });
