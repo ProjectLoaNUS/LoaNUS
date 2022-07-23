@@ -445,11 +445,13 @@ const itemListings = (socketUtils) => {
     }
     const newPoints = owner.points + POINTS_SYSTEM.LENT_ITEM;
     owner.points = newPoints;
-    owner.save();
-
     user.itemsBorrowed.splice(itemIndex, 1);
-    user.save();
     item.borrowedBy = undefined;
+  
+    socketUtils.notify(null, "" + owner._id, `Item "${item.title}" returned by "${user.name}"`, "/profile");
+
+    owner.save();
+    user.save();
     item.save();
 
     return res.json({ status: "ok", statusCode: RETURN_STATUS_CODES.SUCCESS });
