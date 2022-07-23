@@ -58,6 +58,9 @@ const UserSchema = new mongoose.Schema({
   rewards: {
     type: Array,
   },
+  otp: {
+    type: Number,
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);
