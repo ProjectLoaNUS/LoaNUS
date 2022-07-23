@@ -98,6 +98,7 @@ router.get("/getListingsTexts", (req, res) => {
       "date",
       "listedBy",
       "borrowedBy",
+      "borrowRequests"
     ],
     null,
     (err, listings) => {
