@@ -90,7 +90,7 @@ export default function RecommendationListings() {
         </ListingsPaper>
       ) : (
         <ListingsPaper>
-          <Typography align="left" variant="h4">
+          <Typography align="left" variant="h4" color="#eb8736">
             Log in to see recommendation
           </Typography>
         </ListingsPaper>
