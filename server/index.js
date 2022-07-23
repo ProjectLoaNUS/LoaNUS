@@ -25,6 +25,14 @@ mongoose.connect(
   }
 );
 
+// Start express server
+const server = app.listen(PORT, () => {
+  console.log(`SERVER RUNNING ON PORT ${PORT}`);
+});
+
+// Socket.io server
+const socketUtils = require("./routes/socket")(app, server);
+
 const userRoutes = require("./routes/user");
 app.use("/api/user", userRoutes);
 
@@ -39,14 +47,6 @@ app.use("/api/follow", followingRoutes);
 
 const rewardRoutes = require("./routes/rewards");
 app.use("/api/reward", rewardRoutes);
-
-// Start express server
-const server = app.listen(PORT, () => {
-  console.log(`SERVER RUNNING ON PORT ${PORT}`);
-});
-
-// Socket.io server
-const socketUtils = require("./routes/socket")(app, server);
 
 const itemsRoutes = require("./routes/items/index")(socketUtils);
 app.use("/api", itemsRoutes);
