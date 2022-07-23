@@ -185,7 +185,8 @@ const itemListings = (socketUtils) => {
       BORROWED_BY_ANOTHER: 1,
       ALR_REQ_BY_U: 2,
       NO_SUCH_ITEM: 3,
-      NO_SUCH_USER: 4
+      NO_SUCH_USER: 4,
+      NO_SUCH_OWNER: 5
     };
     const userId = req.body.userId;
     const itemId = req.body.itemId;
@@ -209,6 +210,11 @@ const itemListings = (socketUtils) => {
       // Item is already borrowed by someone. Major error
       return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.BORROWED_BY_ANOTHER });
     }
+    const owner = item.listedBy;
+    if (!owner) {
+      // Cannot identify the item owner
+      return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.NO_SUCH_OWNER });
+    }
     item.borrowRequests.push(userId);
     item.save();
     let itemBorrowRequests = user.itemBorrowRequests;
@@ -223,6 +229,7 @@ const itemListings = (socketUtils) => {
       // This user has already requested to borrow this item. Major error
       return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.ALR_REQ_BY_U });
     }
+    socketUtils.notify(null, owner.id, "New request to borrow your item", "/profile");
     return res.json({ status: "ok", statusCode: REQ_BORROW_RES_CODES.SUCCESS });
   });
 
