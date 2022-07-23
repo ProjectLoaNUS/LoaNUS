@@ -1,16 +1,16 @@
-import { Avatar, Box, Button, ButtonGroup, Grow, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import { Box, Grow, List, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { TransitionGroup } from "react-transition-group";
 import styled from "styled-components";
 import { BACKEND_URL } from "../../database/const";
-import { getProfilePicUrl } from "../../utils/getProfilePic";
+import BorrowRequestUser from "./BorrowRequestUser";
 
 const BoldedTypo = styled(Typography)`
   font-weight: bold;
 `;
 
 export default function BorrowRequestUsers(props) {
-    const { isOwner, itemId } = props;
+    const { isOwner, itemId, setHelperText, setOpen, onActionDone } = props;
     const [users, setUsers] = useState([]);
 
     const getUserNames = useCallback(async () => {
@@ -55,30 +55,6 @@ export default function BorrowRequestUsers(props) {
         getUserNames();
     }, [getUserNames]);
 
-    function BorrowingUser(props) {
-        const {user} = props;
-        const [profilePicUrl, setProfilePicUrl] = useState("");
-
-        useEffect(() => {
-            getProfilePicUrl(user._id).then(url => {
-                setProfilePicUrl(url);
-            });
-        }, [user]);
-
-        return (
-            <ListItem>
-                <ListItemAvatar>
-                    <Avatar src={profilePicUrl} alt={user?.name || "U"} />
-                </ListItemAvatar>
-                <ListItemText primary={user?.name || "..."} />
-                <ButtonGroup aria-label="outlined primary button group">
-                    <Button variant="contained" >Approve</Button>
-                    <Button variant="outlined">Deny</Button>
-                </ButtonGroup>
-            </ListItem>
-        )
-    }
-
     return (
         <TransitionGroup>
           { users?.length &&
@@ -86,8 +62,16 @@ export default function BorrowRequestUsers(props) {
               <Box display="flex" flexDirection="column" width="100%" alignItems="stretch">
                 <BoldedTypo variant="h6" align="left">Borrow requests</BoldedTypo>
                 <List>
-                    {users.map((user, index) => {
-                        return <BorrowingUser key={index} user={user} />
+                    {users.map((user) => {
+                        return (
+                            <BorrowRequestUser
+                              key={user._id}
+                              user={user}
+                              itemId={itemId}
+                              setOpen={setOpen}
+                              setHelperText={setHelperText}
+                              onActionDone={onActionDone} />
+                        )
                     })}
                 </List>
               </Box>

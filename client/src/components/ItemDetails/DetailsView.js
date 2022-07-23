@@ -140,7 +140,12 @@ export default function DetailsView(props) {
         <Typography variant="body1" align="left">
           {location}
         </Typography>
-        <BorrowRequestUsers isOwner={isOwner} itemId={itemId} />
+        <BorrowRequestUsers
+          isOwner={isOwner}
+          itemId={itemId}
+          setHelperText={setButtonHelperText}
+          setOpen={setOpen} 
+          onActionDone={onActionDone} />
         <ButtonGroup>
           {!isOwner && (
             <Button variant="outlined" color="primary" onClick={openChat}>
