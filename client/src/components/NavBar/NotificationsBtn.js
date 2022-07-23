@@ -25,7 +25,10 @@ export default function NotificationsBtn() {
     };
     const onClickNotif = (notification) => {
         rmNotification(notification);
-        navigate(notification.targetUrl);
+        const url = notification.targetUrl;
+        if (url) {
+            navigate(url);
+        }
     };
 
     return (
