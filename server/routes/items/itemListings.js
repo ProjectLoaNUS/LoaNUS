@@ -284,6 +284,8 @@ const itemListings = (socketUtils) => {
     rmBorrowRequests(requestUsers, itemId);
     item.borrowRequests = undefined;
     item.save();
+    socketUtils.notify(null, "" + user._id,
+        `Borrow request for item "${item.title}" approved`, "");
     let itemsBorrowed = user.itemsBorrowed;
     if (!itemsBorrowed) {
       user.itemsBorrowed = [itemId];
@@ -319,6 +321,11 @@ const itemListings = (socketUtils) => {
       return res.json({status: 'error', statusCode: DENY_BORROW_RES_CODES.NO_SUCH_ITEM});
     }
     item.borrowRequests = item.borrowRequests.filter(requestId => requestId !== userId);
+    UserModel.findOne({ _id: userId })
+      .then(user => {
+        socketUtils.notify(null, "" + user._id,
+            `Borrow request for item "${item.title}" rejected`, "");
+      });
     await item.save();
     return res.json({status: 'ok', statusCode: DENY_BORROW_RES_CODES.SUCCESS});
   });
