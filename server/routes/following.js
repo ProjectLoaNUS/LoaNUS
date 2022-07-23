@@ -16,6 +16,9 @@ const following = (socketUtils) => {
       otherusermodel.followers.push(user);
     }
 
+    socketUtils.notify(null, followeduser,
+        `New follower "${usermodel.name}"`, "/profile/follow");
+
     try {
       let checkotheruser = await otherusermodel.save();
       let checkuser = await usermodel.save();
