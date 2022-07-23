@@ -7,7 +7,8 @@ export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
             "Already borrowed by another user",
             "You already requested to borrow",
             "Cannot find this item in database",
-            "Cannot authenticate you"
+            "Cannot authenticate you",
+            "Cannot identify item's owner"
         ];
     
         if (user) {
