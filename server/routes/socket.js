@@ -23,12 +23,28 @@ const socketServer = (app, server) => {
     const getUser = (userId) => {
         return users.find((user) => user.userId === userId);
     };
-    const notifications = require("../utils/notifications")({
-        io: io,
-        addUser: addUser,
-        getUser: getUser,
-        removeUser: removeUser
-    });
+
+    const notify = (senderId, receiverId, message, targetUrl) => {
+        if (!!receiverId) {
+            const receiver = getUser(receiverId);
+            if (receiver) {
+                io.to(receiver.socketId).emit("notification", {
+                    senderId: senderId,
+                    message: message,
+                    targetUrl: targetUrl
+                });
+            } else {
+                console.log(`Invalid receiver ID ${receiverId} given to notify()`);
+            }
+        } else {
+            io.emit("notification", {
+                senderId: senderId,
+                message: message,
+                targetUrl: targetUrl
+            });
+        }
+    };
+
     io.on("connection", (socket) => {
         //When connect
         console.log("socket-io: A user just got connected");
@@ -38,7 +54,7 @@ const socketServer = (app, server) => {
             io.emit("getUsers", users);
         });
         socket.on("notify", ({senderId, receiverId, message, targetUrl}) => {
-            notifications.notify(senderId, receiverId, message, targetUrl);
+            notify(senderId, receiverId, message, targetUrl);
         });
         //Send and get message
         socket.on("sendMessage", ({ senderId, receiverId, text }) => {
@@ -59,11 +75,10 @@ const socketServer = (app, server) => {
             io.emit("getUsers", users);
         });
     });
+
     return {
         io: io,
-        addUser: addUser,
-        getUser: getUser,
-        removeUser: removeUser
+        notify: notify
     };
 };
 
