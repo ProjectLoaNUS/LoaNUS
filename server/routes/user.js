@@ -433,7 +433,7 @@ router.post("/createotp", async (req, res) => {
       <p>To authenticate, please use the following One Time Password (OTP):
       ${otp}</p>
       <p> Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
-      We hope to see you again soon.</p>
+      We hope to hear from you again soon.</p>
       `,
     };
 
