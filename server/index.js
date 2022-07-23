@@ -42,7 +42,7 @@ app.use("/api/conversations", conversationRoutes);
 const messageRoutes = require("./routes/messsages");
 app.use("/api/messages", messageRoutes);
 
-const followingRoutes = require("./routes/following");
+const followingRoutes = require("./routes/following")(socketUtils);
 app.use("/api/follow", followingRoutes);
 
 const rewardRoutes = require("./routes/rewards");
