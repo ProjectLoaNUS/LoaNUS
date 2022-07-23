@@ -15,6 +15,7 @@ import ImageList from "./ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
 import BorrowRequestUsers from "./BorrowRequestUsers";
+import { useEffect } from "react";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -53,6 +54,7 @@ export default function DetailsView(props) {
     description,
     deadline,
     location,
+    borrowRequests,
     buttonAction,
     onActionDone,
     buttonText,
@@ -77,6 +79,14 @@ export default function DetailsView(props) {
   const setIsButtonEnabled = (isEnabled) => {
     setIsBtnDisabled(!isEnabled);
   };
+
+  useEffect(() => {
+    if ((borrowRequests?.length && user) &&
+      borrowRequests.some(userId => userId === user.id)) {
+        setIsBtnDisabled(true);
+        setButtonHelperText("Already requested to borrow this");
+    }
+  }, [borrowRequests, user]);
 
   return (
     <>

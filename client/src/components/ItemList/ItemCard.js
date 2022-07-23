@@ -204,6 +204,7 @@ export default function ItemCard(props) {
         description={description}
         location={location}
         deadline={deadline}
+        borrowRequests={itemDetails.borrowRequests}
         open={open}
         setOpen={setOpen}
         onActionDone={onActionDone}

@@ -30,6 +30,7 @@ export default function DetailsDialog(props) {
     location,
     imageUrls,
     deadline,
+    borrowRequests,
     open,
     setOpen,
     onActionDone,
@@ -94,6 +95,7 @@ export default function DetailsDialog(props) {
                 description={description}
                 deadline={deadline}
                 location={location}
+                borrowRequests={borrowRequests}
                 buttonAction={buttonAction}
                 onActionDone={onActionDone}
                 buttonText={buttonText}
