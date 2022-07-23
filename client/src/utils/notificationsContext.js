@@ -35,6 +35,12 @@ function useNotificationsProvider() {
         }
     }
 
+    const rmNotification = async (notification) => {
+        setNotifications(prevNotifications => {
+            return prevNotifications.filter(other => other !== notification);
+        });
+    };
+
     const clearNotifications = async () => {
         setNotifications([]);
     }
@@ -43,6 +49,7 @@ function useNotificationsProvider() {
         notifications,
         startNotifications,
         notify,
+        rmNotification,
         clearNotifications
     };
 }
