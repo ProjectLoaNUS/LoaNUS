@@ -12,7 +12,7 @@ const ContrastIconBtn = styled(IconButton)`
 `;
 
 export default function NotificationsBtn() {
-    const {notifications, clearNotifications} = useNotifications();
+    const {notifications, rmNotification, clearNotifications} = useNotifications();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -23,9 +23,10 @@ export default function NotificationsBtn() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const onClickNotif = (url) => {
-        navigate(url);
-    }
+    const onClickNotif = (notification) => {
+        rmNotification(notification);
+        navigate(notification.targetUrl);
+    };
 
     return (
         <>
@@ -48,7 +49,7 @@ export default function NotificationsBtn() {
                             <MenuItem
                               key={index}
                               sx={{display: "flex", flexDirection: "column"}}
-                              onClick={() => onClickNotif(notification.targetUrl)}>
+                              onClick={() => onClickNotif(notification)}>
                                 <Typography variant="subtitle2" align="left" noWrap>
                                     {notification.message}
                                 </Typography>
