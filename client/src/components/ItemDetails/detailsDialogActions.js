@@ -43,7 +43,7 @@ export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
     }
 }
 
-export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+export const approveBorrowAction = (setError, setOpen, onActionDone, itemId, user) => {
     return async () => {
         const APPROVE_RES_TEXT = [
             "Item lent to user!",
@@ -70,7 +70,6 @@ export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
                 setError(true, APPROVE_RES_TEXT[data.statusCode]);
             } else {
                 setError(false, APPROVE_RES_TEXT[data.statusCode]);
-                setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
                 }, 5000);
@@ -86,7 +85,7 @@ export const approveBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
     }
 }
 
-export const denyBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
+export const denyBorrowAction = (setError, setOpen, onActionDone, itemId, user) => {
     return async () => {
         const DENY_RES_TEXT = [
             "Item request rejected!",
@@ -111,7 +110,6 @@ export const denyBorrowAction = (setError, setIsButtonEnabled, setOpen, onAction
                 setError(true, DENY_RES_TEXT[data.statusCode]);
             } else {
                 setError(false, DENY_RES_TEXT[data.statusCode]);
-                setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
                 }, 5000);
