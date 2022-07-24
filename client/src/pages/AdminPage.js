@@ -5,6 +5,7 @@ import styled from "styled-components";
 import CreateRewardCard from "../components/Admin/CreateReward/CreateRewardCard";
 import ViewListings from "../components/Admin/ViewListings";
 import ViewRequests from "../components/Admin/ViewRequests";
+import OverView from "../components/Admin/OverView";
 import NavBar from "../components/Admin/NavBar";
 import { ADMIN, CREATE_REWARD, VIEW_LISTINGS, VIEW_REQUESTS } from "./routes";
 
@@ -30,7 +31,7 @@ export default function AdminPage() {
         return <CreateRewardCard />;
       case ADMIN:
       default:
-        return "";
+        return <OverView />;
     }
   }
 
