@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/HomePage";
@@ -30,10 +30,21 @@ import { useNotifications } from "./utils/notificationsContext";
 function App() {
   const { user, setUser, setIsUserLoaded } = useAuth();
   const { socket, connectSocket, disconnectSocket } = useSocket();
-  const { startNotifications } = useNotifications();
+  const { startNotifications, loadNotifications, notifications } = useNotifications();
   const [ isInitialised, setIsInitialised ] = useState(false);
 
+  const loadNotifs = useCallback(async () => {
+    const storedNotifs = localStorage.getItem("notifications");
+    if (storedNotifs) {
+      try {
+        loadNotifications(JSON.parse(storedNotifs));
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, []);
   useEffect(() => {
+    loadNotifs();
     if (!user) {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {

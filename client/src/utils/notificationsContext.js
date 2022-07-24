@@ -16,16 +16,26 @@ function useNotificationsProvider() {
             setSocket(socket);
             socket.on("notification", ({senderId, message, targetUrl}) => {
                 setNotifications(prevNotifs => {
-                    return [
+                    const newNotifs = [
                         ...prevNotifs, 
                         {senderId: senderId, message: message, targetUrl: targetUrl, date: new Date()}
                     ];
+                    localStorage.setItem("notifications", JSON.stringify(newNotifs));
+                    return newNotifs;
                 });
             });
         } else {
             console.log("Error starting notifications in notificationsContext: 'socket' object is invalid");
         }
     }
+
+    const loadNotifications = async (savedNotifs) => {
+        setNotifications(prevNotifs => {
+            const newNotifs = [...savedNotifs, ...prevNotifs];
+            localStorage.setItem("notifications", JSON.stringify(newNotifs));
+            return newNotifs;
+        });
+    };
 
     const notify = async (senderId, receiverId, message, targetUrl) => {
         if (socket) {
@@ -37,17 +47,21 @@ function useNotificationsProvider() {
 
     const rmNotification = async (notification) => {
         setNotifications(prevNotifications => {
-            return prevNotifications.filter(other => other !== notification);
+            const newNotifs = prevNotifications.filter(other => other !== notification);
+            localStorage.setItem("notifications", JSON.stringify(newNotifs));
+            return newNotifs;
         });
     };
 
     const clearNotifications = async () => {
         setNotifications([]);
+        localStorage.setItem("notifications", "");
     }
 
     return {
         notifications,
         startNotifications,
+        loadNotifications,
         notify,
         rmNotification,
         clearNotifications
