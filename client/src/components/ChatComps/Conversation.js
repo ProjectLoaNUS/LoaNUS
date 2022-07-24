@@ -10,6 +10,7 @@ const ConversationContainer = styled.div`
   align-items: center;
   padding: 10px;
   margin-top: 15px;
+  cursor: pointer;
 
   &:hover {
     background-color: #d3d3d3;
@@ -21,7 +22,7 @@ const Name = styled.span`
   margin-left: 20px;
 `;
 
-function Conversation({ conversation, currentuser }) {
+function Conversation({ conversation, currentuser, search }) {
   const [ userName, setUserName ] = useState("");
   const [ userPhotoUrl, setUserPhotoUrl ] = useState("");
 
@@ -66,18 +67,21 @@ function Conversation({ conversation, currentuser }) {
     getProfilePic();
   }, [getProfilePic]);
 
-  return (
-    <ConversationContainer>
-      <Avatar src={userPhotoUrl} alt="U">
-        {userName ?
-            userName.charAt(0)
-          :
-            ""
-        }
-      </Avatar>
-      <Name>{userName}</Name>
-    </ConversationContainer>
-  );
+  if (userName.toLowerCase().includes(search.toLowerCase())) {
+    return (
+      <ConversationContainer>
+        <Avatar src={userPhotoUrl} alt="U">
+          {userName ?
+              userName.charAt(0)
+            :
+              ""
+          }
+        </Avatar>
+        <Name>{userName}</Name>
+      </ConversationContainer>
+    );
+  }
+  return null;
 }
 
 export default Conversation;

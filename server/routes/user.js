@@ -103,7 +103,8 @@ router.post("/login", async (req, res) => {
           photoformat: givenUser.image.contentType,
           followers: givenUser.followers,
           following: givenUser.following,
-          admin: givenUser.admin
+          admin: givenUser.admin,
+          createdat: givenUser.createdAt,
         },
       });
     }
@@ -166,7 +167,7 @@ router.post("/signUp", async (req, res) => {
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
     recommendation: [],
-    admin: false
+    admin: false,
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -430,7 +431,7 @@ router.get("/getrecommendation", async (req, res) => {
 
     const userid = req.query.userid;
     if (!userid) {
-      return res.json({ status: 'error' });
+      return res.json({ status: "error" });
     }
     const user = await UserModel.findById(userid);
 
@@ -442,6 +443,65 @@ router.get("/getrecommendation", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json({ status: "error" });
+  }
+});
+
+// Reviews
+
+router.post("/createreview", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const otheruserId = req.body.otheruserId;
+    const user = await UserModel.findById(userId);
+    const otheruser = await UserModel.findById(otheruserId);
+    const reviewer = {
+      reviewee: otheruserId,
+      revieweeName: req.body.otheruserName,
+      rating: req.body.rating,
+      comments: req.body.comments,
+    };
+    const reviewee = {
+      reviewer: userId,
+      reviewerName: req.body.userName,
+      rating: req.body.rating,
+      comments: req.body.comments,
+    };
+    user.reviewscreated.unshift(reviewer);
+    otheruser.reviews.unshift(reviewee);
+    await user.save();
+    await otheruser.save();
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+//get rating
+router.get("/getrating", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    let array = [];
+    reviews.forEach((element) => array.unshift(element["rating"]));
+    const sum = array.reduce((a, b) => a + b, 0);
+    const avg = sum / array.length || 0;
+    res.status(200).json({ status: "success", rating: avg });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "error" });
+  }
+});
+
+router.get("/getreviews", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    res.status(200).json({ status: "success", reviews: reviews });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "error" });
   }
 });
 
