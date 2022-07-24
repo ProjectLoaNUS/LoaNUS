@@ -9,6 +9,7 @@ import { Container } from "@mui/material";
 import { BACKEND_URL } from "../../../database/const";
 import { deleteRequestAction } from "../../ItemDetails/detailsDialogActions";
 import YourRequests from "./YourRequests";
+import AllMatches from "./PotentialMatches/AllMatches";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -23,6 +24,7 @@ const MainContainer = styled.div`
   }
   & .MuiContainer-root {
     padding: 0;
+    overflow-y: hidden;
 
     & .MuiBox-root {
       display: flex;
@@ -89,8 +91,8 @@ function Requests() {
   return (
     <MainContainer>
       <Tabs variant="scrollable" value={selectedTab} onChange={handleChange}>
-        <Tab label="Your Requests"></Tab>
-        {/*<Tab label="Requests for approval"></Tab>*/}
+        <Tab label="Your Requests" />
+        <Tab label="Potential Matches" />
       </Tabs>
       <TabPanel value={selectedTab} index={0} sx={{flex: selectedTab === 0 ? "1 1 auto" : "0 0 0"}}>
         <YourRequests
@@ -99,9 +101,9 @@ function Requests() {
           setRequests={setRequests}
           deleteRequestAction={deleteRequestAction} />
       </TabPanel>
-      {/*<TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
-        No Requests currently
-      </TabPanel>*/}
+      <TabPanel value={selectedTab} index={1} sx={{flex: selectedTab === 1 ? "1 1 auto" : "0 0 0"}}>
+        <AllMatches requests={requests} />
+      </TabPanel>
     </MainContainer>
   );
 }
