@@ -25,6 +25,7 @@ import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
 import { getProfilePicUrl } from "../../utils/getProfilePic";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -91,6 +92,8 @@ export default function ItemCard(props) {
   const description = itemDetails.description;
   const location = itemDetails.location;
   const [isOwner, setIsOwner] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const reactLocation = useLocation();
 
   const handleShowDetails = async (category, userid) => {
     setOpen(true);
@@ -138,7 +141,7 @@ export default function ItemCard(props) {
   };
 
   const getItemCardAction = () => {
-      if (isOwner) {
+      if (isOwner || isAdmin) {
           return isOwnerOnClickAction || deleteListingAction;
       } else {
           return onClickAction || requestBorrowAction;
@@ -146,7 +149,7 @@ export default function ItemCard(props) {
   }
 
   const getButtonText = (isUserOwner) => {
-    if (isUserOwner) {
+    if (isAdmin || isUserOwner) {
       return isOwnerButtonText || "Delete Listing";
     } else {
       return buttonText;
@@ -158,6 +161,11 @@ export default function ItemCard(props) {
       setIsOwner(isUserListingRelated(user, { listedBy: owner }));
     }
   }, [user, owner]);
+  useEffect(() => {
+    if (reactLocation.pathname === "/admin/listings") {
+      setIsAdmin(true);
+    }
+  }, [reactLocation]);
 
   useEffect(() => {
     if (user) {
@@ -219,7 +227,7 @@ export default function ItemCard(props) {
           </ImageDiv>
         )}
         <CardActions>
-          {itemDetails?.deadline && (
+          {(!isOwner && !isAdmin && itemDetails?.deadline) && (
             <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
               {liked ? (
                 <FavoriteIcon style={{ color: "#f24464" }}></FavoriteIcon>

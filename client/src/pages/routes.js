@@ -16,3 +16,5 @@ export const PROFILE_REQUESTS = `${PROFILE}/requests`;
 export const PROFILE_REWARDS_CLAIMED = `${PROFILE}/rewards-claimed`;
 export const ADMIN = "/admin";
 export const CREATE_REWARD = `${ADMIN}/create-reward`;
+export const VIEW_LISTINGS = `${ADMIN}/listings`;
+export const VIEW_REQUESTS = `${ADMIN}/requests`;
