@@ -85,7 +85,7 @@ function Requests() {
   };
 
   useEffect(() => {
-    if (requests === null) {
+    if (user && requests === null) {
       fetch(`${BACKEND_URL}/api/items/getRequestsOfUser`, {
         method: "POST",
         headers: {
