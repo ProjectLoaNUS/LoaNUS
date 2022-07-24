@@ -80,7 +80,7 @@ function OverView() {
               <ListItemText primary="- Delete requests/listings unnecessarily " />
             </ListItem>
             <ListItem>
-              <ListItemText primary="- Initate random conversation with user" />
+              <ListItemText primary="- Initate inappropriate conversation with user" />
             </ListItem>
             <ListItem>
               <ListItemText primary="- Amend user data" />
