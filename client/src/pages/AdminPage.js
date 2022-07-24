@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import CreateRewardCard from "../components/Admin/CreateReward/CreateRewardCard";
 import ViewListings from "../components/Admin/ViewListings";
-import ViewRequests from "../components/Admin/ViewRequets";
+import ViewRequests from "../components/Admin/ViewRequests";
 import NavBar from "../components/Admin/NavBar";
 import { ADMIN, CREATE_REWARD, VIEW_LISTINGS, VIEW_REQUESTS } from "./routes";
 
