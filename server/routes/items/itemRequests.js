@@ -66,9 +66,21 @@ const itemRequests = (socketUtils) => {
       return res.json({status: 'error'});
     }
     const requestIds = user.itemsRequested;
-    let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'date', 'listedBy']);
+    let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'date', 'listedBy', 'matchingListings']);
     return res.json({status: 'ok', requests: requests});
   });
+  router.post("/getMatchingListingsOf", async (req, res) => {
+    const requestId = req.body.requestId;
+    if (!requestId) {
+      return res.json({status: "error", message: "Invalid request ID provided"});
+    }
+    const request = await ItemRequestsModel.findOne({ _id: requestId }, ['matchingListings']);
+    if (!request) {
+      return res.json({status: "error", message: `Unable to find request with ID ${requestId}`});
+    }
+    const matchingListings = request.matchingListings;
+    return res.json({status: "ok", matchingListings: matchingListings});
+  })
 
   router.post("/rmRequest", async (request, response) => {
     const itemId = request.body.itemId;
