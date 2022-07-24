@@ -68,6 +68,9 @@ const UserSchema = new mongoose.Schema(
     reviewscreated: {
       type: Array,
     },
+    otp: {
+      type: Number,
+    }
   },
   { timestamps: true }
 );

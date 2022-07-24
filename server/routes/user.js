@@ -446,6 +446,73 @@ router.get("/getrecommendation", async (req, res) => {
   }
 });
 
+// create otp into user schema
+router.post("/createotp", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const otp = req.body.otp;
+    const user = await UserModel.findOne({ email: email });
+    user.otp = otp;
+    await user.save();
+    const msg = {
+      to: req.body.email,
+      from: "yongbin0162@gmail.com",
+      subject: "LoaNUS - OTP verification",
+      text: `To authenticate, please use the following One Time Password (OTP):
+      ${otp} \n Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
+      We hope to see you again soon. \n If you didn't request to reset your password, you may safely ignore this email.
+      `,
+      html: `<h1>Dear User,</h1>
+      <p>To authenticate, please use the following One Time Password (OTP):
+      ${otp}</p>
+      <p> Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
+      We hope to hear from you again soon.</p>
+      <p> If you didn't request to reset your password, you may safely ignore this email.</p>
+      `,
+    };
+
+    sgMail.send(msg, function (err, info) {
+      if (err) {
+        console.log("Email Not Sent");
+      }
+    });
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(err);
+    res.json({ status: "error" });
+  }
+});
+
+// get otp
+router.get("/getotp", async (req, res) => {
+  try {
+    const email = req.query.email;
+    const user = await UserModel.findOne({ email: email });
+    let otp = user.otp;
+    res.json({ status: "success", otp: otp });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+
+// change password
+router.post("/changepassword", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.newpassword;
+    const user = await UserModel.findOne({ email: email });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+
+    await user.save();
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+
 // Reviews
 
 router.post("/createreview", async (req, res) => {
@@ -476,6 +543,7 @@ router.post("/createreview", async (req, res) => {
     res.json({ status: "error" });
   }
 });
+    
 //get rating
 router.get("/getrating", async (req, res) => {
   try {

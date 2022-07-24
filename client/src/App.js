@@ -20,9 +20,11 @@ import {
   CATEGORY_LISTINGS,
   CLAIM_REWARD,
   ADMIN,
+  PASSWORD_RESET,
 } from "./pages/routes";
 import ClaimRewardPage from "./pages/ClaimRewardPage";
 import AdminPage from "./pages/AdminPage";
+import PasswordResetPage from "./pages/PasswordResetPage";
 import { useAuth } from "./database/auth";
 import { useSocket } from "./utils/socketContext";
 import { useNotifications } from "./utils/notificationsContext";
@@ -85,6 +87,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path={SIGN_IN} element={<SignInPage />} />
+          <Route path={PASSWORD_RESET} element={<PasswordResetPage />} />
           <Route path={CLAIM_REWARD} element={<ClaimRewardPage />} />
           <Route path={CHAT} element={<ChatPage />} />
           <Route path={`${PROFILE}/*`} element={<ProfilePage />} />

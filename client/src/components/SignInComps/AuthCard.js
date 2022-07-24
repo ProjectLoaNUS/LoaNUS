@@ -5,12 +5,11 @@ import {
   Fade,
   FormHelperText,
   Grow,
-  Link,
   Typography,
   Zoom,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import {
   hasUserResultCodes,
@@ -25,6 +24,8 @@ import SignInComp, { signInBtnText } from "./SignInComp";
 import SignUpComp, { signUpBtnText } from "./SignUpComp";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
+import axios from "axios";
+import { BACKEND_URL } from "../../database/const";
 
 export const FlexCard = styled(Card)`
   display: flex;
@@ -116,7 +117,7 @@ export default function AuthCard() {
 
   const checkEmail = async (email) => {
     const userStatus = await hasUser(email);
-    switch(userStatus) {
+    switch (userStatus) {
       case hasUserResultCodes.HAS_USER:
         setShowSignIn(true);
         break;
@@ -140,15 +141,15 @@ export default function AuthCard() {
     completeSignInUserPass(givenEmail, givenPassword1);
   };
 
-  const prevPage = () => {
-    navigate(-1);
+  const homePage = () => {
+    navigate("/");
   };
 
   const completeSignInUserPass = (email, password) => {
     signInUserPass(email, password).then((resultCode) => {
       switch (resultCode) {
         case signInResultCodes.SUCCESS:
-          prevPage();
+          homePage();
           break;
         case signInResultCodes.INVALID_PASSWORD:
         case signInResultCodes.NO_SUCH_USER:
@@ -185,6 +186,15 @@ export default function AuthCard() {
     }
   };
 
+  const handlepassword = () => {
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const data = {
+      email: givenEmail,
+      otp: otp,
+    };
+    axios.post(`${BACKEND_URL}/api/user/createotp`, data);
+  };
+
   useEffect(() => {
     if (isPwError || isEmailError) {
       setIsFormError(true);
@@ -195,102 +205,135 @@ export default function AuthCard() {
     }
   }, [isEmailError, isFormError, isPwError]);
 
-    useEffect(() => {
-        if (isPwError || isEmailError) {
-            setIsFormError(true);
-        } else {
-            if (isFormError) {
-                setIsFormError(false);
-            }
-        }
-    }, [isEmailError, isFormError, isPwError]);
+  useEffect(() => {
+    if (isPwError || isEmailError) {
+      setIsFormError(true);
+    } else {
+      if (isFormError) {
+        setIsFormError(false);
+      }
+    }
+  }, [isEmailError, isFormError, isPwError]);
 
-    return (
-        <FlexCard 
-            component="form" 
-            onSubmit={ showSignIn ? handleSignIn : 
-                    (showSignUp ? handleSignUp : 
-                            handleEmail) }
-            ref={cardRef}>
-            <CentredTypo variant="body1">{ emailTitle }</CentredTypo>
-            <TransitionGroup>
-                { showSignUp &&
-                    <GrowUp timeout={500}>
-                        <GapFormDiv>
-                            <SignUpComp 
-                                setName={setGivenName} setAge={setGivenAge} showSignUp={showSignUp} />
-                        </GapFormDiv>
-                    </GrowUp>}
-                <EmailComp
-                    isEmailError={isEmailError}
-                    setEmail={ setGivenEmail }
-                    setIsEmailError={setIsEmailError}
-                    setIsPwError={setIsPwError} />
-                { (showSignIn || showSignUp) && 
-                    <GrowDown timeout={1000}>
-                        <FormDiv>
-                            <SignInComp 
-                                id="password1"
-                                isPwError={isPwError}
-                                otherPw={showSignUp && givenPassword2}
-                                setIsPwError={showSignUp && setIsPwError}
-                                setPassword={setGivenPassword1} /> 
-                            {showSignIn && <AccentLink component={Link} to="#">Can't log in?</AccentLink>}
-                        </FormDiv>
-                    </GrowDown> }
-                { showSignUp &&
-                    <GrowDown timeout={1000}>
-                        <FormDiv>
-                            <SignInComp 
-                                id="password2"
-                                label="Re-enter password"
-                                isPwError={isPwError}
-                                otherPw={givenPassword1}
-                                setIsPwError={setIsPwError}
-                                setPassword={setGivenPassword2} />
-                        </FormDiv>
-                    </GrowDown> }
-                { showSignUp && 
-                    (<Fade timeout={{appear: 1000, enter: 1000, exit: 0}}>
-                        <WideBox>
-                            <GrowBtn
-                                id="sign-in"
-                                variant="outlined"
-                                color="success"
-                                onClick={() => {
-                                    setIsPwError(false);
-                                    setShowSignIn(true);
-                                    setShowSignUp(false);
-                                }}>
-                                Sign In
-                            </GrowBtn>
-                            <GrowBtn
-                                id="submit"
-                                type="submit"
-                                variant="contained"
-                                disabled={isFormError}
-                                color="success">
-                                    { signUpBtnText }
-                            </GrowBtn>
-                        </WideBox>
-                    </Fade>) }
-                { !showSignUp &&
-                    (<Fade appear={false} style={{transitionDelay: showSignUp ? '-1000ms' : '750ms'}} timeout={{enter: 1000, exit: 0}}>
-                        <Button
-                            id="submit"
-                            type="submit"
-                            variant="contained"
-                            disabled={isFormError}
-                            color="success">
-                            { showSignIn ? signInBtnText :  emailBtnText }
-                        </Button>
-                    </Fade>) }
-                { !!submitErrHelperText && 
-                    (<Zoom style={{transitionDelay: isSubmitErr ? '0ms' : '750ms'}} timeout={isSubmitErr ? 500 : 1000}>
-                        <FormHelperText id="errorHelper" error={isSubmitErr}>{submitErrHelperText}</FormHelperText>
-                    </Zoom>) }
-            </TransitionGroup>
-            <AltSignInComp />
-        </FlexCard>
-    );
+  return (
+    <FlexCard
+      component="form"
+      onSubmit={
+        showSignIn ? handleSignIn : showSignUp ? handleSignUp : handleEmail
+      }
+      ref={cardRef}
+    >
+      <CentredTypo variant="body1">{emailTitle}</CentredTypo>
+      <TransitionGroup>
+        {showSignUp && (
+          <GrowUp timeout={500}>
+            <GapFormDiv>
+              <SignUpComp
+                setName={setGivenName}
+                setAge={setGivenAge}
+                showSignUp={showSignUp}
+              />
+            </GapFormDiv>
+          </GrowUp>
+        )}
+        <EmailComp
+          isEmailError={isEmailError}
+          setEmail={setGivenEmail}
+          setIsEmailError={setIsEmailError}
+          setIsPwError={setIsPwError}
+        />
+        {(showSignIn || showSignUp) && (
+          <GrowDown timeout={1000}>
+            <FormDiv>
+              <SignInComp
+                id="password1"
+                isPwError={isPwError}
+                otherPw={showSignUp && givenPassword2}
+                setIsPwError={showSignUp && setIsPwError}
+                setPassword={setGivenPassword1}
+              />
+              {showSignIn && (
+                <AccentLink
+                  onClick={handlepassword}
+                  to="/password-reset"
+                  state={{ email: givenEmail }}
+                >
+                  Can't log in?
+                </AccentLink>
+              )}
+            </FormDiv>
+          </GrowDown>
+        )}
+        {showSignUp && (
+          <GrowDown timeout={1000}>
+            <FormDiv>
+              <SignInComp
+                id="password2"
+                label="Re-enter password"
+                isPwError={isPwError}
+                otherPw={givenPassword1}
+                setIsPwError={setIsPwError}
+                setPassword={setGivenPassword2}
+              />
+            </FormDiv>
+          </GrowDown>
+        )}
+        {showSignUp && (
+          <Fade timeout={{ appear: 1000, enter: 1000, exit: 0 }}>
+            <WideBox>
+              <GrowBtn
+                id="sign-in"
+                variant="outlined"
+                color="success"
+                onClick={() => {
+                  setIsPwError(false);
+                  setShowSignIn(true);
+                  setShowSignUp(false);
+                }}
+              >
+                Sign In
+              </GrowBtn>
+              <GrowBtn
+                id="submit"
+                type="submit"
+                variant="contained"
+                disabled={isFormError}
+                color="success"
+              >
+                {signUpBtnText}
+              </GrowBtn>
+            </WideBox>
+          </Fade>
+        )}
+        {!showSignUp && (
+          <Fade
+            appear={false}
+            style={{ transitionDelay: showSignUp ? "-1000ms" : "750ms" }}
+            timeout={{ enter: 1000, exit: 0 }}
+          >
+            <Button
+              id="submit"
+              type="submit"
+              variant="contained"
+              disabled={isFormError}
+              color="success"
+            >
+              {showSignIn ? signInBtnText : emailBtnText}
+            </Button>
+          </Fade>
+        )}
+        {!!submitErrHelperText && (
+          <Zoom
+            style={{ transitionDelay: isSubmitErr ? "0ms" : "750ms" }}
+            timeout={isSubmitErr ? 500 : 1000}
+          >
+            <FormHelperText id="errorHelper" error={isSubmitErr}>
+              {submitErrHelperText}
+            </FormHelperText>
+          </Zoom>
+        )}
+      </TransitionGroup>
+      <AltSignInComp />
+    </FlexCard>
+  );
 }
