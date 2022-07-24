@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import axios from "axios";
-import { Card, Slide, Typography } from "@mui/material";
+import { Box, Card, Slide, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
@@ -15,6 +15,13 @@ const CreateCard = styled(Card)`
   align-self: center;
   padding: 0.5em;
   gap: 1em;
+`;
+const Requests = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: max(210px, 80%);
+  flex: 1 1 auto;
 `;
 const MainContainer = styled.div`
   min-height: 100%;
@@ -76,7 +83,7 @@ function ViewRequests() {
         setIsLoading(false);
       }
     });
-  });
+  }, []);
 
   return (
     <CreateCard>
@@ -84,13 +91,17 @@ function ViewRequests() {
         Remove inappropriate requests
       </Typography>
 
-      <ItemList
-        isLoading={isLoading}
-        buttonText="Delete request"
-        noItemsText="No item requests yet. Create one?"
-        itemDatas={requests}
-        setItemDatas={setRequests}
-      />
+      <Requests>
+        <ItemList
+          ListContaier={RequestsGrid}
+          isLoading={isLoading}
+          buttonText="Delete request"
+          isOwnerButtonText="Delete request"
+          noItemsText="No item requests yet. Create one?"
+          itemDatas={requests}
+          setItemDatas={setRequests}
+        />
+      </Requests>
     </CreateCard>
   );
 }

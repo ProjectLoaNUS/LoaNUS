@@ -16,6 +16,13 @@ const CreateCard = styled(Card)`
   padding: 0.5em;
   gap: 1em;
 `;
+const Listings = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: max(210px, 80%);
+  flex: 1 1 auto;
+`;
 
 function ViewListings() {
   const [listingDetails, setListingDetails] = useState([]);
@@ -42,13 +49,15 @@ function ViewListings() {
       <Typography align="center" variant="h5" fontWeight="600" color="#eb8736">
         Remove inappropriate listings
       </Typography>
-      <ItemList
-        isLoading={isLoading}
-        noItemsText="No item listings yet. Create one?"
-        itemImages={listingImgs}
-        itemDatas={listingDetails}
-        setItemDatas={setListingDetails}
-      />
+      <Listings>
+        <ItemList
+          isLoading={isLoading}
+          noItemsText="No item listings yet. Create one?"
+          itemImages={listingImgs}
+          itemDatas={listingDetails}
+          setItemDatas={setListingDetails}
+        />
+      </Listings>
     </CreateCard>
   );
 }
