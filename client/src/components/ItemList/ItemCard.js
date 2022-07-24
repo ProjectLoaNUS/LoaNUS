@@ -78,10 +78,10 @@ export default function ItemCard(props) {
     {},
     { year: "numeric", month: "short", day: "numeric" }
   );
-  const deadline = new Date(itemDetails.deadline).toLocaleDateString(
+  const deadline = itemDetails.deadline && (new Date(itemDetails.deadline).toLocaleDateString(
     {},
     { year: "numeric", month: "short", day: "numeric" }
-  );
+  ));
   const category = CATEGORIES[itemDetails.category];
   const title = itemDetails.title;
   const owner = itemDetails.listedBy;
