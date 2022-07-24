@@ -4,6 +4,61 @@ const itemRequests = (socketUtils) => {
   const ItemRequestsModel = require("../../models/ItemRequests");
   const UserModel = require("../../models/Users");
 
+  const findMatchingListings = async (request) => {
+    const requestId = "" + request._id;
+    const requestTitle = request.title;
+    const owner = request.listedBy;
+    if (requestTitle) {
+      const ItemListingsModel = require("../../models/ItemListings");
+      const resultData = {
+        _id: 1,
+        category: 1
+      };
+      let results = await ItemListingsModel.aggregate([
+        {
+          $search: {
+            index: "listings",
+            text: {
+              query: requestTitle,
+              path: ["title", "description"]
+            }
+          },
+        },
+        {
+          $limit: 15,
+        },
+        {
+          $project: resultData,
+        },
+      ]);
+      if (results?.length) {
+        let matchingListings = request.matchingListings && [...request.matchingListings];
+        for (const listing of results) {
+          // Matching listing must be the same category as item request
+          if (listing.category === request.category) {
+            const listingId = "" + listing._id;
+            const thisListing = await ItemListingsModel.findOne({ _id: listingId });
+            const listOwnerId = thisListing.listedBy.id;
+            // Matching listing is created by another user
+            if (listOwnerId !== owner.id) {
+              // Notify user who made this request that a potential match was found
+              socketUtils.notify(null, owner.id,
+                  `New match for your request ${requestTitle}`, "/profile/requests");
+              if (matchingListings && !matchingListings.includes(listingId)) {
+                matchingListings.push(listingId);
+              } else if (!matchingListings) {
+                matchingListings = [listingId];
+              }
+            }
+          }
+        }
+        ItemRequestsModel.findOneAndUpdate({ _id: requestId },
+            { matchingListings: matchingListings }).exec();
+      }
+    } else {
+      console.log("Invalid listing title passed to findMatchingRequests()");
+    }
+  };
   router.post("/addRequest", async (req, res) => {
       const creator = req.body.listedBy;
       if(!creator) {
@@ -29,6 +84,7 @@ const itemRequests = (socketUtils) => {
               if (err) {
                 console.log(err);
               } else if (user) {
+                findMatchingListings(savedRequest);
                 let itemsRequested = user.itemsRequested;
                 const requestId = "" + savedRequest._id;
                 if (!itemsRequested) {
