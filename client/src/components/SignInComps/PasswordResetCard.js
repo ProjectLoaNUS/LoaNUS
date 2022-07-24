@@ -140,7 +140,7 @@ function PasswordResetCard() {
           <Title>Verification Required</Title>
           <Paragraph>
             To continue, complete this verification step. We've sent a One Time
-            Password (OTP) to the email. Please enter it below
+            Password (OTP) to the email {email}. Please enter it below
           </Paragraph>
           <TextField
             id="outlined-basic"
