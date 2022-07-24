@@ -5,6 +5,8 @@ import { useAuth } from "../../../database/auth";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
+import { Typography } from "@mui/material";
+import { LoadingFollowCards } from "./FollowCard";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -24,35 +26,47 @@ const FollowingList = styled(List)`
 
 function FollowingDisplay() {
   const { user } = useAuth();
-  const [following, setFollowing] = useState([]);
+  const [ following, setFollowing ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   useEffect(() => {
-    const getfollowing = async () => {
+    const getFollowing = async () => {
       try {
         const res = await axios.get(
           `${BACKEND_URL}/api/follow/getfollowing?userId=` + user.id
         );
+        setIsLoading(false);
         setFollowing(res.data);
       } catch (err) {
         console.log(err);
       }
     };
-    getfollowing();
+    getFollowing();
   }, []);
+
   return (
     <MainContainer>
-      <FollowingList>
-        {following.map((u, index) => (
-          <FollowCard
-            key={index}
-            image={u.image}
-            username={u.name}
-            id={u._id}
-            followed={true}
-            activatebutton={true}
-          ></FollowCard>
-        ))}
-      </FollowingList>
+      { following && following.length ?
+        <FollowingList>
+          {following.map((u, index) => (
+            <FollowCard
+              key={index}
+              image={u.image}
+              username={u.name}
+              id={u._id}
+              followed={true}
+              activatebutton={true}
+            ></FollowCard>
+          ))}
+        </FollowingList> :
+        ( isLoading ?
+          <LoadingFollowCards numOfCards={3} />
+          :
+          <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>
+            Not following anyone. Follow some users in the 'Search users' tab!
+          </Typography>
+        )
+      }
     </MainContainer>
   );
 }

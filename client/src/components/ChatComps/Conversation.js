@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
-import { Buffer } from "buffer";
+import { getProfilePicUrl } from "../../utils/getProfilePic";
 
 const ConversationContainer = styled.div`
   display: flex;
@@ -23,39 +22,60 @@ const Name = styled.span`
 `;
 
 function Conversation({ conversation, currentuser }) {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const friendId = conversation.members.find((m) => m !== currentuser.id);
+  const [ userName, setUserName ] = useState("");
+  const [ userPhotoUrl, setUserPhotoUrl ] = useState("");
 
-    const getUser = async () => {
-      try {
-        const res = await axios.get(
-          `${BACKEND_URL}/api/user/getUserDetails?userId=` + friendId
-        );
-        setUser(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getUser();
-  }, [currentuser, conversation]);
-  const Bintourl = (data, contentType) => {
-    if (data && contentType) {
-      const binary = Buffer.from(data);
-      const blob = new Blob([binary.buffer], { type: contentType });
-      const url = URL.createObjectURL(blob);
-      return url;
-    } else {
-      return null;
+  const getUser = useCallback(async () => {
+    try {
+      const friendId = conversation.members.find((m) => m !== currentuser.id);
+      fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          users: [{userId: friendId}]
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok' && data.userDetails?.length) {
+          setUserName(data.userDetails[0].name);
+        }
+      });
+    } catch (err) {
+      console.log(err);
     }
-  };
+  }, [conversation, currentuser]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  const getProfilePic = useCallback(async () => {
+    if (conversation && currentuser) {
+      const friendId = conversation.members.find((m) => m !== currentuser.id);
+      if (friendId) {
+        const url = await getProfilePicUrl(friendId);
+        setUserPhotoUrl(url);
+      }
+    }
+  }, [conversation, currentuser]);
+
+  useEffect(() => {
+    getProfilePic();
+  }, [getProfilePic]);
 
   return (
     <ConversationContainer>
-      <Avatar src={Bintourl(user?.user.photodata, user?.user.photoformat)}>
-        {user?.user.displayName[0]}
+      <Avatar src={userPhotoUrl} alt="U">
+        {userName ?
+            userName.charAt(0)
+          :
+            ""
+        }
       </Avatar>
-      <Name>{user?.user.displayName}</Name>
+      <Name>{userName}</Name>
     </ConversationContainer>
   );
 }
