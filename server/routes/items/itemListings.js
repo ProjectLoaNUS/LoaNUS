@@ -26,6 +26,65 @@ const itemListings = (socketUtils) => {
       contentType: type,
     };
   };
+
+  const findMatchingRequests = async (listing) => {
+    const listingId = "" + listing._id;
+    const listingTitle = listing.title;
+    const listingDesc = listing.description;
+    const owner = listing.listedBy;
+    if (listingTitle) {
+      const ItemRequestsModel = require("../../models/ItemRequests");
+      const resultData = {
+        _id: 1,
+        category: 1
+      };
+      let results = await ItemRequestsModel.aggregate([
+        {
+          $search: {
+            index: "requests",
+            text: {
+              query: [listingTitle, listingDesc],
+              path: ["title"]
+            }
+          },
+        },
+        {
+          $limit: 15,
+        },
+        {
+          $project: resultData,
+        },
+      ]);
+      if (results?.length) {
+        results.forEach(req => {
+          // Matching listing must be the same category as item request
+          if (req.category === listing.category) {
+            const requestId = "" + req._id;
+            ItemRequestsModel.findOne({ _id: requestId })
+              .then(request => {
+                const reqOwnerId = request.listedBy.id;
+                // Matching listing is created by another user
+                if (reqOwnerId !== owner.id) {
+                  // Notify user who made the request that a potential match was found
+                  socketUtils.notify(null, reqOwnerId,
+                      `New match for your request ${request.title}`, "/profile/requests");
+                }
+                const matchingListings = request.matchingListings;
+                if (matchingListings && !matchingListings.includes(listingId)) {
+                  matchingListings.push(listingId);
+                  request.save();
+                } else if (!matchingListings) {
+                  matchingListings = [listingId];
+                  request.save();
+                }
+              });
+          }
+        });
+      }
+    } else {
+      console.log("Invalid listing title passed to findMatchingRequests()");
+    }
+  };
   router.post(
     "/addListing",
     upload.array("images", 4),
@@ -59,6 +118,7 @@ const itemListings = (socketUtils) => {
                 } else if (user) {
                   let itemsListed = user.itemsListed;
                   const listingId = "" + savedListing._id;
+                  findMatchingRequests(savedListing);
                   if (!itemsListed) {
                     user.itemsListed = [listingId];
                     user.save();
