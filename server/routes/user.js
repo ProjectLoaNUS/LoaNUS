@@ -460,13 +460,14 @@ router.post("/createotp", async (req, res) => {
       subject: "LoaNUS - OTP verification",
       text: `To authenticate, please use the following One Time Password (OTP):
       ${otp} \n Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
-      We hope to see you again soon.
+      We hope to see you again soon. \n If you didn't request to reset your password, you may safely ignore this email.
       `,
       html: `<h1>Dear User,</h1>
       <p>To authenticate, please use the following One Time Password (OTP):
       ${otp}</p>
       <p> Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
       We hope to hear from you again soon.</p>
+      <p> If you didn't request to reset your password, you may safely ignore this email.</p>
       `,
     };
 
