@@ -50,8 +50,9 @@ function ChatPage() {
   const { user, isUserLoaded } = useAuth();
   const [ conversations, setConversations ] = useState([]);
   const [ currentChat, setCurrentChat ] = useState(null);
-  const [ following, setFollowing ] = useState([]);
-  const [ followers, setFollowers ] = useState([]);
+  const [ following, setFollowing ] = useState(null);
+  const [ followers, setFollowers ] = useState(null);
+  const [ usersOnline, setUsersOnline ] = useState(null);
   const { onlineUsers } = useSocket();
   const navigate = useNavigate();
 
@@ -112,6 +113,16 @@ function ChatPage() {
     getConversations();
   }, [getConversations]);
 
+  const getOnlineFollows = useCallback(() => {
+    if (followers && following && onlineUsers) {
+      const followOnlineUsers = onlineUsers.filter(other => (followers.includes(other._id) || following.includes(other._id)));
+      setUsersOnline(followOnlineUsers);
+    }
+  }, [onlineUsers, followers, following]);
+  useEffect(() => {
+    getOnlineFollows();
+  }, [getOnlineFollows]);
+
   return (
     <PageContainer>
       <NavigationBar></NavigationBar>
@@ -133,7 +144,7 @@ function ChatPage() {
         <ChatOnline
           currentId={user?.id}
           setCurrentChat={setCurrentChat}
-          onlineUsers={onlineUsers}
+          onlineUsers={usersOnline}
         />
       </ChatContainer>
     </PageContainer>
