@@ -24,6 +24,10 @@ const ItemRequestsSchema = new mongoose.Schema({
   listedBy: {
     id: String,
     name: String
+  },
+  matchingListings: {
+    type: [String],
+    required: false
   }
 });
 

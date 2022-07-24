@@ -23,6 +23,28 @@ const socketServer = (app, server) => {
     const getUser = (userId) => {
         return users.find((user) => user.userId === userId);
     };
+
+    const notify = (senderId, receiverId, message, targetUrl) => {
+        if (!!receiverId) {
+            const receiver = getUser(receiverId);
+            if (receiver) {
+                io.to(receiver.socketId).emit("notification", {
+                    senderId: senderId,
+                    message: message,
+                    targetUrl: targetUrl
+                });
+            } else {
+                console.log(`Invalid receiver ID ${receiverId} given to notify()`);
+            }
+        } else {
+            io.emit("notification", {
+                senderId: senderId,
+                message: message,
+                targetUrl: targetUrl
+            });
+        }
+    };
+
     io.on("connection", (socket) => {
         //When connect
         console.log("socket-io: A user just got connected");
@@ -31,16 +53,19 @@ const socketServer = (app, server) => {
             addUser(userId, socket.id);
             io.emit("getUsers", users);
         });
+        socket.on("notify", ({senderId, receiverId, message, targetUrl}) => {
+            notify(senderId, receiverId, message, targetUrl);
+        });
         //Send and get message
         socket.on("sendMessage", ({ senderId, receiverId, text }) => {
             const user = getUser(receiverId);
             if (user) {  
-            io.to(user.socketId).emit("getMessage", {
-                senderId,
-                text,
-            });
+                io.to(user.socketId).emit("getMessage", {
+                    senderId,
+                    text,
+                });
             } else {
-            console.log(`socket-io error: Invalid receiver ID ${receiverId}`);
+                console.log(`socket-io error: Invalid receiver ID ${receiverId}`);
             }
         });
         //When disconnect
@@ -50,6 +75,11 @@ const socketServer = (app, server) => {
             io.emit("getUsers", users);
         });
     });
+
+    return {
+        io: io,
+        notify: notify
+    };
 };
 
 module.exports = socketServer;

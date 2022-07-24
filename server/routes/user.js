@@ -238,7 +238,7 @@ router.post("/getNamesOf", async (req, res) => {
   }
   const userDetails = await UserModel.find(
     { _id: { $in: users.map((user) => user.userId) } },
-    ["_id", "name", "image"]
+    ["_id", "name"]
   );
   return res.json({ status: "ok", userDetails: userDetails });
 });
@@ -348,6 +348,38 @@ router.get("/search", async (request, response) => {
   } catch (error) {
     console.log(error);
     response.json({ status: "error" });
+  }
+});
+router.post("/getFollowersCount", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.json({status: 'error'});
+    }
+    const user = await UserModel.findOne({ _id: userId }, ["followers"]);
+    if (!user) {
+      return res.json({status: 'error'});
+    }
+    const followersCount = user.followers?.length || 0;
+    return res.json({status: 'ok', followersCount: followersCount});
+  } catch (err) {
+    console.log(err);
+  }
+});
+router.post("/getFollowingCount", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.json({status: 'error'});
+    }
+    const user = await UserModel.findOne({ _id: userId }, ["following"]);
+    if (!user) {
+      return res.json({status: 'error'});
+    }
+    const followingCount = user.following?.length || 0;
+    return res.json({status: 'ok', followingCount: followingCount});
+  } catch (err) {
+    console.log(err);
   }
 });
 

@@ -87,6 +87,9 @@ function AvatarCard(props) {
   const [rating, setRating] = useState(null);
   const [open, setOpen] = useState(false);
   const { user, setUser } = useAuth();
+  const [ followersCount, setFollowersCount ] = useState("...");
+  const [ followingCount, setFollowingCount ] = useState("...");
+  const hiddenFileInput = React.useRef(null);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -94,22 +97,51 @@ function AvatarCard(props) {
     setOpen(false);
   };
 
-  const hiddenFileInput = React.useRef(null);
-
   useEffect(() => {
     if (user) {
       if (!user.photoURL && user.photodata && user.photoformat) {
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
         setUser((prevUser) => {
-          let newUser = structuredClone(prevUser);
-          newUser.photoURL = URL.createObjectURL(blob);
-
-          return newUser;
+          return {...prevUser, photoURL: URL.createObjectURL(blob)};
+        });
+      }
+      if (followersCount === "...") {
+        fetch(`${BACKEND_URL}/api/user/getFollowersCount`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            setFollowersCount(data.followersCount);
+          }
+        });
+      }
+      if (followingCount === "...") {
+        fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            setFollowingCount(data.followingCount);
+          }
         });
       }
     }
-  }, [user, setUser]);
+  }, [user]);
   useEffect(() => {
     if (user) {
       try {
@@ -168,7 +200,7 @@ function AvatarCard(props) {
   };
   return (
     <MainContainer>
-      <Avatar src={user && user.photoURL} sx={{ width: 120, height: 120 }}>
+      <Avatar src={user?.photoURL} sx={{ width: 120, height: 120 }}>
         {user && !user.photoURL
           ? user.displayName
             ? user.displayName[0]
@@ -188,8 +220,8 @@ function AvatarCard(props) {
         Singapore, Joined {format(user?.createdat)}{" "}
       </LocationDateContainer>
       <FollowContainer>
-        {user?.followers ? user?.followers.length : 0} Followers{" "}
-        {user?.following ? user?.following.length : 0} Following
+        {followersCount} Followers {followingCount}{" "}
+        Following
       </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent
