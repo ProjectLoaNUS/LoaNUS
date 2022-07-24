@@ -78,9 +78,6 @@ function PasswordResetCard() {
   };
 
   const handleOtpsubmit = () => {
-    console.log("test");
-    console.log(otp);
-    console.log(storedotp);
     if (otp == storedotp) {
       setVerified(true);
     }
@@ -95,7 +92,6 @@ function PasswordResetCard() {
     axios.post(`${BACKEND_URL}/api/user/createotp`, data);
   };
 
-  console.log(verified);
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/user/getotp?email=` + email)
