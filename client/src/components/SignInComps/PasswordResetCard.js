@@ -129,6 +129,7 @@ function PasswordResetCard() {
           <ButtonContainer>
             <ButtonComponent
               size="small"
+              disabled={isPwError}
               text="save changes"
               state="primary"
               onClick={handlesavepassword}
