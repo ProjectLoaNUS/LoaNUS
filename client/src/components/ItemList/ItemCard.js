@@ -227,7 +227,7 @@ export default function ItemCard(props) {
           </ImageDiv>
         )}
         <CardActions>
-          {itemDetails?.deadline && (
+          {(!isOwner && !isAdmin && itemDetails?.deadline) && (
             <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
               {liked ? (
                 <FavoriteIcon style={{ color: "#f24464" }}></FavoriteIcon>
