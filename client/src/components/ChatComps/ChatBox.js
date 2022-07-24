@@ -3,7 +3,11 @@ import styled from "styled-components";
 import ButtonComponent from "../Button";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSocket } from "../../utils/socketContext";
+import { useAuth } from "../../database/auth";
+import { useNotifications } from "../../utils/notificationsContext";
+import { CHAT } from "../../pages/routes";
 
 const ChatBoxWrapper = styled.div`
   display: flex;
@@ -39,36 +43,89 @@ const NoConversationDisplay = styled.span`
 `;
 
 export default function ChatBox(props) {
-  const { currentChat, messages, setMessages, socket, user } = props;
-  const [newMessage, setNewMessage] = useState("");
-  const chatRef = useRef(null);
+    const { currentChat } = props;
+    const { user } = useAuth();
+    const { socket } = useSocket();
+    const { notify } = useNotifications();
+    const [ messages, setMessages ] = useState([]);
+    const [ arrivalMessage, setArrivalMessage ] = useState(null);
+    const [ newMessage, setNewMessage ] = useState("");
+    const chatRef = useRef(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const message = {
-      sender: user.id,
-      text: newMessage,
-      conversationId: currentChat._id,
+    const onGetMessage = useCallback(async () => {
+        if (socket) {
+          socket.on("getMessage", (data) => {
+            setArrivalMessage({
+              sender: data.senderId,
+              text: data.text,
+              createdAt: Date.now(),
+            });
+          });
+        }
+    }, [socket]);
+    
+    useEffect(() => {
+        onGetMessage();
+    }, [onGetMessage]);
+    
+    useEffect(() => {
+        arrivalMessage &&
+          currentChat?.members.includes(arrivalMessage.sender) &&
+          setMessages((prev) => [...prev, arrivalMessage]);
+    }, [arrivalMessage]);
+
+    const getMessages = useCallback(async () => {
+        if (currentChat) {
+          try {
+            axios.get(
+              `${BACKEND_URL}/api/messages/` + currentChat._id
+            )
+            .then(res => {
+              setMessages(res.data);
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+    }, [currentChat]);
+    useEffect(() => {
+        getMessages();
+    }, [getMessages]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const message = {
+          sender: user.id,
+          text: newMessage,
+          conversationId: currentChat._id,
+        };
+        const receiverId = currentChat.members.find((member) => member !== user.id);
+        socket.emit("sendMessage", {
+          senderId: user.id,
+          receiverId,
+          text: newMessage,
+        });
+        try {
+          axios.post(`${BACKEND_URL}/api/messages`, message)
+          .then(res => {
+            setMessages([...messages, res.data]);
+            setNewMessage("");
+          });
+          axios.post(`${BACKEND_URL}/api/user/getNamesOf`, {users: [{userId: receiverId}]})
+            .then(res => {
+              if (res.data.status === 'ok') {
+                notify(user.id, receiverId, `New chat message from ${res.data.userDetails[0].name}`, CHAT);
+              } else {
+                console.log("Error fetching chat message sender name from backend");
+              }
+            });
+        } catch (err) {
+          console.log(err);
+        }
     };
-    const receiverId = currentChat.members.find((member) => member !== user.id);
-    socket.current.emit("sendMessage", {
-      senderId: user.id,
-      receiverId,
-      text: newMessage,
-    });
-    try {
-      axios.post(`${BACKEND_URL}/api/messages`, message).then((res) => {
-        setMessages([...messages, res.data]);
-        setNewMessage("");
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    chatRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    useEffect(() => {
+      chatRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
   return (
     <>

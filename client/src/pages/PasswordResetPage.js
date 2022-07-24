@@ -1,10 +1,10 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AppIcon from "../components/NavBar/AppBtn/AppIcon";
-import AuthCard from "../components/SignInComps/AuthCard";
 import NotSignedInToast from "../components/SignInComps/NotSignedInToast";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import PasswordResetCard from "../components/SignInComps/PasswordResetCard";
 
 const ContainerStyle = styled.div`
   display: flex;
@@ -39,26 +39,8 @@ const FlexBox = styled(Box)`
   flex-direction: column;
   align-items: center;
 `;
-const TitleText = styled.h1`
-  color: black;
-  font-size: 3.5vw;
-  float: left;
-  margin: 0;
-`;
-const TitleText2 = styled.h1`
-  color: #eb8736;
-  font-size: 3.5vw;
-  float: right;
-  margin: 0;
-`;
-const TitleContainer = styled.div`
-  display: inline-block;
-  text-align: center;
-  min-height: 50px;
-  overflow: hidden;
-`;
 
-function SignInPage() {
+function PasswordResetPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -81,12 +63,9 @@ function SignInPage() {
       <BodyContainer>
         <FlexBox>
           <AppIcon dark={false} iconStyles={{ height: "15vh" }} />
-          <TitleContainer>
-            <TitleText>Loa</TitleText>
-            <TitleText2>NUS</TitleText2>
-          </TitleContainer>
+          <Typography variant="h3">LoaNUS</Typography>
         </FlexBox>
-        <AuthCard />
+        <PasswordResetCard></PasswordResetCard>
         <NotSignedInToast
           open={state && state.open}
           message={state && state.message}
@@ -96,4 +75,4 @@ function SignInPage() {
   );
 }
 
-export default SignInPage;
+export default PasswordResetPage;

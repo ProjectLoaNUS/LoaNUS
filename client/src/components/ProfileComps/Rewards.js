@@ -58,7 +58,7 @@ export default function Rewards() {
       axios
         .post(`${BACKEND_URL}/api/reward/getRewardsOfUser`, data)
         .then((res) => {
-          if (res.data.status === 'ok') {
+          if (res.data.status === "ok") {
             setRewards(res.data.rewards);
           } else {
             console.log("Error occurred while fetching rewards claimed");
@@ -73,22 +73,22 @@ export default function Rewards() {
 
   const fetchPoints = useCallback(async () => {
     fetch(`${BACKEND_URL}/api/user/getPoints`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id
-        }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id,
+      }),
     })
-    .then(req => req.json())
-    .then(data => {
+      .then((req) => req.json())
+      .then((data) => {
         if (data.status === "ok" && data.points !== undefined) {
           setUserPoints(data.points);
         } else {
-            console.log("Error fetching user's points from backend");
+          console.log("Error fetching user's points from backend");
         }
-    });
+      });
   }, [user]);
   useEffect(() => {
     fetchPoints();
@@ -99,34 +99,34 @@ export default function Rewards() {
   };
 
   if (rewards) {
-    return rewards.length ?
-      (
-        <RewardsContainer>
-          <ButtonComponent
-            size="small"
-            text="Claim more rewards"
-            onClick={onClickClaim}
-            state="primary" />
-          <ItemsGrid>
-            {rewards.map((r, index) => (
-              <RewardCard
-                buttonText={"Use it!"}
-                itemDetails={r}
-                key={index}
-                setRewards={setRewards}
-                shouldRedeem={true}
-                userPoints={userPoints}
-                setUserPoints={setUserPoints}
-              />
-            ))}
-          </ItemsGrid>
-        </RewardsContainer>
-      ) :
-      <Typography variant="subtitle1" align="center" sx={{paddingTop: "1em"}}>
+    return rewards.length ? (
+      <RewardsContainer>
+        <ButtonComponent
+          size="small"
+          text="Claim more rewards"
+          onClick={onClickClaim}
+          state="primary"
+        />
+        <ItemsGrid>
+          {rewards.map((r, index) => (
+            <RewardCard
+              buttonText={"Use it!"}
+              itemDetails={r}
+              key={index}
+              setRewards={setRewards}
+              shouldRedeem={true}
+              userPoints={userPoints}
+              setUserPoints={setUserPoints}
+            />
+          ))}
+        </ItemsGrid>
+      </RewardsContainer>
+    ) : (
+      <Typography variant="subtitle1" align="center" sx={{ paddingTop: "1em" }}>
         No rewards claimed yet. Check out the '
-        <Link onClick={onClickClaim}>Claim rewards</Link>
-        ' page!
+        <Link onClick={onClickClaim}>Claim rewards</Link>' page!
       </Typography>
+    );
   }
-  return <LoadingRewardCards />
+  return <LoadingRewardCards />;
 }

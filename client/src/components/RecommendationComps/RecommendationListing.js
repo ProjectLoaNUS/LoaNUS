@@ -81,6 +81,7 @@ export default function RecommendationListings() {
             <ItemList
               ListContainer={ListingsGrid}
               isLoading={isLoading}
+              buttonText="Borrow it"
               noItemsText="No recommendations yet, view some items!"
               itemImages={listingImgs}
               itemDatas={listingDetails}
@@ -90,7 +91,7 @@ export default function RecommendationListings() {
         </ListingsPaper>
       ) : (
         <ListingsPaper>
-          <Typography align="left" variant="h4">
+          <Typography align="left" variant="h4" color="#eb8736">
             Log in to see recommendation
           </Typography>
         </ListingsPaper>

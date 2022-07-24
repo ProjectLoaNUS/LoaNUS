@@ -14,6 +14,8 @@ import { theme } from "../Theme";
 import ImageList from "./ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../FlexDiv";
+import BorrowRequestUsers from "./BorrowRequestUsers";
+import { useEffect } from "react";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -52,6 +54,7 @@ export default function DetailsView(props) {
     description,
     deadline,
     location,
+    borrowRequests,
     buttonAction,
     onActionDone,
     buttonText,
@@ -76,6 +79,14 @@ export default function DetailsView(props) {
   const setIsButtonEnabled = (isEnabled) => {
     setIsBtnDisabled(!isEnabled);
   };
+
+  useEffect(() => {
+    if ((borrowRequests?.length && user) &&
+      borrowRequests.some(userId => userId === user.id)) {
+        setIsBtnDisabled(true);
+        setButtonHelperText("Already requested to borrow this");
+    }
+  }, [borrowRequests, user]);
 
   return (
     <>
@@ -139,27 +150,34 @@ export default function DetailsView(props) {
         <Typography variant="body1" align="left">
           {location}
         </Typography>
+        <BorrowRequestUsers
+          isOwner={isOwner}
+          itemId={itemId}
+          setHelperText={setButtonHelperText}
+          setOpen={setOpen} 
+          onActionDone={onActionDone} />
         <ButtonGroup>
           {!isOwner && (
             <Button variant="outlined" color="primary" onClick={openChat}>
               Chat
             </Button>
           )}
-          <Button
-            disabled={isBtnDisabled}
-            variant="contained"
-            color={isActionError ? "error" : "primary"}
-            onClick={buttonAction(
-              setError,
-              setIsButtonEnabled,
-              setOpen,
-              onActionDone,
-              itemId,
-              user
-            )}
-          >
-            {buttonText}
-          </Button>
+          { buttonText &&
+            <Button
+              disabled={isBtnDisabled}
+              variant="contained"
+              color={isActionError ? "error" : "primary"}
+              onClick={buttonAction(
+                setError,
+                setIsButtonEnabled,
+                setOpen,
+                onActionDone,
+                itemId,
+                user
+              )} >
+              {buttonText}
+            </Button>
+          }
         </ButtonGroup>
         <TransitionGroup>
           {buttonHelperText && (

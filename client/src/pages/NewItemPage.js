@@ -16,23 +16,19 @@ const MainContainer = styled.div`
 `;
 
 function NewItemPage() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, isUserLoaded } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch (err) {
-          console.log(err);
+    if (!user && isUserLoaded) {
+      navigate(SIGN_IN, {
+        state: {
+          open: true,
+          message: "Sign in before requesting or listing an item"
         }
-      } else {
-        navigate(SIGN_IN, {state: {open: true, message: "Sign in before requesting or listing an item"}});
-      }
+      });
     }
-  }, [user, setUser]);
+  }, [user]);
 
   return (
     <MainContainer>

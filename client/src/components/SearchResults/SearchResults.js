@@ -49,7 +49,8 @@ const SearchResults = (props) => {
       itemImages={searchResultsImages}
       itemImagesType="base64"
       itemDatas={searchResultsDetails}
-      setItemDatas={setSearchResultsDetails} />
+      setItemDatas={setSearchResultsDetails}
+      buttonText="Borrow It!" />
   );
 };
 

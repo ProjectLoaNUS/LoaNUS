@@ -103,7 +103,8 @@ router.post("/login", async (req, res) => {
           photoformat: givenUser.image.contentType,
           followers: givenUser.followers,
           following: givenUser.following,
-          admin: givenUser.admin
+          admin: givenUser.admin,
+          createdat: givenUser.createdAt,
         },
       });
     }
@@ -166,7 +167,7 @@ router.post("/signUp", async (req, res) => {
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
     recommendation: [],
-    admin: false
+    admin: false,
   });
   await newUser.save({}, (err) => {
     if (err) {
@@ -237,7 +238,7 @@ router.post("/getNamesOf", async (req, res) => {
   }
   const userDetails = await UserModel.find(
     { _id: { $in: users.map((user) => user.userId) } },
-    ["_id", "name", "image"]
+    ["_id", "name"]
   );
   return res.json({ status: "ok", userDetails: userDetails });
 });
@@ -349,6 +350,38 @@ router.get("/search", async (request, response) => {
     response.json({ status: "error" });
   }
 });
+router.post("/getFollowersCount", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.json({status: 'error'});
+    }
+    const user = await UserModel.findOne({ _id: userId }, ["followers"]);
+    if (!user) {
+      return res.json({status: 'error'});
+    }
+    const followersCount = user.followers?.length || 0;
+    return res.json({status: 'ok', followersCount: followersCount});
+  } catch (err) {
+    console.log(err);
+  }
+});
+router.post("/getFollowingCount", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.json({status: 'error'});
+    }
+    const user = await UserModel.findOne({ _id: userId }, ["following"]);
+    if (!user) {
+      return res.json({status: 'error'});
+    }
+    const followingCount = user.following?.length || 0;
+    return res.json({status: 'ok', followingCount: followingCount});
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 //update recommendation
 router.post("/updaterecommendation", async (req, res) => {
@@ -398,7 +431,7 @@ router.get("/getrecommendation", async (req, res) => {
 
     const userid = req.query.userid;
     if (!userid) {
-      return res.json({ status: 'error' });
+      return res.json({ status: "error" });
     }
     const user = await UserModel.findById(userid);
 
@@ -410,6 +443,133 @@ router.get("/getrecommendation", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json({ status: "error" });
+  }
+});
+
+// create otp into user schema
+router.post("/createotp", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const otp = req.body.otp;
+    const user = await UserModel.findOne({ email: email });
+    user.otp = otp;
+    await user.save();
+    const msg = {
+      to: req.body.email,
+      from: "yongbin0162@gmail.com",
+      subject: "LoaNUS - OTP verification",
+      text: `To authenticate, please use the following One Time Password (OTP):
+      ${otp} \n Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
+      We hope to see you again soon. \n If you didn't request to reset your password, you may safely ignore this email.
+      `,
+      html: `<h1>Dear User,</h1>
+      <p>To authenticate, please use the following One Time Password (OTP):
+      ${otp}</p>
+      <p> Don't share this OTP with anyone. Our customer service team will never ask you for your password, OTP, credit card or banking info. 
+      We hope to hear from you again soon.</p>
+      <p> If you didn't request to reset your password, you may safely ignore this email.</p>
+      `,
+    };
+
+    sgMail.send(msg, function (err, info) {
+      if (err) {
+        console.log("Email Not Sent");
+      }
+    });
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(err);
+    res.json({ status: "error" });
+  }
+});
+
+// get otp
+router.get("/getotp", async (req, res) => {
+  try {
+    const email = req.query.email;
+    const user = await UserModel.findOne({ email: email });
+    let otp = user.otp;
+    res.json({ status: "success", otp: otp });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+
+// change password
+router.post("/changepassword", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.newpassword;
+    const user = await UserModel.findOne({ email: email });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+
+    await user.save();
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+
+// Reviews
+
+router.post("/createreview", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const otheruserId = req.body.otheruserId;
+    const user = await UserModel.findById(userId);
+    const otheruser = await UserModel.findById(otheruserId);
+    const reviewer = {
+      reviewee: otheruserId,
+      revieweeName: req.body.otheruserName,
+      rating: req.body.rating,
+      comments: req.body.comments,
+    };
+    const reviewee = {
+      reviewer: userId,
+      reviewerName: req.body.userName,
+      rating: req.body.rating,
+      comments: req.body.comments,
+    };
+    user.reviewscreated.unshift(reviewer);
+    otheruser.reviews.unshift(reviewee);
+    await user.save();
+    await otheruser.save();
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+    
+//get rating
+router.get("/getrating", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    let array = [];
+    reviews.forEach((element) => array.unshift(element["rating"]));
+    const sum = array.reduce((a, b) => a + b, 0);
+    const avg = sum / array.length || 0;
+    res.status(200).json({ status: "success", rating: avg });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "error" });
+  }
+});
+
+router.get("/getreviews", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    res.status(200).json({ status: "success", reviews: reviews });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "error" });
   }
 });
 
