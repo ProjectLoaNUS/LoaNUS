@@ -23,6 +23,7 @@ import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -80,6 +81,8 @@ export default function ItemCard(props) {
   const description = itemDetails.description;
   const location = itemDetails.location;
   const [isOwner, setIsOwner] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const reactLocation = useLocation();
 
   const handleShowDetails = async (category, userid) => {
     setOpen(true);
@@ -107,7 +110,7 @@ export default function ItemCard(props) {
   };
 
   const getItemCardAction = () => {
-    if (isOwner) {
+    if (isOwner || isAdmin) {
       return deleteListingAction;
     } else {
       return borrowAction;
@@ -116,9 +119,14 @@ export default function ItemCard(props) {
 
   useEffect(() => {
     if (user && owner) {
-      setIsOwner(isUserListingRelated(user, {listedBy: owner}));
+      setIsOwner(isUserListingRelated(user, { listedBy: owner }));
     }
   }, [user, owner]);
+  useEffect(() => {
+    if (reactLocation.pathname === "/admin/listings") {
+      setIsAdmin(true);
+    }
+  }, [reactLocation]);
 
   useEffect(() => {
     if (!!owner) {
@@ -198,11 +206,11 @@ export default function ItemCard(props) {
           </ImageDiv>
         )}
         <CardActions>
-          { itemDetails?.deadline &&
+          {itemDetails?.deadline && (
             <IconButton onClick={handleLike} onMouseDown={handleMouseDown}>
               <FavoriteBorderIcon />
             </IconButton>
-          }
+          )}
           <Typography align="center" variant="caption">
             {title}
           </Typography>
@@ -222,7 +230,9 @@ export default function ItemCard(props) {
         setOpen={setOpen}
         onActionDone={onActionDone}
         buttonAction={onClickAction || getItemCardAction()}
-        buttonText={buttonText || (isOwner ? "Delete Listing" : "Borrow It!")}
+        buttonText={
+          buttonText || (isOwner || isAdmin ? "Delete Listing" : "Borrow It!")
+        }
       />
     </ListCard>
   );
