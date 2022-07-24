@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Avatar, Badge } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
 import axios from "axios";
-
+import { getProfilePicUrl } from "../../utils/getProfilePic";
 const MainOnlineContainer = styled.div`
   flex: 3;
   overflow-y: auto;
@@ -25,6 +25,8 @@ const OnlineBadge = styled(Badge)(({ theme }) => ({
 const Name = styled.span``;
 
 function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
+  const [ userPhotoUrls, setUserPhotoUrls ] = useState([]);
+
   const HandleClick = async (otherId) => {
     let convoUsers = {
       senderId: currentId,
@@ -38,39 +40,48 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
       console.log(err);
     }
   };
-  const Bintourl = (image) => {
-    if (image) {
-      const binary = Buffer.from(image.data);
-      const blob = new Blob([binary.buffer], { type: image.contentType });
-      const url = URL.createObjectURL(blob);
-      return url;
-    } else {
-      return null;
+
+  const getProfilePics = useCallback(async () => {
+    if (onlineUsers?.length) {
+      onlineUsers.forEach(onlineUser => {
+        getProfilePicUrl(onlineUser._id).then(url => {
+          setUserPhotoUrls(prevUrls => {
+            return [...prevUrls, url];
+          });
+        });
+      });
     }
-  };
+  }, [onlineUsers]);
+
+  useEffect(() => {
+    getProfilePics();
+  }, [getProfilePics]);
+
   return (
     <MainOnlineContainer>
-      {onlineUsers &&
-        onlineUsers.map((user, index) => (
-          <OnlineContainer
-            data-testid="online"
-            key={index}
-            onClick={() => {
-              HandleClick(user._id);
-            }}
-          >
-            <OnlineBadge
+      {onlineUsers && onlineUsers.map((user, index) => (
+        <OnlineContainer
+          data-testid="online"
+          key={index}
+          onClick={() => {
+            HandleClick(user._id);
+          }} >
+          <OnlineBadge
               overlap="circular"
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               variant="dot"
             >
-              <Avatar src={Bintourl(user.image)}>
-                {user && !user.image ? user.name[0] : "U"}
-              </Avatar>
-            </OnlineBadge>
-            <Name>{user.name}</Name>
-          </OnlineContainer>
-        ))}
+            <Avatar src={userPhotoUrls[index]} alt="U">
+              {user.name ?
+                  user.name.charAt(0)
+                : 
+                  ""
+              }
+            </Avatar>
+          </OnlineBadge>
+          <Name>{user.name}</Name>
+        </OnlineContainer>
+      ))}
     </MainOnlineContainer>
   );
 }

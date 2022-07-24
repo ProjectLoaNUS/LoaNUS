@@ -36,20 +36,22 @@ const NoItemsTypo = styled(Typography)`
 `;
 
 export default function ItemList(props) {
-  const {
-    ListContainer,
-    CardContainer,
-    isLoading,
-    noItemsText,
-    itemImages,
-    itemImagesType,
-    itemDatas,
-    setItemDatas,
-    buttonText,
-    onActionDone,
-    onClickAction,
-  } = props;
-  const [itemImageUrls, setItemImageUrls] = useState([]);
+    const {
+      ListContainer,
+      CardContainer,
+      isLoading,
+      noItemsText,
+      itemImages,
+      itemImagesType,
+      itemDatas,
+      setItemDatas,
+      buttonText,
+      isOwnerButtonText,
+      onActionDone,
+      onClickAction,
+      isOwnerOnClickAction
+    } = props;
+    const [ itemImageUrls, setItemImageUrls ] = useState([]);
 
   const processImages = async (imageBins, imageBinsType) => {
     imageBins.forEach((bin) => {
@@ -103,7 +105,9 @@ export default function ItemList(props) {
                   imageUrls={itemImages && (itemImageUrls[index] || [Loading])}
                   onActionDone={onActionDone || removeItem}
                   onClickAction={onClickAction}
+                  isOwnerOnClickAction={isOwnerOnClickAction}
                   buttonText={buttonText}
+                  isOwnerButtonText={isOwnerButtonText}
                 />
               );
             }

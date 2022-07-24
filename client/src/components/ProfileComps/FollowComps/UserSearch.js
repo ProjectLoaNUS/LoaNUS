@@ -1,23 +1,12 @@
 import { Autocomplete, IconButton, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import axios from "axios";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { theme } from "../../Theme";
 import { BACKEND_URL } from "../../../database/const";
-import { SEARCH_LISTINGS } from "../../../pages/routes";
-import DetailsDialog from "../../ItemDetails/DetailsDialog";
-import { Buffer } from "buffer";
-import Loading from "../../../assets/loading.svg";
-import NoImage from "../../../assets/no-image.png";
-import { CATEGORIES } from "../../NewItem/ItemCategories";
-import {
-  borrowAction,
-  deleteListingAction,
-  isUserListingRelated,
-} from "../../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../../database/auth";
 import UserDisplay from "./UserDisplay";
 
@@ -173,6 +162,27 @@ export default function SearchUserField() {
                 ),
               }}
             />
+          );
+        }}
+        renderOption={(props, option, { inputValue }) => {
+          const matches = match(option.name, inputValue, { insideWords: true });
+          const parts = parse(option.name, matches);
+  
+          return (
+            <li {...props}>
+              <div>
+                {parts.map((part, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      fontWeight: part.highlight ? 700 : 400,
+                    }}
+                  >
+                    {part.text}
+                  </span>
+                ))}
+              </div>
+            </li>
           );
         }}
       />

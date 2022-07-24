@@ -25,11 +25,16 @@ mongoose.connect(
   }
 );
 
+// Start express server
+const server = app.listen(PORT, () => {
+  console.log(`SERVER RUNNING ON PORT ${PORT}`);
+});
+
+// Socket.io server
+const socketUtils = require("./routes/socket")(app, server);
+
 const userRoutes = require("./routes/user");
 app.use("/api/user", userRoutes);
-
-const itemsRoutes = require("./routes/items/index");
-app.use("/api", itemsRoutes);
 
 const conversationRoutes = require("./routes/conversations");
 app.use("/api/conversations", conversationRoutes);
@@ -37,15 +42,11 @@ app.use("/api/conversations", conversationRoutes);
 const messageRoutes = require("./routes/messsages");
 app.use("/api/messages", messageRoutes);
 
-const followingRoutes = require("./routes/following");
+const followingRoutes = require("./routes/following")(socketUtils);
 app.use("/api/follow", followingRoutes);
 
 const rewardRoutes = require("./routes/rewards");
 app.use("/api/reward", rewardRoutes);
 
-const server = app.listen(PORT, () => {
-  console.log(`SERVER RUNNING ON PORT ${PORT}`);
-});
-
-// Socket.io server
-require("./routes/socket")(app, server);
+const itemsRoutes = require("./routes/items/index")(socketUtils);
+app.use("/api", itemsRoutes);

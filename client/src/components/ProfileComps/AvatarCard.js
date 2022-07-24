@@ -1,12 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, forwardRef } from "react";
 import styled from "styled-components";
-import { Avatar, Button, Rating, Snackbar, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Rating,
+  Snackbar,
+  Typography,
+  Dialog,
+  Grow,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
+import PreviewIcon from "@mui/icons-material/Preview";
 import { useAuth } from "../../database/auth";
 import { useState } from "react";
 import ButtonComponent from "../Button";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { BACKEND_URL } from "../../database/const";
+import { format } from "timeago.js";
+import ReviewList from "../UserComps/ReviewList";
 
 const MainContainer = styled.div`
   display: flex;
@@ -44,14 +59,43 @@ const ImageUploadContainer = styled.div`
 const HiddenInput = styled.input`
   display: none;
 `;
+const StyledRating = styled(Rating)`
+  color: #eb8736;
+`;
+const RatingContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const StyledDialog = styled(Dialog)`
+  & .MuiDialog-paper {
+    overflow-y: hidden;
+  }
+`;
+const GrowUp = styled(Grow)`
+  transform-origin: bottom center;
+`;
+const Transition = forwardRef(function Transition(props, ref) {
+  return <GrowUp ref={ref} {...props} />;
+});
 
 function AvatarCard(props) {
-  const [ showAlert, setShowAlert ] = useState(false);
-  const [ alertMessage, setAlertMessage ] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const [profileimage, setProfileImage] = useState();
+  const [rating, setRating] = useState(null);
+  const [open, setOpen] = useState(false);
   const { user, setUser } = useAuth();
-
+  const [ followersCount, setFollowersCount ] = useState("...");
+  const [ followingCount, setFollowingCount ] = useState("...");
   const hiddenFileInput = React.useRef(null);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     if (user) {
@@ -59,19 +103,61 @@ function AvatarCard(props) {
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
         setUser((prevUser) => {
-          let newUser = structuredClone(prevUser);
-          newUser.photoURL = URL.createObjectURL(blob);
-
-          return newUser;
+          return {...prevUser, photoURL: URL.createObjectURL(blob)};
+        });
+      }
+      if (followersCount === "...") {
+        fetch(`${BACKEND_URL}/api/user/getFollowersCount`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            setFollowersCount(data.followersCount);
+          }
+        });
+      }
+      if (followingCount === "...") {
+        fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            setFollowingCount(data.followingCount);
+          }
         });
       }
     }
-  }, [user, setUser]);
+  }, [user]);
+  useEffect(() => {
+    if (user) {
+      try {
+        axios
+          .get(`${BACKEND_URL}/api/user/getrating?userId=` + user.id)
+          .then((res) => setRating(res.data.rating));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [user]);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
     setAlertMessage("");
-  }
+  };
   const handleClick = () => {
     hiddenFileInput.current.click();
   };
@@ -114,7 +200,7 @@ function AvatarCard(props) {
   };
   return (
     <MainContainer>
-      <Avatar src={user && user.photoURL} sx={{ width: 120, height: 120 }}>
+      <Avatar src={user?.photoURL} sx={{ width: 120, height: 120 }}>
         {user && !user.photoURL
           ? user.displayName
             ? user.displayName[0]
@@ -123,11 +209,19 @@ function AvatarCard(props) {
       </Avatar>
       <UserName>{user && user.displayName}</UserName>
       <Email>{user && user.email}</Email>
-      <Rating name="size-medium" defaultValue={3} />
-      <LocationDateContainer>Singapore, Joined 2y </LocationDateContainer>
+      <RatingContainer>
+        <StyledRating value={rating} precision={0.1} readOnly />
+        <IconButton onClick={handleOpen}>
+          <PreviewIcon fontSize="large" color="primary" />
+        </IconButton>
+      </RatingContainer>
+
+      <LocationDateContainer>
+        Singapore, Joined {format(user?.createdat)}{" "}
+      </LocationDateContainer>
       <FollowContainer>
-        {user?.followers ? user?.followers.length : 0} Followers{" "}
-        {user?.following ? user?.following.length : 0} Following
+        {followersCount} Followers {followingCount}{" "}
+        Following
       </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent
@@ -159,7 +253,7 @@ function AvatarCard(props) {
         open={showAlert}
         autoHideDuration={6000}
         onClose={(event, reason) => {
-          if (reason === 'escapeKeyDown') {
+          if (reason === "escapeKeyDown") {
             event.preventDefault();
           }
           handleCloseAlert(event);
@@ -169,7 +263,28 @@ function AvatarCard(props) {
           <Button color="secondary" size="small" onClick={handleCloseAlert}>
             DISMISS
           </Button>
-        } />
+        }
+      />
+      <StyledDialog
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <DialogTitle style={{ fontWeight: 650, color: "#2d3c4a" }}>
+          Reviews of you
+        </DialogTitle>
+        <DialogContent>
+          <ReviewList userid={user?.id}></ReviewList>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: "center" }}>
+          <ButtonComponent
+            state="primary"
+            onClick={handleClose}
+            text="Close"
+            size="small"
+          />
+        </DialogActions>
+      </StyledDialog>
     </MainContainer>
   );
 }

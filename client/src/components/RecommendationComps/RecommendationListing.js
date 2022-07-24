@@ -81,6 +81,7 @@ export default function RecommendationListings() {
             <ItemList
               ListContainer={ListingsGrid}
               isLoading={isLoading}
+              buttonText="Borrow it"
               noItemsText="No recommendations yet, view some items!"
               itemImages={listingImgs}
               itemDatas={listingDetails}
