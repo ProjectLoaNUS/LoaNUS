@@ -59,6 +59,7 @@ export default function RecentListings() {
         <ItemList
           ListContainer={ListingsGrid}
           isLoading={isLoading}
+          buttonText="Borrow it"
           noItemsText="No items listed by anyone yet. You can start by listing one of your items!"
           itemImages={listingImgs}
           itemDatas={listingDetails}

@@ -104,6 +104,7 @@ router.post("/login", async (req, res) => {
           followers: givenUser.followers,
           following: givenUser.following,
           admin: givenUser.admin,
+          createdat: givenUser.createdAt,
         },
       });
     }
@@ -237,7 +238,7 @@ router.post("/getNamesOf", async (req, res) => {
   }
   const userDetails = await UserModel.find(
     { _id: { $in: users.map((user) => user.userId) } },
-    ["_id", "name", "image"]
+    ["_id", "name"]
   );
   return res.json({ status: "ok", userDetails: userDetails });
 });
@@ -349,6 +350,38 @@ router.get("/search", async (request, response) => {
     response.json({ status: "error" });
   }
 });
+router.post("/getFollowersCount", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.json({status: 'error'});
+    }
+    const user = await UserModel.findOne({ _id: userId }, ["followers"]);
+    if (!user) {
+      return res.json({status: 'error'});
+    }
+    const followersCount = user.followers?.length || 0;
+    return res.json({status: 'ok', followersCount: followersCount});
+  } catch (err) {
+    console.log(err);
+  }
+});
+router.post("/getFollowingCount", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.json({status: 'error'});
+    }
+    const user = await UserModel.findOne({ _id: userId }, ["following"]);
+    if (!user) {
+      return res.json({status: 'error'});
+    }
+    const followingCount = user.following?.length || 0;
+    return res.json({status: 'ok', followingCount: followingCount});
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 //update recommendation
 router.post("/updaterecommendation", async (req, res) => {
@@ -410,6 +443,65 @@ router.get("/getrecommendation", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json({ status: "error" });
+  }
+});
+
+// Reviews
+
+router.post("/createreview", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const otheruserId = req.body.otheruserId;
+    const user = await UserModel.findById(userId);
+    const otheruser = await UserModel.findById(otheruserId);
+    const reviewer = {
+      reviewee: otheruserId,
+      revieweeName: req.body.otheruserName,
+      rating: req.body.rating,
+      comments: req.body.comments,
+    };
+    const reviewee = {
+      reviewer: userId,
+      reviewerName: req.body.userName,
+      rating: req.body.rating,
+      comments: req.body.comments,
+    };
+    user.reviewscreated.unshift(reviewer);
+    otheruser.reviews.unshift(reviewee);
+    await user.save();
+    await otheruser.save();
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error" });
+  }
+});
+//get rating
+router.get("/getrating", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    let array = [];
+    reviews.forEach((element) => array.unshift(element["rating"]));
+    const sum = array.reduce((a, b) => a + b, 0);
+    const avg = sum / array.length || 0;
+    res.status(200).json({ status: "success", rating: avg });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "error" });
+  }
+});
+
+router.get("/getreviews", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await UserModel.findById(userId);
+    const reviews = user.reviews;
+    res.status(200).json({ status: "success", reviews: reviews });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "error" });
   }
 });
 

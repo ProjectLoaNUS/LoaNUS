@@ -14,7 +14,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useEffect, useState } from "react";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
 import {
-  borrowAction,
+  requestBorrowAction,
   deleteListingAction,
   isUserListingRelated,
 } from "../ItemDetails/detailsDialogActions";
@@ -23,6 +23,7 @@ import { Buffer } from "buffer";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
+import { getProfilePicUrl } from "../../utils/getProfilePic";
 import axios from "axios";
 
 const ListCard = styled(Card)`
@@ -58,8 +59,15 @@ const ListingActionArea = styled(CardActionArea)`
 `;
 
 export default function ItemCard(props) {
-  const { itemDetails, imageUrls, buttonText, onActionDone, onClickAction } =
-    props;
+  const {
+    itemDetails,
+    imageUrls,
+    buttonText,
+    isOwnerButtonText,
+    onActionDone,
+    onClickAction,
+    isOwnerOnClickAction
+  } = props;
   const [open, setOpen] = useState(false);
   const [ownerPicUrl, setOwnerPicUrl] = useState("");
   const [liked, setLiked] = useState(false);
@@ -73,10 +81,10 @@ export default function ItemCard(props) {
     {},
     { year: "numeric", month: "short", day: "numeric" }
   );
-  const deadline = new Date(itemDetails.deadline).toLocaleDateString(
+  const deadline = itemDetails.deadline && (new Date(itemDetails.deadline).toLocaleDateString(
     {},
     { year: "numeric", month: "short", day: "numeric" }
-  );
+  ));
   const category = CATEGORIES[itemDetails.category];
   const title = itemDetails.title;
   const owner = itemDetails.listedBy;
@@ -130,12 +138,20 @@ export default function ItemCard(props) {
   };
 
   const getItemCardAction = () => {
-    if (isOwner) {
-      return deleteListingAction;
+      if (isOwner) {
+          return isOwnerOnClickAction || deleteListingAction;
+      } else {
+          return onClickAction || requestBorrowAction;
+      }
+  }
+
+  const getButtonText = (isUserOwner) => {
+    if (isUserOwner) {
+      return isOwnerButtonText || "Delete Listing";
     } else {
-      return borrowAction;
+      return buttonText;
     }
-  };
+  }
 
   useEffect(() => {
     if (user && owner) {
@@ -156,37 +172,7 @@ export default function ItemCard(props) {
   useEffect(() => {
     if (!!owner) {
       if (!isOwner) {
-        fetch(`${BACKEND_URL}/api/user/getProfilePic`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: owner.id,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.status === "ok") {
-              const image = data.image;
-              if (!!image) {
-                try {
-                  const binary = Buffer.from(image.data);
-                  const blob = new Blob([binary.buffer], {
-                    type: image.contentType,
-                  });
-                  const url = URL.createObjectURL(blob);
-                  setOwnerPicUrl(url);
-                } catch (err) {
-                  console.log(err);
-                }
-              }
-            } else {
-              console.log(
-                `Error occurred while loading profile picture of user named "${owner.name}"`
-              );
-            }
-          });
+        getProfilePicUrl(owner.id).then(url => setOwnerPicUrl(url));
       } else {
         let photoURL;
         if (!user.photoURL && user.photodata && user.photoformat) {
@@ -255,12 +241,12 @@ export default function ItemCard(props) {
         description={description}
         location={location}
         deadline={deadline}
+        borrowRequests={itemDetails.borrowRequests}
         open={open}
         setOpen={setOpen}
         onActionDone={onActionDone}
-        buttonAction={onClickAction || getItemCardAction()}
-        buttonText={buttonText || (isOwner ? "Delete Listing" : "Borrow It!")}
-      />
+        buttonAction={getItemCardAction()}
+        buttonText={getButtonText(isOwner)} />
     </ListCard>
   );
 }
