@@ -15,7 +15,7 @@ import {
 } from "./routes";
 import { useLocation, useNavigate } from "react-router-dom";
 import Points from "../components/ProfileComps/Points";
-import Requests from "../components/ProfileComps/Requests";
+import Requests from "../components/ProfileComps/Requests/Requests";
 import Reviews from "../components/ProfileComps/Reviews";
 import Rewards from "../components/ProfileComps/Rewards";
 import BorrowedItems from "../components/ProfileComps/BorrowedItems";

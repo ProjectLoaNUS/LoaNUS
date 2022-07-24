@@ -3,12 +3,12 @@ import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import ItemList from "../ItemList/ItemList";
+import ItemList from "../../ItemList/ItemList";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../database/auth";
+import { useAuth } from "../../../database/auth";
 import { Container } from "@mui/material";
-import { BACKEND_URL } from "../../database/const";
-import { deleteRequestAction } from "../ItemDetails/detailsDialogActions";
+import { BACKEND_URL } from "../../../database/const";
+import { deleteRequestAction } from "../../ItemDetails/detailsDialogActions";
 
 const MainContainer = styled.div`
   min-height: 100%;
