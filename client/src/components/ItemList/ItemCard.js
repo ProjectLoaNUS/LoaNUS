@@ -160,13 +160,15 @@ export default function ItemCard(props) {
   }, [user, owner]);
 
   useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/api/items/getlikeditems?userId=` + user.id)
-      .then((res) => {
-        if (res.data.items.includes(itemId)) {
-          setLiked(true);
-        }
-      });
+    if (user) {
+      axios
+        .get(`${BACKEND_URL}/api/items/getlikeditems?userId=` + user.id)
+        .then((res) => {
+          if (res.data.items.includes(itemId)) {
+            setLiked(true);
+          }
+        });
+    }
   }, [user, itemId]);
 
   useEffect(() => {
