@@ -181,18 +181,8 @@ const itemListings = (socketUtils) => {
     });
   });
 
-  router.post("/getListingsTextsOfUser", async (req, res) => {
-    if (!req.body.userId) {
-      return res.json({ status: "error" });
-    }
-    const user = await UserModel.findOne({
-      _id: req.body.userId,
-    });
-    if (!user) {
-      return res.json({ status: "error" });
-    }
-    const listingIds = user.itemsListed;
-    let listingsTexts = await ItemListingsModel.find(
+  const getTheseListingsTexts = async (listingIds) => {
+    const listingsTexts = await ItemListingsModel.find(
       { _id: { $in: listingIds } },
       [
         "_id",
@@ -206,8 +196,29 @@ const itemListings = (socketUtils) => {
         "borrowRequests"
       ]
     );
+    return listingsTexts;
+  };
+  router.post("/getListingsTextsOfUser", async (req, res) => {
+    if (!req.body.userId) {
+      return res.json({ status: "error" });
+    }
+    const user = await UserModel.findOne({
+      _id: req.body.userId,
+    });
+    if (!user) {
+      return res.json({ status: "error" });
+    }
+    const listingIds = user.itemsListed;
+    let listingsTexts = await getTheseListingsTexts(listingIds);
     return res.json({ status: "ok", listingsTexts: listingsTexts });
   });
+  const getTheseListingsImgs = async (listingIds) => {
+    const listingsImgs = await ItemListingsModel.find(
+      { _id: { $in: listingIds } },
+      ["images"]
+    );
+    return listingsImgs;
+  };
   router.post("/getListingsImgsOfUser", async (req, res) => {
     if (!req.body.userId) {
       return res.json({ status: "error" });
@@ -219,10 +230,34 @@ const itemListings = (socketUtils) => {
       return res.json({ status: "error" });
     }
     const listingIds = user.itemsListed;
-    let listingsImgs = await ItemListingsModel.find(
-      { _id: { $in: listingIds } },
-      ["images"]
-    );
+    let listingsImgs = await getTheseListingsImgs(listingIds);
+    return res.json({ status: "ok", listingsImgs: listingsImgs });
+  });
+
+  router.post("/getTheseListingsTexts", async (req, res) => {
+    const listingIds = req.body.listingIds;
+    if (!listingIds) {
+      return res.json({ status: "error", message: "Invalid listing ID provided" });
+    }
+    let listingsData;
+    try {
+      listingsData = await getTheseListingsTexts(listingIds);
+    } catch (err) {
+      return res.json({ status: "error", message: err });
+    }
+    return res.json({ status: "ok", listingsData: listingsData});
+  });
+  router.post("/getTheseListingsImgs", async (req, res) => {
+    const listingIds = req.body.listingIds;
+    if (!listingIds) {
+      return res.json({ status: "error", message: "Invalid listing ID provided" });
+    }
+    let listingsImgs;
+    try {
+      listingsImgs = await getTheseListingsImgs(listingIds);
+    } catch (err) {
+      return res.json({ status: "error", message: err });
+    }
     return res.json({ status: "ok", listingsImgs: listingsImgs });
   });
 
