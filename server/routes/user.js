@@ -143,6 +143,7 @@ router.post("/postAltLogin", async (req, res) => {
         url: req.body.photoURL
       },
       points: 0,
+      admin: false,
       emailToken: null,
       isVerified: true,
     });
