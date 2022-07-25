@@ -21,10 +21,19 @@ export default function AdminPage() {
   const [path, setPath] = useState("");
   const {user} = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (user && !user.admin) {
+      navigate(-1);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    setPath(location.pathname);
+  }, [location]);
 
   function AdminContent() {
-    const location = useLocation();
-    setPath(location.pathname);
     switch (location.pathname) {
       case VIEW_LISTINGS:
         return <ViewListings />;
@@ -37,12 +46,6 @@ export default function AdminPage() {
         return <OverView />;
     }
   }
-
-  useEffect(() => {
-    if (user && !user.admin) {
-      navigate(-1);
-    }
-  }, [user]);
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
