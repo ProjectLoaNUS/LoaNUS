@@ -16,14 +16,15 @@ describe(" user log in", () => {
       .click()
       .should("be.visible");
 
-    cy.findByRole("button", { name: /chat/i }).click();
+    cy.get(".MuiButton-outlined").click();
+    cy.wait(3000);
     //user press itemcard and borrows
-    cy.findByRole("button", {
-      name: /wang haoyang jul 6, 2022 item listing image overcooked/i,
-    })
+    cy.get(
+      ":nth-child(4) > .MuiCardActionArea-root-dQzkmW > .sc-cCsOjp > .MuiCardMedia-root-iPFsKD"
+    )
       .click()
       .should("be.visible");
 
-    cy.findByRole("button", { name: /borrow it!/i }).click();
+    cy.get(".MuiButton-contained").click();
   });
 });
