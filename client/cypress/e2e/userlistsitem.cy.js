@@ -35,7 +35,8 @@ describe(" user uses listing", () => {
     cy.findByTestId("AccountCircleIcon").click();
     cy.findByRole("menuitem", { name: /account/i }).click();
     // click on listing
-    cy.findByRole("img", { name: /item listing image/i }).click();
+    cy.wait(3000);
+    cy.get(".MuiCardMedia-root-iPFsKD").click().should("be.visible");
     //deletes listing
     cy.findByRole("button", { name: /delete listing/i }).click();
   });

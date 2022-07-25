@@ -12,7 +12,7 @@ describe(" user uses listing", () => {
     //clicks + button
     cy.findByTestId("AddCircleOutlineIcon").click();
     cy.findByRole("button", { name: /item category others/i }).click();
-    cy.findByRole("option", { name: /tv & home appliances/i }).click();
+    cy.findByRole("option", { name: /home appliances/i }).click();
     cy.findByRole("textbox", { name: /item name/i }).type("Vacuum Cleaner");
     cy.findByRole("textbox", { name: /item description/i }).type(
       "Any type of portable vacuum cleaner"
@@ -26,5 +26,9 @@ describe(" user uses listing", () => {
     cy.findByTestId("AccountCircleIcon").click();
     cy.findByRole("menuitem", { name: /account/i }).click();
     cy.findByRole("link", { name: /requests/i }).click();
+    cy.findByRole("button", { name: /jul 25, 2022 vacuum cleaner/i })
+      .click()
+      .should("be.visible");
+    cy.findByRole("button", { name: /delete request/i }).click();
   });
 });

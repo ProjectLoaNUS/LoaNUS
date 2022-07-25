@@ -5,9 +5,12 @@ describe("new user on home page", () => {
     // clicks on a itemcard
     cy.findByRole("button", {
       name: /wang haoyang jul 6, 2022 item listing image overcooked/i,
-    }).click();
+    })
+      .click()
+      .should("be.visible");
     // not signed in user clicks borrow
-    cy.findByRole("button", { name: /borrow it!/i }).click();
+    cy.get(".sc-hKMtZM > .MuiButton-contained").click();
+
     // not signed in user clicks chat
     cy.findByRole("button", { name: /chat/i }).click();
   });
