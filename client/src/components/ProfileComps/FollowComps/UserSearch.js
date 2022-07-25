@@ -169,7 +169,7 @@ export default function SearchUserField() {
           const parts = parse(option.name, matches);
   
           return (
-            <li {...props}>
+            <li {...props} key={option._id}>
               <div>
                 {parts.map((part, index) => (
                   <span
