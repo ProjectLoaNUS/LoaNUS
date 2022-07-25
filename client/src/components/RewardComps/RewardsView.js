@@ -34,7 +34,6 @@ const DialogContainer = styled(DialogContent)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 0;
     width: 100%;
   }
 `;
