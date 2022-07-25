@@ -6,6 +6,10 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -28,7 +32,7 @@ const UserSchema = new mongoose.Schema(
     },
     itemBorrowRequests: {
       type: [String],
-      required: false
+      required: false,
     },
     itemsListed: {
       type: [String],
@@ -71,7 +75,7 @@ const UserSchema = new mongoose.Schema(
     },
     otp: {
       type: Number,
-    }
+    },
   },
   { timestamps: true }
 );

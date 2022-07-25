@@ -129,7 +129,7 @@ router.post("/postAltLogin", async (req, res) => {
     };
     if ((!user.image || !user.image.url) && req.body.photoURL) {
       const image = {
-        url: req.body.photoURL
+        url: req.body.photoURL,
       };
       UserModel.findByIdAndUpdate({ _id: userId }, { image: image });
     }
@@ -140,7 +140,7 @@ router.post("/postAltLogin", async (req, res) => {
       age: req.body.age,
       email: email,
       image: {
-        url: req.body.photoURL
+        url: req.body.photoURL,
       },
       points: 0,
       admin: false,
@@ -365,14 +365,14 @@ router.post("/getFollowersCount", async (req, res) => {
   try {
     const userId = req.body.userId;
     if (!userId) {
-      return res.json({status: 'error'});
+      return res.json({ status: "error" });
     }
     const user = await UserModel.findOne({ _id: userId }, ["followers"]);
     if (!user) {
-      return res.json({status: 'error'});
+      return res.json({ status: "error" });
     }
     const followersCount = user.followers?.length || 0;
-    return res.json({status: 'ok', followersCount: followersCount});
+    return res.json({ status: "ok", followersCount: followersCount });
   } catch (err) {
     console.log(err);
   }
@@ -381,14 +381,14 @@ router.post("/getFollowingCount", async (req, res) => {
   try {
     const userId = req.body.userId;
     if (!userId) {
-      return res.json({status: 'error'});
+      return res.json({ status: "error" });
     }
     const user = await UserModel.findOne({ _id: userId }, ["following"]);
     if (!user) {
-      return res.json({status: 'error'});
+      return res.json({ status: "error" });
     }
     const followingCount = user.following?.length || 0;
-    return res.json({status: 'ok', followingCount: followingCount});
+    return res.json({ status: "ok", followingCount: followingCount });
   } catch (err) {
     console.log(err);
   }
@@ -554,7 +554,7 @@ router.post("/createreview", async (req, res) => {
     res.json({ status: "error" });
   }
 });
-    
+
 //get rating
 router.get("/getrating", async (req, res) => {
   try {
