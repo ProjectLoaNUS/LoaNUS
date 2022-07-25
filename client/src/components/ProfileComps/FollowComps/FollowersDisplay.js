@@ -51,7 +51,6 @@ function FollowingDisplay() {
           {followers.map((u, index) => (
             <FollowCard
               key={index}
-              image={u.image}
               username={u.name}
               id={u._id}
               activatebutton={false}
