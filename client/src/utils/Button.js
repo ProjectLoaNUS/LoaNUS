@@ -40,6 +40,12 @@ const MyLoadingButton = styled(LoadingButton)`
   padding: ${(props) => (props.size === "small" ? `7px 14px` : `16px 30px`)};
   line-height: 1px;
   white-space: nowrap;
+
+  &:disabled {
+    color: #bfbfbf;
+    border-color: #bfbfbf;
+    background: white;
+  }
 `;
 function ButtonComponent(props) {
   if (props.loading) {
