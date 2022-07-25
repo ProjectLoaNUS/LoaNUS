@@ -23,39 +23,46 @@ function useAuthProvider() {
   const googleAuthProvider = new GoogleAuthProvider();
 
   const signInWithGoogle = () => {
-    return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
-      fetch(`${BACKEND_URL}/api/user/postAltLogin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: result.user.displayName,
-          age: "-1",
-          email: result.user.email
-        }),
-      })
-      .then(req => req.json())
-      .then(data => {
-        if (data.status === "error") {
-          console.log("Error occurred while adding 3rd party account user to database");
-        } else {
-          let user = data.user;
-          user.photoURL = result.user.photoURL;
-          setUser(user);
-          localStorage.setItem('user', JSON.stringify(user));
-        }
+    if (auth) {
+      return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
+        fetch(`${BACKEND_URL}/api/user/postAltLogin`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: result.user.displayName,
+            age: "-1",
+            email: result.user.email
+          }),
+        })
+        .then(req => req.json())
+        .then(data => {
+          if (data.status === "error") {
+            console.log("Error occurred while adding 3rd party account user to database");
+          } else {
+            let user = data.user;
+            user.photoURL = result.user.photoURL;
+            setUser(user);
+            localStorage.setItem('user', JSON.stringify(user));
+          }
+        });
+        setIsGoogleSignIn(true);
       });
-      setIsGoogleSignIn(true);
-    });
+    }
+    console.log("Error performing Google account sign in: Invalid Firebase Authenticator object");
   };
 
   const signOut = () => {
     if (isGoogleSignIn) {
-      return auth.signOut().then(() => {
-        setUser(null);
-        localStorage.setItem("user", "");
-      });
+      if (auth) {
+        return auth.signOut().then(() => {
+          setUser(null);
+          localStorage.setItem("user", "");
+        });
+      }
+      console.log("Error performing Google account sign out: Invalid Firebase Authenticator object");
+      return;
     }
     setUser(null);
     localStorage.setItem("user", "");
