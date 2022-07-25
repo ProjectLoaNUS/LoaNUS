@@ -120,18 +120,28 @@ router.post("/postAltLogin", async (req, res) => {
   let user;
   user = await getThirdPartyUser(email);
   if (user) {
+    const userId = "" + user._id;
     let trimmedUser = {
-      id: "" + user._id,
+      id: userId,
       displayName: user.name,
       age: user.age,
       email: user.email,
     };
+    if ((!user.image || !user.image.url) && req.body.photoURL) {
+      const image = {
+        url: req.body.photoURL
+      };
+      UserModel.findByIdAndUpdate({ _id: userId }, { image: image });
+    }
     return res.json({ status: "ok", user: trimmedUser });
   } else {
     user = await UserModel.create({
       name: req.body.name,
       age: req.body.age,
       email: email,
+      image: {
+        url: req.body.photoURL
+      },
       points: 0,
       emailToken: null,
       isVerified: true,

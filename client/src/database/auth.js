@@ -33,7 +33,8 @@ function useAuthProvider() {
           body: JSON.stringify({
             name: result.user.displayName,
             age: "-1",
-            email: result.user.email
+            email: result.user.email,
+            photoURL: result.user.photoURL
           }),
         })
         .then(req => req.json())
