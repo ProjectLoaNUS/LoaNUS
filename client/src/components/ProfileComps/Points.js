@@ -34,7 +34,7 @@ export default function Points() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (points === "...") {
+    if (user && points === "...") {
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
         method: "POST",
         headers: {
