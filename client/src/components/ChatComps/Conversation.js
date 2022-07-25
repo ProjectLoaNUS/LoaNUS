@@ -25,6 +25,7 @@ const Name = styled.span`
 function Conversation({ conversation, currentuser, search }) {
   const [ userName, setUserName ] = useState("");
   const [ userPhotoUrl, setUserPhotoUrl ] = useState("");
+  const [ showThisConvo, setShowThisConvo ] = useState(true);
 
   const getUser = useCallback(async () => {
     try {
@@ -67,7 +68,19 @@ function Conversation({ conversation, currentuser, search }) {
     getProfilePic();
   }, [getProfilePic]);
 
-  if (userName.toLowerCase().includes(search.toLowerCase())) {
+  useEffect(() => {
+    if (search && userName) {
+      if (userName.toLowerCase().includes(search.toLowerCase())) {
+        setShowThisConvo(true);
+      } else {
+        setShowThisConvo(false);
+      }
+    } else {
+      setShowThisConvo(true);
+    }
+  }, [userName, search]);
+
+  if (showThisConvo) {
     return (
       <ConversationContainer>
         <Avatar src={userPhotoUrl} alt="U">
@@ -77,7 +90,7 @@ function Conversation({ conversation, currentuser, search }) {
               ""
           }
         </Avatar>
-        <Name>{userName}</Name>
+        <Name>{userName || "..."}</Name>
       </ConversationContainer>
     );
   }
