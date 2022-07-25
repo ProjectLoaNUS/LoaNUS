@@ -23,7 +23,7 @@ import EmailComp, { emailBtnText, emailTitle } from "./EmailComp";
 import SignInComp, { signInBtnText } from "./SignInComp";
 import SignUpComp, { signUpBtnText } from "./SignUpComp";
 import { TransitionGroup } from "react-transition-group";
-import { CentredDiv } from "../FlexDiv";
+import { CentredDiv } from "../../utils/FlexDiv";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
 

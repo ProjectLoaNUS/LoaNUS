@@ -1,6 +1,6 @@
 import DescriptionCard from "./DescriptionCard";
-import ListingPage from "../assets/LoanusItemListing.png";
-import ItemDetails from "../assets/LoanusItemDetailsDialog.png";
+import ListingPage from "../../assets/LoanusItemListing.png";
+import ItemDetails from "../../assets/LoanusItemDetailsDialog.png";
 
 export default function AboutLoanus() {
   const imgs = [ListingPage, ItemDetails];

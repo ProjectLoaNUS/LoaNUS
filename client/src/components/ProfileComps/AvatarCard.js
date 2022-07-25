@@ -16,7 +16,7 @@ import {
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useAuth } from "../../database/auth";
 import { useState } from "react";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../../utils/Button";
 import axios from "axios";
 import { Buffer } from "buffer";
 import { BACKEND_URL } from "../../database/const";
@@ -87,8 +87,8 @@ function AvatarCard(props) {
   const [rating, setRating] = useState(null);
   const [open, setOpen] = useState(false);
   const { user, setUser } = useAuth();
-  const [ followersCount, setFollowersCount ] = useState("...");
-  const [ followingCount, setFollowingCount ] = useState("...");
+  const [followersCount, setFollowersCount] = useState("...");
+  const [followingCount, setFollowingCount] = useState("...");
   const hiddenFileInput = React.useRef(null);
   const handleOpen = () => {
     setOpen(true);
@@ -103,7 +103,7 @@ function AvatarCard(props) {
         const binary = Buffer.from(user.photodata);
         const blob = new Blob([binary.buffer], { type: user.photoformat });
         setUser((prevUser) => {
-          return {...prevUser, photoURL: URL.createObjectURL(blob)};
+          return { ...prevUser, photoURL: URL.createObjectURL(blob) };
         });
       }
       if (followersCount === "...") {
@@ -113,15 +113,15 @@ function AvatarCard(props) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id
-          })
+            userId: user.id,
+          }),
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            setFollowersCount(data.followersCount);
-          }
-        });
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              setFollowersCount(data.followersCount);
+            }
+          });
       }
       if (followingCount === "...") {
         fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
@@ -130,15 +130,15 @@ function AvatarCard(props) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id
-          })
+            userId: user.id,
+          }),
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            setFollowingCount(data.followingCount);
-          }
-        });
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              setFollowingCount(data.followingCount);
+            }
+          });
       }
     }
   }, [user]);
@@ -220,8 +220,7 @@ function AvatarCard(props) {
         Singapore, Joined {format(user?.createdat)}{" "}
       </LocationDateContainer>
       <FollowContainer>
-        {followersCount} Followers {followingCount}{" "}
-        Following
+        {followersCount} Followers {followingCount} Following
       </FollowContainer>
       <ImageUploadContainer>
         <ButtonComponent

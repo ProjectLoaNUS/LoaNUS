@@ -1,61 +1,64 @@
 import { Autocomplete, IconButton, TextField } from "@mui/material";
-import parse from 'autosuggest-highlight/parse';
-import match from 'autosuggest-highlight/match';
+import parse from "autosuggest-highlight/parse";
+import match from "autosuggest-highlight/match";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { theme } from '../Theme';
+import { theme } from "../../utils/Theme";
 import { BACKEND_URL } from "../../database/const";
 import { SEARCH_LISTINGS } from "../../pages/routes";
 import DetailsDialog from "../ItemDetails/DetailsDialog";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 import Loading from "../../assets/loading.svg";
 import NoImage from "../../assets/no-image.png";
 import { CATEGORIES } from "../NewItem/ItemCategories";
-import { requestBorrowAction, deleteListingAction, isUserListingRelated } from "../ItemDetails/detailsDialogActions";
+import {
+  requestBorrowAction,
+  deleteListingAction,
+  isUserListingRelated,
+} from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
 
 const ContrastIconBtn = styled(IconButton)`
-    color: ${theme.palette.primary.contrastText};
+  color: ${theme.palette.primary.contrastText};
 `;
 
-const StyledSearchField = styled((props) => (
-    <TextField {...props} />
-  ))(({ theme }) => ({
-    '& .MuiOutlinedInput-root': {
-        color: theme.palette.primary.contrastText, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-        transition: theme.transitions.create([
-            'border-color',
-            'background-color',
-            'box-shadow',
-        ]),
-        '&.Mui-focused': {
-            boxShadow: `${alpha(theme.palette.secondary.main, 0.25)} 0 0 0 2px`,
-            backgroundColor: theme.palette.primary.dark
-        },
-        '&:hover': {
-            backgroundColor: '#354657'
-        },
-        '& fieldset': {
-          border: `1px solid ${theme.palette.primary.contrastText}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-          borderRadius: 4,
-        },
-        '&:hover fieldset': {
-          borderColor: theme.palette.secondary.main,
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: theme.palette.secondary.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-        },
+const StyledSearchField = styled((props) => <TextField {...props} />)(
+  ({ theme }) => ({
+    "& .MuiOutlinedInput-root": {
+      color: theme.palette.primary.contrastText, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+      transition: theme.transitions.create([
+        "border-color",
+        "background-color",
+        "box-shadow",
+      ]),
+      "&.Mui-focused": {
+        boxShadow: `${alpha(theme.palette.secondary.main, 0.25)} 0 0 0 2px`,
+        backgroundColor: theme.palette.primary.dark,
+      },
+      "&:hover": {
+        backgroundColor: "#354657",
+      },
+      "& fieldset": {
+        border: `1px solid ${theme.palette.primary.contrastText}`, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+        borderRadius: 4,
+      },
+      "&:hover fieldset": {
+        borderColor: theme.palette.secondary.main,
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: theme.palette.secondary.main, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+      },
     },
-    '& label': {
-      color: theme.palette.primary.contrastText // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+    "& label": {
+      color: theme.palette.primary.contrastText, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
     },
-    '& label.Mui-focused': {
-      color: theme.palette.primary.contrastText // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
-    }
+    "& label.Mui-focused": {
+      color: theme.palette.primary.contrastText, // theme.palette.mode == 'light' ? theme.palette.contrast.light : theme.palette.contrast.dark
+    },
   })
 );
 
@@ -72,9 +75,9 @@ export default function SearchTextField() {
 
   const removeResult = () => {
     setSearchResults((prevResults) => {
-      return prevResults.filter((result) => (result._id !== clickResult._id));
+      return prevResults.filter((result) => result._id !== clickResult._id);
     });
-  }
+  };
 
   const getResultAction = () => {
     if (isOwner) {
@@ -82,7 +85,7 @@ export default function SearchTextField() {
     } else {
       return requestBorrowAction;
     }
-  }
+  };
 
   useEffect(() => {
     if (!queryText) {
@@ -94,11 +97,13 @@ export default function SearchTextField() {
           .get(url, {
             params: {
               name: queryText,
-              isFullSearch: false
+              isFullSearch: false,
             },
           })
           .then((res) => {
-            setSearchResults(res.data.results.filter((item) => !item.borrowedBy));
+            setSearchResults(
+              res.data.results.filter((item) => !item.borrowedBy)
+            );
             setLoading(false);
           })
           .catch((err) => console.log(err, "error occured"));
@@ -109,23 +114,24 @@ export default function SearchTextField() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (queryText) {
-      navigate(SEARCH_LISTINGS, {state: {queryText: queryText}});
+      navigate(SEARCH_LISTINGS, { state: { queryText: queryText } });
     }
   };
 
   const onClickResult = async (event, newValue, reason) => {
-
     const imgsToUrls = async (images) => {
       let imgs = [];
       const bins = images.data;
       bins.forEach((bin, index) => {
         const binary = Buffer.from(bin);
-        const blob = new Blob([binary.buffer], {type: images.contentType[index]});
+        const blob = new Blob([binary.buffer], {
+          type: images.contentType[index],
+        });
         const url = URL.createObjectURL(blob);
         imgs[index] = url;
       });
       setClickResultImgs(imgs);
-    }
+    };
 
     const processResult = async (rawResult) => {
       let result = {
@@ -134,15 +140,19 @@ export default function SearchTextField() {
         description: rawResult.description,
         location: rawResult.location,
         listedBy: rawResult.listedBy,
-        borrowedBy: rawResult.borrowedBy
-      }
+        borrowedBy: rawResult.borrowedBy,
+      };
       result.category = CATEGORIES[rawResult.category];
-      result.deadline = new Date(rawResult.deadline).toLocaleDateString({}, 
-        {year: 'numeric', month: 'short', day: 'numeric'});
-      result.date = new Date(rawResult.date).toLocaleDateString({}, 
-        {year: 'numeric', month: 'short', day: 'numeric'});
+      result.deadline = new Date(rawResult.deadline).toLocaleDateString(
+        {},
+        { year: "numeric", month: "short", day: "numeric" }
+      );
+      result.date = new Date(rawResult.date).toLocaleDateString(
+        {},
+        { year: "numeric", month: "short", day: "numeric" }
+      );
       setClickResult(result);
-    }
+    };
 
     if (reason === "selectOption") {
       event.defaultMuiPrevented = true;
@@ -150,7 +160,7 @@ export default function SearchTextField() {
       axios
         .get(`${BACKEND_URL}/api/items/search-exact`, {
           params: {
-            id: newValue._id
+            id: newValue._id,
           },
         })
         .then((res) => {
@@ -160,7 +170,7 @@ export default function SearchTextField() {
         .catch((err) => console.log(err, "error occured"));
       setOpen(true);
     }
-  }
+  };
 
   const onChangeSearchField = (event) => {
     const value = event.target.value;
@@ -168,7 +178,7 @@ export default function SearchTextField() {
       setLoading(true);
     }
     setQueryText(event.target.value);
-  }
+  };
 
   return (
     <>
@@ -176,14 +186,14 @@ export default function SearchTextField() {
         freeSolo
         fullWidth
         disableClearable
-        filterOptions={(x) => x} 
+        filterOptions={(x) => x}
         id="search"
         loading={loading}
         options={searchResults}
-        getOptionLabel={result => result.title}
+        getOptionLabel={(result) => result.title}
         onChange={onClickResult}
         onKeyDown={(event) => {
-          if (event.key === 'Enter') {
+          if (event.key === "Enter") {
             // Prevent MUI's default 'Enter' key behavior.
             event.defaultMuiPrevented = true;
             // Direct user to the ListingSearchPage to view detailed search results
@@ -201,17 +211,20 @@ export default function SearchTextField() {
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
-                    <ContrastIconBtn onClick={handleSubmit}>
-                      <SearchIcon />
-                    </ContrastIconBtn>
+                  <ContrastIconBtn onClick={handleSubmit}>
+                    <SearchIcon />
+                  </ContrastIconBtn>
                 ),
-              }} />
-          )
+              }}
+            />
+          );
         }}
         renderOption={(props, option, { inputValue }) => {
-          const matches = match(option.title, inputValue, { insideWords: true });
+          const matches = match(option.title, inputValue, {
+            insideWords: true,
+          });
           const parts = parse(option.title, matches);
-  
+
           return (
             <li {...props}>
               <div>
@@ -228,13 +241,18 @@ export default function SearchTextField() {
               </div>
             </li>
           );
-        }} />
+        }}
+      />
       <DetailsDialog
         itemId={clickResult && clickResult._id}
         date={clickResult && clickResult.date}
         owner={clickResult && clickResult.listedBy}
         title={clickResult && clickResult.title}
-        imageUrls={(clickResultImgs !== undefined && (clickResultImgs).length === 0) ? [NoImage] : (clickResultImgs || [Loading])}
+        imageUrls={
+          clickResultImgs !== undefined && clickResultImgs.length === 0
+            ? [NoImage]
+            : clickResultImgs || [Loading]
+        }
         category={clickResult && clickResult.category}
         description={clickResult && clickResult.description}
         location={clickResult && clickResult.location}
@@ -243,7 +261,8 @@ export default function SearchTextField() {
         setOpen={setOpen}
         onActionDone={clickResult && removeResult}
         buttonAction={getResultAction()}
-        buttonText={ isOwner ? "Delete Listing" : "Borrow It!" } />
+        buttonText={isOwner ? "Delete Listing" : "Borrow It!"}
+      />
     </>
   );
 }

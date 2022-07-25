@@ -1,6 +1,6 @@
 import Message from "./Message";
 import styled from "styled-components";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../../utils/Button";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -43,89 +43,95 @@ const NoConversationDisplay = styled.span`
 `;
 
 export default function ChatBox(props) {
-    const { currentChat } = props;
-    const { user } = useAuth();
-    const { socket } = useSocket();
-    const { notify } = useNotifications();
-    const [ messages, setMessages ] = useState([]);
-    const [ arrivalMessage, setArrivalMessage ] = useState(null);
-    const [ newMessage, setNewMessage ] = useState("");
-    const chatRef = useRef(null);
+  const { currentChat } = props;
+  const { user } = useAuth();
+  const { socket } = useSocket();
+  const { notify } = useNotifications();
+  const [messages, setMessages] = useState([]);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+  const chatRef = useRef(null);
 
-    const onGetMessage = useCallback(async () => {
-        if (socket) {
-          socket.on("getMessage", (data) => {
-            setArrivalMessage({
-              sender: data.senderId,
-              text: data.text,
-              createdAt: Date.now(),
-            });
-          });
-        }
-    }, [socket]);
-    
-    useEffect(() => {
-        onGetMessage();
-    }, [onGetMessage]);
-    
-    useEffect(() => {
-        arrivalMessage &&
-          currentChat?.members.includes(arrivalMessage.sender) &&
-          setMessages((prev) => [...prev, arrivalMessage]);
-    }, [arrivalMessage]);
-
-    const getMessages = useCallback(async () => {
-        if (currentChat) {
-          try {
-            axios.get(
-              `${BACKEND_URL}/api/messages/` + currentChat._id
-            )
-            .then(res => {
-              setMessages(res.data);
-            });
-          } catch (err) {
-            console.log(err);
-          }
-        }
-    }, [currentChat]);
-    useEffect(() => {
-        getMessages();
-    }, [getMessages]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const message = {
-          sender: user.id,
-          text: newMessage,
-          conversationId: currentChat._id,
-        };
-        const receiverId = currentChat.members.find((member) => member !== user.id);
-        socket.emit("sendMessage", {
-          senderId: user.id,
-          receiverId,
-          text: newMessage,
+  const onGetMessage = useCallback(async () => {
+    if (socket) {
+      socket.on("getMessage", (data) => {
+        setArrivalMessage({
+          sender: data.senderId,
+          text: data.text,
+          createdAt: Date.now(),
         });
-        try {
-          axios.post(`${BACKEND_URL}/api/messages`, message)
-          .then(res => {
-            setMessages([...messages, res.data]);
-            setNewMessage("");
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    onGetMessage();
+  }, [onGetMessage]);
+
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage]);
+
+  const getMessages = useCallback(async () => {
+    if (currentChat) {
+      try {
+        axios
+          .get(`${BACKEND_URL}/api/messages/` + currentChat._id)
+          .then((res) => {
+            setMessages(res.data);
           });
-          axios.post(`${BACKEND_URL}/api/user/getNamesOf`, {users: [{userId: receiverId}]})
-            .then(res => {
-              if (res.data.status === 'ok') {
-                notify(user.id, receiverId, `New chat message from ${res.data.userDetails[0].name}`, CHAT);
-              } else {
-                console.log("Error fetching chat message sender name from backend");
-              }
-            });
-        } catch (err) {
-          console.log(err);
-        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, [currentChat]);
+  useEffect(() => {
+    getMessages();
+  }, [getMessages]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const message = {
+      sender: user.id,
+      text: newMessage,
+      conversationId: currentChat._id,
     };
-    useEffect(() => {
-      chatRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    const receiverId = currentChat.members.find((member) => member !== user.id);
+    socket.emit("sendMessage", {
+      senderId: user.id,
+      receiverId,
+      text: newMessage,
+    });
+    try {
+      axios.post(`${BACKEND_URL}/api/messages`, message).then((res) => {
+        setMessages([...messages, res.data]);
+        setNewMessage("");
+      });
+      axios
+        .post(`${BACKEND_URL}/api/user/getNamesOf`, {
+          users: [{ userId: receiverId }],
+        })
+        .then((res) => {
+          if (res.data.status === "ok") {
+            notify(
+              user.id,
+              receiverId,
+              `New chat message from ${res.data.userDetails[0].name}`,
+              CHAT
+            );
+          } else {
+            console.log("Error fetching chat message sender name from backend");
+          }
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    chatRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>

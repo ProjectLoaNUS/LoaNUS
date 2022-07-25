@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Card, TextField } from "@mui/material";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../../utils/Button";
 import SignInComp from "./SignInComp";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";

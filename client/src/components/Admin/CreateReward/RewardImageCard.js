@@ -1,8 +1,8 @@
 import { Card, CardActionArea, CardMedia, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
-import { theme } from "../../Theme";
+import { theme } from "../../../utils/Theme";
 
 const ImageCard = styled(Card)`
   display: flex;
@@ -61,63 +61,65 @@ const HiddenInput = styled.input`
 `;
 
 export default function RewardImageCard(props) {
-    const {image, setImage, imageRef, setIsError} = props;
+  const { image, setImage, imageRef, setIsError } = props;
 
-    const getImgUrl = (img) => {
-        if (img) {
-          return URL.createObjectURL(img);
-        }
-        return "";
-    };
-  
-    const handleChooseImg = () => {
-        imageRef.current.click();
-    };
+  const getImgUrl = (img) => {
+    if (img) {
+      return URL.createObjectURL(img);
+    }
+    return "";
+  };
 
-    const onImgChosen = async (event) => {
-        setImage(event.target.files[0]);
-        setIsError(false);
-    };
+  const handleChooseImg = () => {
+    imageRef.current.click();
+  };
 
-    const rmImage = async () => {
-        imageRef.current.value = null;
-        setImage(null);
-    };
+  const onImgChosen = async (event) => {
+    setImage(event.target.files[0]);
+    setIsError(false);
+  };
 
-    return (
-        <>
-            { image ?
-              <ImageCard>
-                  <MyIconButton
-                    size="small"
-                    color="primary"
-                    variant="filled"
-                    onClick={rmImage} >
-                    <CloseIcon fontSize="inherit" />
-                  </MyIconButton>
-                <ImageDiv>
-                    <CardMedia
-                        component="img"
-                        image={getImgUrl(image)}
-                        alt="Reward image"
-                    />
-                </ImageDiv>
-              </ImageCard> :
-              <ImageCard>
-                <CardActionArea onClick={handleChooseImg}>
-                  <CardMedia>
-                      <AddCircleIcon />
-                  </CardMedia>
-                </CardActionArea>
-              </ImageCard>
-            }
-            <HiddenInput
-              type="file"
-              id="choose-image"
-              accept="image/gif,image/jpeg,image/png,image/svg+xml"
-              onChange={onImgChosen}
-              ref={imageRef}
+  const rmImage = async () => {
+    imageRef.current.value = null;
+    setImage(null);
+  };
+
+  return (
+    <>
+      {image ? (
+        <ImageCard>
+          <MyIconButton
+            size="small"
+            color="primary"
+            variant="filled"
+            onClick={rmImage}
+          >
+            <CloseIcon fontSize="inherit" />
+          </MyIconButton>
+          <ImageDiv>
+            <CardMedia
+              component="img"
+              image={getImgUrl(image)}
+              alt="Reward image"
             />
-        </>
-    );
+          </ImageDiv>
+        </ImageCard>
+      ) : (
+        <ImageCard>
+          <CardActionArea onClick={handleChooseImg}>
+            <CardMedia>
+              <AddCircleIcon />
+            </CardMedia>
+          </CardActionArea>
+        </ImageCard>
+      )}
+      <HiddenInput
+        type="file"
+        id="choose-image"
+        accept="image/gif,image/jpeg,image/png,image/svg+xml"
+        onChange={onImgChosen}
+        ref={imageRef}
+      />
+    </>
+  );
 }

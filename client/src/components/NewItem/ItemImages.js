@@ -12,7 +12,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import styled from "styled-components";
 import { useRef } from "react";
-import { theme } from "../Theme";
+import { theme } from "../../utils/Theme";
 
 const HiddenInput = styled.input`
   display: none;

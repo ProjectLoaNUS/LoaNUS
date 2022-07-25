@@ -5,7 +5,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
-import ButtonComponent from "../../Button";
+import ButtonComponent from "../../../utils/Button";
 import { Buffer } from "buffer";
 import { useState } from "react";
 import { useAuth } from "../../../database/auth";
@@ -15,18 +15,18 @@ import { Button, Skeleton, Stack } from "@mui/material";
 
 const FollowItem = styled(ListItem)`
   margin-bottom: 10px;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 10px;
   box-shadow: 5px 10px #dce0e6;
-  transition: box-shadow 300ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 `;
 
 function FollowCard(props) {
   const { id, activatebutton, image, username } = props;
   const { user } = useAuth();
   const [followed, setFollowed] = useState(props.followed);
-  const [ userPicUrl, setUserPicUrl ] = useState("");
-  
+  const [userPicUrl, setUserPicUrl] = useState("");
+
   const handleFollow = async (otherid) => {
     let friends = {
       follower: user.id,
@@ -111,15 +111,13 @@ const CardsList = styled(Stack)`
   overflow-y: auto;
 `;
 export function LoadingFollowCards(props) {
-  const {numOfCards} = props;
+  const { numOfCards } = props;
 
   return (
     <CardsList>
-      {
-        [...Array(numOfCards)].map((card, index) => {
-          return <LoadingFollowCard key={index} />
-        })
-      }
+      {[...Array(numOfCards)].map((card, index) => {
+        return <LoadingFollowCard key={index} />;
+      })}
     </CardsList>
   );
 }
@@ -130,20 +128,22 @@ const Container = styled.div`
   gap: 1ch;
   padding: 1ch;
   margin-bottom: 10px;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 10px;
   box-shadow: 5px 10px #dce0e6;
-  transition: box-shadow 300ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 `;
 export function LoadingFollowCard() {
-
   return (
     <Container>
-      <Skeleton variant="circular" sx={{flex: "0 0 auto"}}>
+      <Skeleton variant="circular" sx={{ flex: "0 0 auto" }}>
         <Avatar />
       </Skeleton>
-      <Skeleton variant="text" sx={{flex: "1 1 auto"}} />
-      <Skeleton variant="rectangular" sx={{flex: "0 0 auto", borderRadius: "25px"}}>
+      <Skeleton variant="text" sx={{ flex: "1 1 auto" }} />
+      <Skeleton
+        variant="rectangular"
+        sx={{ flex: "0 0 auto", borderRadius: "25px" }}
+      >
         <Button>Follow</Button>
       </Skeleton>
     </Container>

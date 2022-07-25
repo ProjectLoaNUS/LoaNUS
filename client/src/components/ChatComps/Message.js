@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { format } from "timeago.js";
-import { theme } from "../Theme";
+import { theme } from "../../utils/Theme";
 
 const MessageContainer = styled.div.attrs((props) => ({
   className: props.className,

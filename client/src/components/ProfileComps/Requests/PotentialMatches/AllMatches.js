@@ -17,7 +17,6 @@ export default function AllMatches(props) {
     
     const filterRequests = useCallback(async () => {
         if (requests?.length) {
-            console.log("hi")
             requests.forEach(request => {
                 const matchingListings = request.matchingListings;
                 // Current request has matching item listings
@@ -37,7 +36,7 @@ export default function AllMatches(props) {
     return (
         <Matches>
             { matchedRequests.length ? matchedRequests.map(request => {
-                return <PerRequestMatches request={request} />
+                return <PerRequestMatches key={request._id} request={request} />
             }) :
                 null
             }
