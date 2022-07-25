@@ -83,13 +83,15 @@ function UserCard(props) {
   useEffect(() => {
     if (props.otheruser.image) {
       const userimage = props.otheruser.image;
-      const bin = userimage.data;
-      const ctype = userimage.contentType;
-      const binary = Buffer.from(bin, "base64");
-      const blob = new Blob([binary.buffer], {
-        type: ctype,
-      });
-      setProfilePicUrl(URL.createObjectURL(blob));
+      if (userimage.data && userimage.contentType) {
+        const bin = userimage.data;
+        const ctype = userimage.contentType;
+        const binary = Buffer.from(bin, "base64");
+        const blob = new Blob([binary.buffer], {
+          type: ctype,
+        });
+        setProfilePicUrl(URL.createObjectURL(blob));
+      }
     }
   }, [props.otheruser]);
 
