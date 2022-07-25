@@ -166,9 +166,8 @@ function ClaimRewardPage() {
           <Typography
             variant="h5"
             align="center"
-            sx={{ color: theme.palette.success.main }}
           >
-            You have: {userPoints || "..."} points
+            You have: <b>{userPoints || "..."}</b> points
           </Typography>
         </Box>
         <RewardContainer>
