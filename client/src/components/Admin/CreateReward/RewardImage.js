@@ -15,7 +15,7 @@ const ImageStack = styled(Stack)`
   overflow-y: hidden;
   padding: 1ch;
   border: ${(props) =>
-    props.error
+    props.$iserror
       ? `2px solid ${theme.palette.error.main}`
       : `1px solid ${theme.palette.primary.main}`};
   border-radius: 4px;
@@ -29,7 +29,7 @@ export default function RewardImage(props) {
       <Typography align="left" variant="subtitle2" sx={{ paddingLeft: "1em" }}>
         Image
       </Typography>
-      <ImageStack direction="row" error={isError}>
+      <ImageStack direction="row" $iserror={isError}>
         <RewardImageCard
           image={image}
           setImage={setImage}
