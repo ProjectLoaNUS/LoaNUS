@@ -6,6 +6,7 @@ import SignInComp from "./SignInComp";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useCountdown } from "../../utils/useCountdown";
 
 const Title = styled.h1`
   align-items: center;
@@ -65,6 +66,11 @@ function PasswordResetCard() {
   const [givenPassword2, setGivenPassword2] = useState("");
   const [isPwError, setIsPwError] = useState(false);
   const [verified, setVerified] = useState(false);
+  const {
+    time,
+    startTimer,
+    isTimerRunning
+  } = useCountdown(30);
 
   const handlesavepassword = () => {
     if (!isPwError) {
@@ -84,18 +90,24 @@ function PasswordResetCard() {
   };
 
   const handlesendagain = () => {
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const data = {
-      email: email,
-      otp: otp,
-    };
-    axios.post(`${BACKEND_URL}/api/user/createotp`, data);
+    if (!isTimerRunning) {
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      const data = {
+        email: email,
+        otp: otp,
+      };
+      axios.post(`${BACKEND_URL}/api/user/createotp`, data)
+        .then(() => startTimer());
+    } else {
+      console.log(`Countdown is not over, please wait another ${time}s before requesting another OTP`);
+    }
   };
 
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/user/getotp?email=` + email)
       .then((res) => setStoredOtp(res.data.otp));
+    startTimer();
   }, []);
 
   return (
@@ -149,16 +161,17 @@ function PasswordResetCard() {
           />
           <ButtonContainer>
             <ButtonComponent
+              loading={isTimerRunning}
               size="small"
-              text="resend otp"
+              text={isTimerRunning ? `Resend OTP(${time})` : "Resend OTP"}
               onClick={handlesendagain}
-            ></ButtonComponent>
+            />
             <ButtonComponent
               size="small"
               text="confirm"
               state="primary"
               onClick={handleOtpsubmit}
-            ></ButtonComponent>
+            />
           </ButtonContainer>
         </FlexCard>
       )}
