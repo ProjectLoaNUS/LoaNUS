@@ -96,7 +96,7 @@ function PasswordResetCard() {
     axios
       .get(`${BACKEND_URL}/api/user/getotp?email=` + email)
       .then((res) => setStoredOtp(res.data.otp));
-  });
+  }, []);
 
   return (
     <>
