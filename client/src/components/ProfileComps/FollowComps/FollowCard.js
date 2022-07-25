@@ -1,17 +1,16 @@
 import styled from "styled-components";
 import React, { useEffect } from "react";
-import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import ButtonComponent from "../../../utils/Button";
-import { Buffer } from "buffer";
 import { useState } from "react";
 import { useAuth } from "../../../database/auth";
 import axios from "axios";
 import { BACKEND_URL } from "../../../database/const";
 import { Button, Skeleton, Stack } from "@mui/material";
+import { getProfilePicUrl } from "../../../utils/getProfilePic";
 
 const FollowItem = styled(ListItem)`
   margin-bottom: 10px;
@@ -22,7 +21,7 @@ const FollowItem = styled(ListItem)`
 `;
 
 function FollowCard(props) {
-  const { id, activatebutton, image, username } = props;
+  const { id, activatebutton, username } = props;
   const { user } = useAuth();
   const [followed, setFollowed] = useState(props.followed);
   const [userPicUrl, setUserPicUrl] = useState("");
@@ -59,16 +58,12 @@ function FollowCard(props) {
   };
 
   useEffect(() => {
-    if (image) {
-      const bin = image.data;
-      const ctype = image.contentType;
-      const binary = Buffer.from(bin, "base64");
-      const blob = new Blob([binary.buffer], {
-        type: ctype,
+    if (id) {
+      getProfilePicUrl(id).then(url => {
+        setUserPicUrl(url);
       });
-      setUserPicUrl(URL.createObjectURL(blob));
     }
-  }, [image]);
+  }, [id]);
 
   return (
     <FollowItem>

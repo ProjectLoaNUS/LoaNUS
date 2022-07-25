@@ -47,27 +47,65 @@ router.get("/search", async (request, response) => {
             _id: 1,
           };
         }
-        results = await ItemListingsModel.aggregate([
-          {
-            $search: {
-              index: "listings",
-              autocomplete: {
-                query: `${query.name}`,
-                path: "title",
-                fuzzy: {
-                  maxEdits: 2,
-                },
-                tokenOrder: "sequential",
+        if (query.isFullSearch === "true") {
+          // Full search, so search within listing description as well
+          results = await ItemListingsModel.aggregate([
+            {
+              $search: {
+                index: "listings",
+                compound: {
+                  should: [
+                    {
+                      autocomplete: {
+                        query: `${query.name}`,
+                        path: "title",
+                        fuzzy: {
+                          maxEdits: 2,
+                        },
+                        tokenOrder: "sequential",
+                      }
+                    },
+                    {
+                      text: {
+                        query: `${query.name}`,
+                        path: ["description"]
+                      }
+                    }
+                  ],
+                  "minimumShouldMatch": 1
+                }
               },
             },
-          },
-          {
-            $limit: 15,
-          },
-          {
-            $project: resultData,
-          },
-        ]);
+            {
+              $limit: 15,
+            },
+            {
+              $project: resultData,
+            },
+          ]);
+        } else { // Non-full search, only search listing titles
+          results = await ItemListingsModel.aggregate([
+            {
+              $search: {
+                index: "listings",
+                autocomplete: {
+                  query: `${query.name}`,
+                  path: "title",
+                  fuzzy: {
+                    maxEdits: 2,
+                  },
+                  tokenOrder: "sequential",
+                },
+              },
+            },
+            {
+              $limit: 15,
+            },
+            {
+              $project: resultData,
+            },
+          ]);
+        }
         if (results) {
           return response.json({ status: "ok", results: results });
         }

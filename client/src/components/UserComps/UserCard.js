@@ -83,13 +83,17 @@ function UserCard(props) {
   useEffect(() => {
     if (props.otheruser.image) {
       const userimage = props.otheruser.image;
-      const bin = userimage.data;
-      const ctype = userimage.contentType;
-      const binary = Buffer.from(bin, "base64");
-      const blob = new Blob([binary.buffer], {
-        type: ctype,
-      });
-      setProfilePicUrl(URL.createObjectURL(blob));
+      if (userimage.data && userimage.contentType) {
+        const bin = userimage.data;
+        const ctype = userimage.contentType;
+        const binary = Buffer.from(bin, "base64");
+        const blob = new Blob([binary.buffer], {
+          type: ctype,
+        });
+        setProfilePicUrl(URL.createObjectURL(blob));
+      } else if (userimage.url) {
+        setProfilePicUrl(userimage.url);
+      }
     }
   }, [props.otheruser]);
 
@@ -165,7 +169,7 @@ function UserCard(props) {
   };
   return (
     <StyledCard variant="outlined">
-      <Avatar src={profilePicUrl || null} sx={{ width: 140, height: 140 }}>
+      <Avatar src={profilePicUrl} sx={{ width: 140, height: 140 }}>
         {props.otheruser && !profilePicUrl
           ? props.otheruser.name
             ? props.otheruser.name[0]

@@ -21,6 +21,8 @@ export const getProfilePicUrl = async (userId) => {
                     const binary = Buffer.from(image.data);
                     const blob = new Blob([binary.buffer], {type: image.contentType});
                     url = URL.createObjectURL(blob);
+                } else if (image.url) {
+                    url = image.url;
                 }
             } else {
                 console.log(`Error occurred while loading profile picture of user with ID "${userId}"`);

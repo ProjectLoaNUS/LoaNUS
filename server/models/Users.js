@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema(
     image: {
       data: Buffer,
       contentType: String,
+      url: String,
       required: false,
     },
     emailToken: String,
@@ -57,7 +58,7 @@ const UserSchema = new mongoose.Schema(
     },
     admin: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     rewards: {
       type: Array,

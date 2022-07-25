@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import CreateRewardCard from "../components/Admin/CreateReward/CreateRewardCard";
 import ViewListings from "../components/Admin/ViewListings";
@@ -8,6 +8,7 @@ import ViewRequests from "../components/Admin/ViewRequests";
 import OverView from "../components/Admin/OverView";
 import NavBar from "../components/Admin/NavBar";
 import { ADMIN, CREATE_REWARD, VIEW_LISTINGS, VIEW_REQUESTS } from "./routes";
+import { useAuth } from "../database/auth";
 
 const AdminContentContainer = styled(Box)`
   display: flex;
@@ -18,10 +19,21 @@ const AdminContentContainer = styled(Box)`
 
 export default function AdminPage() {
   const [path, setPath] = useState("");
+  const {user} = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (user && !user.admin) {
+      navigate(-1);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    setPath(location.pathname);
+  }, [location]);
 
   function AdminContent() {
-    const location = useLocation();
-    setPath(location.pathname);
     switch (location.pathname) {
       case VIEW_LISTINGS:
         return <ViewListings />;

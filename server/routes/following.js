@@ -64,8 +64,7 @@ const following = (socketUtils) => {
 
       const array = await UserModel.find({ _id: { $in: followingarray } }, [
         "_id",
-        "name",
-        "image",
+        "name"
       ]);
 
       res.status(200).send(array);
@@ -81,8 +80,7 @@ const following = (socketUtils) => {
 
       const array = await UserModel.find({ _id: { $in: followersarray } }, [
         "_id",
-        "name",
-        "image",
+        "name"
       ]);
 
       res.status(200).send(array);
