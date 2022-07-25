@@ -8,7 +8,7 @@ import LoadingRewardCards from "../RewardComps/LoadingRewardCards";
 import { Link, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { CLAIM_REWARD } from "../../pages/routes";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../../utils/Button";
 import { useCallback } from "react";
 
 const RewardsContainer = styled.div`

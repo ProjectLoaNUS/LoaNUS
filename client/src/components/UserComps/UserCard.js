@@ -15,7 +15,7 @@ import {
   Rating,
 } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../../utils/Button";
 import { useAuth } from "../../database/auth";
 import { useState, useEffect, forwardRef } from "react";
 import { Buffer } from "buffer";

@@ -20,7 +20,7 @@ import {
 import AppBtn from "../NavBar/AppBtn/AppBtn";
 import ProfileBtn from "../NavBar/ProfileBtn";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { theme } from "../Theme";
+import { theme } from "../../utils/Theme";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";

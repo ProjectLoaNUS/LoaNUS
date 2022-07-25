@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
-import { theme } from "../Theme";
+import { theme } from "../../utils/Theme";
 import ImageList from "../ItemDetails/ImageList";
 import { TransitionGroup } from "react-transition-group";
-import { CentredDiv } from "../FlexDiv";
+import { CentredDiv } from "../../utils/FlexDiv";
 import axios from "axios";
 import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
@@ -86,12 +86,12 @@ export default function RewardsView(props) {
     onActionDone,
     howToRedeem,
     userPoints,
-    setUserPoints
+    setUserPoints,
   } = props;
-  const [ urlToRedeem, setUrlToRedeem ] = useState("");
-  const [ qrCodeUrl, setQrCodeUrl ] = useState("");
-  const [ showQrCode, setShowQrCode ] = useState(false);
-  const [ showRmUi, setShowRmUi ] = useState(false);
+  const [urlToRedeem, setUrlToRedeem] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [showQrCode, setShowQrCode] = useState(false);
+  const [showRmUi, setShowRmUi] = useState(false);
   const { user } = useAuth();
 
   const handleClick = async () => {
@@ -103,22 +103,21 @@ export default function RewardsView(props) {
         item: itemId,
         user: user.id,
       };
-      axios.post(`${BACKEND_URL}/api/reward/claimreward`, data)
-        .then(res => {
-          if (res.status === 200) {
-            setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
-            setTimeout(() => {
-              setOpen(false);
-            }, 2000);
-            setTimeout(() => {
-              onActionDone();
-            }, 3000);
-            setUserPoints(res.data.points);
-          } else {
-            setButtonHelperText("Error occurred while claiming reward");
-            setIsActionError(true);
-          }
-        });
+      axios.post(`${BACKEND_URL}/api/reward/claimreward`, data).then((res) => {
+        if (res.status === 200) {
+          setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
+          setTimeout(() => {
+            setOpen(false);
+          }, 2000);
+          setTimeout(() => {
+            onActionDone();
+          }, 3000);
+          setUserPoints(res.data.points);
+        } else {
+          setButtonHelperText("Error occurred while claiming reward");
+          setIsActionError(true);
+        }
+      });
     } catch (err) {
       setButtonHelperText("Error occurred while claiming reward");
       setIsActionError(true);
@@ -129,12 +128,14 @@ export default function RewardsView(props) {
   const redeem = async () => {
     if (qrCodeUrl) {
       setShowQrCode(true);
-    } 
+    }
     if (urlToRedeem) {
-      window.open(urlToRedeem,'_blank');
+      window.open(urlToRedeem, "_blank");
     }
     if (!qrCodeUrl && !urlToRedeem) {
-      setButtonHelperText("Reward provider did not indicate a way for redeeming this");
+      setButtonHelperText(
+        "Reward provider did not indicate a way for redeeming this"
+      );
       setIsActionError(true);
       setTimeout(() => {
         setButtonHelperText("");
@@ -150,14 +151,13 @@ export default function RewardsView(props) {
     fetch(`${BACKEND_URL}/api/reward/rmreward`, {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        rewardId: itemId
-      })
-    })
-    .then(res => {
-      res.json().then(data => {
+        rewardId: itemId,
+      }),
+    }).then((res) => {
+      res.json().then((data) => {
         if (res.status === 200) {
           setShowQrCode(false);
           setButtonHelperText("Enjoy your reward :)");
@@ -168,11 +168,13 @@ export default function RewardsView(props) {
             onActionDone();
           }, 3000);
         } else {
-          setButtonHelperText("Something went wrong... Don't worry, your reward is still here");
+          setButtonHelperText(
+            "Something went wrong... Don't worry, your reward is still here"
+          );
         }
       });
-    })
-  }
+    });
+  };
 
   const imgToUrl = async (img) => {
     const binary = Buffer.from(img.data);
@@ -196,22 +198,22 @@ export default function RewardsView(props) {
   const getUserPoints = useCallback(async () => {
     if (user) {
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user.id
-          }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
       })
-      .then(req => req.json())
-      .then(data => {
+        .then((req) => req.json())
+        .then((data) => {
           if (data.status === "ok" && data.points !== undefined) {
             setUserPoints(data.points);
           } else {
-              console.log("Error fetching user's points from backend");
+            console.log("Error fetching user's points from backend");
           }
-      });
+        });
     }
   }, [user]);
   useEffect(() => {
@@ -271,7 +273,11 @@ export default function RewardsView(props) {
 
         <ButtonGroup>
           <Button
-            disabled={(!howToRedeem && userPoints) && (userPoints >= points ? false : true)}
+            disabled={
+              !howToRedeem &&
+              userPoints &&
+              (userPoints >= points ? false : true)
+            }
             variant="contained"
             color={isActionError ? "error" : "primary"}
             onClick={howToRedeem ? redeem : handleClick}
@@ -293,25 +299,32 @@ export default function RewardsView(props) {
           )}
         </TransitionGroup>
         <TransitionGroup>
-          {showQrCode &&
-            <Grow style={{transformOrigin: "center top"}} timeout={750}>
+          {showQrCode && (
+            <Grow style={{ transformOrigin: "center top" }} timeout={750}>
               <ImageDiv>
                 <img src={qrCodeUrl} />
               </ImageDiv>
             </Grow>
-          }
+          )}
         </TransitionGroup>
         <TransitionGroup>
-          {showRmUi &&
-            <Grow style={{transformOrigin: "center top"}} timeout={750}>
+          {showRmUi && (
+            <Grow style={{ transformOrigin: "center top" }} timeout={750}>
               <Box display="flex" flexDirection="column">
-                <Typography variant="subtitle2" align="center">Reward redeemed already?</Typography>
-                <Button color="primary" variant="outlined" onClick={onClickRmReward}>Yes</Button>
+                <Typography variant="subtitle2" align="center">
+                  Reward redeemed already?
+                </Typography>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={onClickRmReward}
+                >
+                  Yes
+                </Button>
               </Box>
             </Grow>
-          }
+          )}
         </TransitionGroup>
-        
       </DialogContainer>
     </>
   );

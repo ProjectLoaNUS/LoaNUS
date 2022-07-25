@@ -7,7 +7,7 @@ import { BACKEND_URL } from "../database/const";
 import { useAuth } from "../database/auth";
 import { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
-import { theme } from "../components/Theme";
+import { theme } from "../utils/Theme";
 import LoadingRewardCards from "../components/RewardComps/LoadingRewardCards";
 import LoadingRewardCard from "../components/RewardComps/LoadingRewardCard";
 
@@ -100,22 +100,22 @@ function ClaimRewardPage() {
   const getUserPoints = useCallback(async () => {
     if (user) {
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user.id
-          }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
       })
-      .then(req => req.json())
-      .then(data => {
+        .then((req) => req.json())
+        .then((data) => {
           if (data.status === "ok" && data.points !== undefined) {
-              setUserPoints(data.points);
+            setUserPoints(data.points);
           } else {
-              console.log("Error fetching user's points from backend");
+            console.log("Error fetching user's points from backend");
           }
-      });
+        });
     }
   }, [user]);
   useEffect(() => {
@@ -123,24 +123,22 @@ function ClaimRewardPage() {
   }, [getUserPoints]);
 
   function Rewards(props) {
-    const {rewards, setRewards} = props;
+    const { rewards, setRewards } = props;
 
     return (
       <>
-        {
-          rewards.map((r, index) =>
-            !r.claimed ? (
-              <RewardCard
-                buttonText={"Claim it!"}
-                itemDetails={r}
-                key={index}
-                setRewards={setRewards}
-                userPoints={userPoints}
-                setUserPoints={setUserPoints} />
-            ) :
-            null 
-          )
-        }
+        {rewards.map((r, index) =>
+          !r.claimed ? (
+            <RewardCard
+              buttonText={"Claim it!"}
+              itemDetails={r}
+              key={index}
+              setRewards={setRewards}
+              userPoints={userPoints}
+              setUserPoints={setUserPoints}
+            />
+          ) : null
+        )}
       </>
     );
   }
@@ -150,11 +148,9 @@ function ClaimRewardPage() {
 
     return (
       <>
-        {
-          [...Array(numOfRewards)].map((r, index) => {
-            return <LoadingRewardCard key={index} />
-          })
-        }
+        {[...Array(numOfRewards)].map((r, index) => {
+          return <LoadingRewardCard key={index} />;
+        })}
       </>
     );
   }
@@ -167,48 +163,67 @@ function ClaimRewardPage() {
           Helped a friend? Claim your Rewards below!
         </HeaderContainer>
         <Box width="100%">
-          <Typography variant="h5" align="center" sx={{color: theme.palette.success.main}}>
-            You have: {userPoints || '...'} points
+          <Typography
+            variant="h5"
+            align="center"
+            sx={{ color: theme.palette.success.main }}
+          >
+            You have: {userPoints || "..."} points
           </Typography>
         </Box>
         <RewardContainer>
           <RewardType>Vouchers</RewardType>
-          { vouchers ?
-            vouchers.length ?
+          {vouchers ? (
+            vouchers.length ? (
               <RewardCardContainer>
                 <Rewards rewards={vouchers} setRewards={setVouchers} />
               </RewardCardContainer>
-            :
-              <Typography align="center" variant="subtitle1">No vouchers yet</Typography>
-          :
-            <RewardCardContainer><LoadingRewards /></RewardCardContainer>
-          }
+            ) : (
+              <Typography align="center" variant="subtitle1">
+                No vouchers yet
+              </Typography>
+            )
+          ) : (
+            <RewardCardContainer>
+              <LoadingRewards />
+            </RewardCardContainer>
+          )}
         </RewardContainer>
         <RewardContainer>
           <RewardType>Beverages</RewardType>
-          { beverages ?
-            beverages.length ?
+          {beverages ? (
+            beverages.length ? (
               <RewardCardContainer>
                 <Rewards rewards={beverages} setRewards={setBeverages} />
               </RewardCardContainer>
-            :
-              <Typography align="center" variant="subtitle1">No beverage rewards yet</Typography>
-          :
-            <RewardCardContainer><LoadingRewards /></RewardCardContainer>
-          }
+            ) : (
+              <Typography align="center" variant="subtitle1">
+                No beverage rewards yet
+              </Typography>
+            )
+          ) : (
+            <RewardCardContainer>
+              <LoadingRewards />
+            </RewardCardContainer>
+          )}
         </RewardContainer>
         <RewardContainer>
           <RewardType>Others</RewardType>
-          { otherrewards ?
-            otherrewards.length ?
+          {otherrewards ? (
+            otherrewards.length ? (
               <RewardCardContainer>
                 <Rewards rewards={otherrewards} setRewards={setOtherrewards} />
               </RewardCardContainer>
-            :
-              <Typography align="center" variant="subtitle1">No 'Other' rewards yet</Typography>
-          :
-            <RewardCardContainer><LoadingRewards /></RewardCardContainer>
-          }
+            ) : (
+              <Typography align="center" variant="subtitle1">
+                No 'Other' rewards yet
+              </Typography>
+            )
+          ) : (
+            <RewardCardContainer>
+              <LoadingRewards />
+            </RewardCardContainer>
+          )}
         </RewardContainer>
       </BelowNavBarContainer>
     </MainContainer>

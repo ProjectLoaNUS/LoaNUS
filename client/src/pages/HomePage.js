@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import RecentListings from "../components/ItemList/RecentListings";
 import { useAuth } from "../database/auth";
 import RecommendationListings from "../components/RecommendationComps/RecommendationListing";
-import AboutLoanus from "../components/AboutLoanus";
+import AboutLoanus from "../components/DescriptionComps/AboutLoanus";
 import BrowseCategory from "../components/BrowseCategoryComps/BrowseCategory";
 
 const MainContainer = styled.div`
@@ -22,7 +22,6 @@ const BodyContainer = styled.div`
 `;
 
 function HomePage() {
-
   return (
     <MainContainer>
       <NavigationBar></NavigationBar>

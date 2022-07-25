@@ -5,7 +5,7 @@ import SignInBtn from "./SignInBtn";
 import ProfileBtn from "./ProfileBtn";
 import CreateBtn from "./CreateBtn";
 import SearchBar from "../SearchBar/SearchBar";
-import { theme } from "../Theme";
+import { theme } from "../../utils/Theme";
 import AppBtn from "./AppBtn/AppBtn";
 import ChatBtn from "./ChatBtn";
 import { AppBar, Stack, Toolbar } from "@mui/material";
@@ -26,7 +26,7 @@ const MyAppBar = styled(AppBar)`
 `;
 
 const iconStyles = {
-  alignSelf: "stretch"
+  alignSelf: "stretch",
 };
 
 function NavigationBar() {
@@ -39,18 +39,19 @@ function NavigationBar() {
           to={HOME}
           color="primary"
           dark={true}
-          iconStyles={iconStyles} />
+          iconStyles={iconStyles}
+        />
         <SearchBar />
-        { user ?
+        {user ? (
           <Stack direction="row">
             <CreateBtn />
             <ChatBtn />
             <NotificationsBtn />
             <ProfileBtn />
           </Stack>
-        :
-          <SignInBtn url='/signin' />
-        }
+        ) : (
+          <SignInBtn url="/signin" />
+        )}
       </Toolbar>
     </MyAppBar>
   );

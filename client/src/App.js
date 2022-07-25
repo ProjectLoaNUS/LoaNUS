@@ -8,7 +8,7 @@ import SignInPage from "./pages/SignInPage";
 import ChatPage from "./pages/ChatPage";
 import CategoryListings from "./pages/CategoryPage";
 import SearchedListings from "./pages/ListingSearchPage";
-import { theme } from "./components/Theme";
+import { theme } from "./utils/Theme";
 import { ThemeProvider } from "@mui/material";
 import {
   HOME,
@@ -32,8 +32,9 @@ import { useNotifications } from "./utils/notificationsContext";
 function App() {
   const { user, setUser, setIsUserLoaded } = useAuth();
   const { socket, connectSocket, disconnectSocket } = useSocket();
-  const { startNotifications, loadNotifications, notifications } = useNotifications();
-  const [ isInitialised, setIsInitialised ] = useState(false);
+  const { startNotifications, loadNotifications, notifications } =
+    useNotifications();
+  const [isInitialised, setIsInitialised] = useState(false);
 
   const loadNotifs = useCallback(async () => {
     const storedNotifs = localStorage.getItem("notifications");
@@ -61,7 +62,7 @@ function App() {
 
     return () => {
       disconnectSocket();
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ function App() {
         if (socket) {
           disconnectSocket();
         }
-        connectSocket(user).then(socket => {
+        connectSocket(user).then((socket) => {
           startNotifications(socket);
           setIsInitialised(true);
         });

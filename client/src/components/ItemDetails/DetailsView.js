@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
-import { theme } from "../Theme";
+import { theme } from "../../utils/Theme";
 import ImageList from "./ImageList";
 import { TransitionGroup } from "react-transition-group";
-import { CentredDiv } from "../FlexDiv";
+import { CentredDiv } from "../../utils/FlexDiv";
 import BorrowRequestUsers from "./BorrowRequestUsers";
 import { useEffect } from "react";
 
@@ -81,10 +81,13 @@ export default function DetailsView(props) {
   };
 
   useEffect(() => {
-    if ((borrowRequests?.length && user) &&
-      borrowRequests.some(userId => userId === user.id)) {
-        setIsBtnDisabled(true);
-        setButtonHelperText("Already requested to borrow this");
+    if (
+      borrowRequests?.length &&
+      user &&
+      borrowRequests.some((userId) => userId === user.id)
+    ) {
+      setIsBtnDisabled(true);
+      setButtonHelperText("Already requested to borrow this");
     }
   }, [borrowRequests, user]);
 
@@ -154,15 +157,16 @@ export default function DetailsView(props) {
           isOwner={isOwner}
           itemId={itemId}
           setHelperText={setButtonHelperText}
-          setOpen={setOpen} 
-          onActionDone={onActionDone} />
+          setOpen={setOpen}
+          onActionDone={onActionDone}
+        />
         <ButtonGroup>
           {!isOwner && (
             <Button variant="outlined" color="primary" onClick={openChat}>
               Chat
             </Button>
           )}
-          { buttonText &&
+          {buttonText && (
             <Button
               disabled={isBtnDisabled}
               variant="contained"
@@ -174,10 +178,11 @@ export default function DetailsView(props) {
                 onActionDone,
                 itemId,
                 user
-              )} >
+              )}
+            >
               {buttonText}
             </Button>
-          }
+          )}
         </ButtonGroup>
         <TransitionGroup>
           {buttonHelperText && (
