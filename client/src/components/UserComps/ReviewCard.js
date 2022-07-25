@@ -12,6 +12,7 @@ import axios from "axios";
 import { Buffer } from "buffer";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import styled from "styled-components";
+import { getProfilePicUrl } from "../../utils/getProfilePic";
 
 const ListTextContainer = styled.div`
   display: flex;
@@ -36,23 +37,9 @@ const StyledIcon = styled(StarRateIcon)`
 function ReviewCard({ review }) {
   const [profilePicUrl, setProfilePicUrl] = useState("");
   useEffect(() => {
-    let data = {
-      userId: review.reviewer,
-    };
     try {
-      axios.post(`${BACKEND_URL}/api/user/getProfilePic`, data).then((res) => {
-        const userimage = res.data.image;
-        if (Object.keys(userimage).length !== 0) {
-          const bin = userimage.data;
-          const ctype = userimage.contentType;
-          const binary = Buffer.from(bin, "base64");
-          const blob = new Blob([binary.buffer], {
-            type: ctype,
-          });
-          setProfilePicUrl(URL.createObjectURL(blob));
-        } else {
-          setProfilePicUrl(null);
-        }
+      getProfilePicUrl(review.reviewer).then(url => {
+        setProfilePicUrl(url);
       });
     } catch (error) {
       console.log(error);
