@@ -66,11 +66,7 @@ function PasswordResetCard() {
   const [givenPassword2, setGivenPassword2] = useState("");
   const [isPwError, setIsPwError] = useState(false);
   const [verified, setVerified] = useState(false);
-  const {
-    time,
-    startTimer,
-    isTimerRunning
-  } = useCountdown(30);
+  const { time, startTimer, isTimerRunning } = useCountdown(30);
 
   const handlesavepassword = () => {
     if (!isPwError) {
@@ -96,10 +92,13 @@ function PasswordResetCard() {
         email: email,
         otp: otp,
       };
-      axios.post(`${BACKEND_URL}/api/user/createotp`, data)
+      axios
+        .post(`${BACKEND_URL}/api/user/createotp`, data)
         .then(() => startTimer());
     } else {
-      console.log(`Countdown is not over, please wait another ${time}s before requesting another OTP`);
+      console.log(
+        `Countdown is not over, please wait another ${time}s before requesting another OTP`
+      );
     }
   };
 
@@ -108,7 +107,7 @@ function PasswordResetCard() {
       .get(`${BACKEND_URL}/api/user/getotp?email=` + email)
       .then((res) => setStoredOtp(res.data.otp));
     startTimer();
-  }, []);
+  }, [email, startTimer]);
 
   return (
     <>
