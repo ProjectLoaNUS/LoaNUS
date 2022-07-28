@@ -34,7 +34,7 @@ router.post("/unlikeitem", async (req, res) => {
   try {
     await user.save();
     res.status(200).json({ status: "success" });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json(err);
   }
 });
@@ -47,7 +47,7 @@ router.get("/getlikeditems", async (req, res) => {
     const user = await UserModel.findById(userId);
     let items = user.itemsLiked;
     res.status(200).json({ status: "success", items: items });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json(err);
   }
 });
