@@ -264,10 +264,10 @@ router.get("/verifyEmail", async (req, res, next) => {
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.json({ status: "ok" });
+    return res.render("verifyEmail");
   } catch (error) {
     console.log(error);
-    return res.json({ status: "error", error: error });
+    return res.render("verifyEmailError");
   }
 });
 
