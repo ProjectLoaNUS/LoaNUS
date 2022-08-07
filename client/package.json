@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.8.0",
-    "@mui/lab": "^5.0.0-alpha.91",
-    "@mui/material": "^5.8.1",
+    "@mui/lab": "^5.0.0-alpha.93",
+    "@mui/material": "^5.9.3",
     "@mui/styled-engine-sc": "^5.8.0",
     "@mui/x-date-pickers": "^5.0.0-alpha.6",
     "@reduxjs/toolkit": "^1.8.1",
