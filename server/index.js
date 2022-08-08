@@ -17,7 +17,18 @@ app.use(express.json({ limit: "50mb" }));
 // "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority"
 //);
 //client.connect();
-app.use(cors());
+
+// Setup CORS
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
+const corsOptions = {
+  origin: FRONTEND_ORIGIN,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
+    next();
+});
 
 mongoose.connect(
   "mongodb+srv://loanus123:loanushyyb123@loanus-database.csjkq.mongodb.net/loanusdatabase?retryWrites=true&w=majority",

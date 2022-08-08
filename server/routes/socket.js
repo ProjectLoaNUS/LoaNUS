@@ -1,9 +1,5 @@
 const socketServer = (app, server) => {
-    const SOCKET_ORIGIN = process.env.SOCKET_ORIGIN || "http://localhost:3000";
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", SOCKET_ORIGIN);
-        next();
-    });
+    const SOCKET_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
     const io = require("socket.io")(server, {
         cors: {
             origin: SOCKET_ORIGIN
