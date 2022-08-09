@@ -3,6 +3,7 @@ const expressLayouts = require("express-ejs-layouts");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const path = require('path');
 
 const PORT = process.env.PORT || 3001;
@@ -28,6 +29,24 @@ app.use(cors(corsOptions));
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
     next();
+});
+
+app.use((req, res, next) => {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (JWT_SECRET) {
+    try {
+      const token = req.header("x-auth-token");
+      if (!token) return res.status(403).send("Access denied");
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+        res.status(400).send("Invalid token");
+    }
+  } else {
+    res.status(500).send("Internal server error");
+  }
 });
 
 mongoose.connect(
