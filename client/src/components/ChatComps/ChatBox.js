@@ -2,12 +2,14 @@ import Message from "./Message";
 import styled from "styled-components";
 import ButtonComponent from "../../utils/Button";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../database/const";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "../../utils/socketContext";
 import { useAuth } from "../../database/auth";
 import { useNotifications } from "../../utils/notificationsContext";
 import { CHAT } from "../../pages/routes";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const ChatBoxWrapper = styled.div`
   display: flex;
@@ -75,10 +77,19 @@ export default function ChatBox(props) {
   }, [arrivalMessage]);
 
   const getMessages = useCallback(async () => {
-    if (currentChat) {
+    if (currentChat && user?.id) {
       try {
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         axios
-          .get(`${BACKEND_URL}/api/messages/` + currentChat._id)
+          .get(`${BACKEND_URL}/api/messages/` + currentChat._id, {
+            headers: {
+              "x-auth-token": token
+            }
+          })
           .then((res) => {
             setMessages(res.data);
           });
@@ -86,7 +97,7 @@ export default function ChatBox(props) {
         console.log(err);
       }
     }
-  }, [currentChat]);
+  }, [currentChat, user]);
   useEffect(() => {
     getMessages();
   }, [getMessages]);
@@ -105,13 +116,26 @@ export default function ChatBox(props) {
       text: newMessage,
     });
     try {
-      axios.post(`${BACKEND_URL}/api/messages`, message).then((res) => {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      axios.post(`${BACKEND_URL}/api/messages`, message, {
+        headers: {
+          "x-auth-token": token
+        }
+      }).then((res) => {
         setMessages([...messages, res.data]);
         setNewMessage("");
       });
       axios
         .post(`${BACKEND_URL}/api/user/getNamesOf`, {
           users: [{ userId: receiverId }],
+        }, {
+          headers: {
+            "x-auth-token": token
+          }
         })
         .then((res) => {
           if (res.data.status === "ok") {

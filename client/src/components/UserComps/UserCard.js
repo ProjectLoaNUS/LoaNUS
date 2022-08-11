@@ -20,8 +20,10 @@ import { useAuth } from "../../database/auth";
 import { useState, useEffect, forwardRef } from "react";
 import { Buffer } from "buffer";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../database/const";
 import ReviewList from "./ReviewList";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
@@ -98,17 +100,47 @@ function UserCard(props) {
   }, [props.otheruser]);
 
   useEffect(() => {
-    if (props.otheruser._id) {
+    if (props.otheruser._id && user?.id) {
       try {
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
+        const otherToken = jwt.sign(
+          {id: props.otheruser._id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         axios
           .get(
-            `${BACKEND_URL}/api/user/getrating?userId=` + props.otheruser._id
+            `${BACKEND_URL}/api/user/getrating`, {
+              headers: {
+                "x-auth-token": otherToken
+              }
+            }
           )
-          .then((res) => setGetRating(res.data.rating));
+          .then((res) => {
+            if (res.status === 200) {
+              setGetRating(res.data.rating);
+            } else {
+              console.log(res.data.error);
+            }
+          });
 
         axios
-          .get(`${BACKEND_URL}/api/follow/getfollowingid?userId=` + user.id)
-          .then((res) => setFollowing(res.data));
+          .get(`${BACKEND_URL}/api/follow/getfollowingid`, {
+            headers: {
+              "x-auth-token": token
+            }
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              setFollowing(res.data.followings);
+            } else {
+              console.log(res.data.error);
+            }
+          });
       } catch (error) {
         console.log(error);
       }
@@ -127,10 +159,23 @@ function UserCard(props) {
       followed: otheruser._id,
     };
     try {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET.at,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .post(`${BACKEND_URL}/api/follow/followuser`, friends)
+        .post(`${BACKEND_URL}/api/follow/followuser`, friends, {
+          headers: {
+            "x-auth-token": token
+          }
+        })
         .then((res) => {
-          setFollowed(true);
+          if (res.status === 200) {
+            setFollowed(true);
+          } else {
+            console.log(res.data.error);
+          }
         });
     } catch (err) {
       console.log(err);
@@ -142,10 +187,23 @@ function UserCard(props) {
       unfollowed: otheruser._id,
     };
     try {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .post(`${BACKEND_URL}/api/follow/unfollowuser`, friends)
+        .post(`${BACKEND_URL}/api/follow/unfollowuser`, friends, {
+          headers: {
+            "x-auth-token": token
+          }
+        })
         .then((res) => {
-          setFollowed(false);
+          if (res.status === 200) {
+            setFollowed(false);
+          } else {
+            console.log(res.data.error);
+          }
         });
     } catch (err) {
       console.log(err);
@@ -161,7 +219,16 @@ function UserCard(props) {
       comments: review,
     };
     try {
-      await axios.post(`${BACKEND_URL}/api/user/createreview`, data);
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      await axios.post(`${BACKEND_URL}/api/user/createreview`, data, {
+        headers: {
+          "x-auth-token": token
+        }
+      });
       setOpen(false);
     } catch (err) {
       console.log(err);

@@ -25,7 +25,9 @@ import { CATEGORIES } from "../NewItem/ItemCategories";
 import { BACKEND_URL } from "../../database/const";
 import { getProfilePicUrl } from "../../utils/getProfilePic";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { useLocation } from "react-router-dom";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const ListCard = styled(Card)`
   display: flex;
@@ -72,7 +74,6 @@ export default function ItemCard(props) {
   const [open, setOpen] = useState(false);
   const [ownerPicUrl, setOwnerPicUrl] = useState("");
   const [liked, setLiked] = useState(false);
-  const [likeditems, setLikedItems] = useState([]);
   const { user, setUser } = useAuth();
   const processedImageUrls =
     imageUrls && (imageUrls.length === 0 ? [NoImage] : imageUrls);
@@ -101,10 +102,17 @@ export default function ItemCard(props) {
     if (!isOwner && itemDetails?.deadline) {
       try {
         let data = {
-          itemcategory: category,
-          userid: userid,
+          itemcategory: category
         };
-        axios.post(`${BACKEND_URL}/api/user/updaterecommendation`, data);
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
+        axios.post(`${BACKEND_URL}/api/user/updaterecommendation`,
+            data,
+            { headers: { "x-auth-token": token } }
+        );
       } catch (err) {
         console.log(err);
       }
@@ -115,23 +123,32 @@ export default function ItemCard(props) {
     event.stopPropagation();
     event.preventDefault();
     let data = {
-      itemId: itemId,
-      userId: user.id,
+      itemId: itemId
     };
+    const token = jwt.sign(
+      {id: user.id},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     if (liked) {
       try {
-        axios.post(`${BACKEND_URL}/api/items/unlikeitem`, data);
+        axios.post(`${BACKEND_URL}/api/items/unlikeitem`,
+            data,
+            { headers: { "x-auth-token": token } }
+        );
       } catch (error) {
         console.log(error);
       }
       setLiked(false);
     } else {
       try {
-        axios.post(`${BACKEND_URL}/api/items/likeitem`, data);
+        axios.post(`${BACKEND_URL}/api/items/likeitem`,
+            data,
+            { headers: { "x-auth-token": token } }
+        );
       } catch (error) {
         console.log(error);
       }
-
       setLiked(true);
     }
   };
@@ -168,9 +185,16 @@ export default function ItemCard(props) {
   }, [reactLocation]);
 
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .get(`${BACKEND_URL}/api/items/getlikeditems?userId=` + user.id)
+        .get(`${BACKEND_URL}/api/items/getlikeditems`, {
+          headers: { "x-auth-token": token }
+        })
         .then((res) => {
           if (res.data.items.includes(itemId)) {
             setLiked(true);

@@ -7,9 +7,6 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import { BACKEND_URL } from "../../database/const";
-import axios from "axios";
-import { Buffer } from "buffer";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import styled from "styled-components";
 import { getProfilePicUrl } from "../../utils/getProfilePic";

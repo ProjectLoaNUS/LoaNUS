@@ -3,6 +3,7 @@ const router = express.Router();
 const RewardsModel = require("../models/Rewards");
 const multer = require("multer");
 const UserModel = require("../models/Users");
+const auth = require("../utils/auth");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -15,8 +16,20 @@ const rewardImgs = upload.fields([
   { name: 'image', maxCount: 1 },
   { name: 'howToRedeemQrCode', maxCount: 1 }
 ]);
-router.post("/createreward", rewardImgs, (req, res) => {
+router.post("/createreward", rewardImgs, async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+    if (!user.admin) {
+      return res.status(403).json({error: `Access denied: ${user.name} is not an admin`});
+    }
+
     const image = req.files['image'][0];
     const imageprop = {
       data: image.buffer,
@@ -70,20 +83,27 @@ router.get("/getrewards", async (req, res) => {
 
 router.post("/claimreward", async (req, res) => {
   try {
-    const itemId = req.body.item;
-    const userId = req.body.user;
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
 
-    let usermodel = await UserModel.findById(userId);
+    const itemId = req.body.item;
+
     let rewardmodel = await RewardsModel.findById(itemId);
 
-    if (!usermodel.rewards.includes(itemId)) {
-      usermodel.rewards.push(itemId);
+    if (!user.rewards.includes(itemId)) {
+      user.rewards.push(itemId);
     }
-    usermodel.points -= rewardmodel.points;
+    user.points -= rewardmodel.points;
     rewardmodel.claimed = true;
-    await usermodel.save();
+    await user.save();
     await rewardmodel.save();
-    res.status(200).json({points: usermodel.points});
+    res.status(200).json({points: user.points});
   } catch (err) {
     res.status(500).json(err);
   }
@@ -91,6 +111,18 @@ router.post("/claimreward", async (req, res) => {
 
 router.post("/rmreward", async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+    if (!user.admin) {
+      return res.status(403).json({error: `Access denied: ${user.name} is not an admin`});
+    }
+
     const rewardId = req.body.rewardId;
     if (!rewardId) {
       return res.status(500).json({message: "Reward ID not given"});
@@ -104,19 +136,19 @@ router.post("/rmreward", async (req, res) => {
 });
 
 // get user rewards
-router.post("/getRewardsOfUser", async (req, res) => {
-  if (!req.body.userId) {
-    return res.json({ status: "error" });
+router.get("/getRewardsOfUser", async (req, res) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({error: "JWT User ID is missing"});
   }
-  const user = await UserModel.findOne({
-    _id: req.body.userId,
-  });
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
   if (!user) {
-    return res.json({ status: "error" });
+    return res.status(401).json({error: "JWT User ID is invalid"});
   }
+
   const rewardsIds = user.rewards;
   let rewards = await RewardsModel.find({ _id: { $in: rewardsIds } });
-  return res.json({ status: "ok", rewards: rewards });
+  return res.status(200).json({rewards: rewards});
 });
 
 module.exports = router;

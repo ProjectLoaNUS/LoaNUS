@@ -2,8 +2,10 @@ import { Box, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { BACKEND_URL } from "../../database/const";
+import jwt from 'jsonwebtoken';
+import { BACKEND_URL} from "../../database/const";
 import ItemList from "./ItemList";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const ListingsGrid = styled.div`
   flex: 1 1 auto;
@@ -35,14 +37,29 @@ export default function RecentListings() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     axios
-      .get(`${BACKEND_URL}/api/items/getListingsImgs`)
+      .get(`${BACKEND_URL}/api/items/getListingsImgs`, {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json"
+        }
+      })
       .then((res) => {
         setListingImgs(res.data.images);
       })
       .catch((err) => console.log(err, "error occured"));
     axios
-      .get(`${BACKEND_URL}/api/items/getListingsTexts`)
+      .get(`${BACKEND_URL}/api/items/getListingsTexts`, {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json"
+        }
+      })
       .then((res) => {
         setListingDetails(res.data.listings);
         setIsLoading(false);

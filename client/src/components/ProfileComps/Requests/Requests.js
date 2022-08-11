@@ -10,6 +10,8 @@ import { BACKEND_URL } from "../../../database/const";
 import { deleteRequestAction } from "../../ItemDetails/detailsDialogActions";
 import YourRequests from "./YourRequests";
 import AllMatches from "./PotentialMatches/AllMatches";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../../utils/jwt-config";
 
 const MainContainer = styled.div`
   min-height: 100%;
@@ -68,15 +70,17 @@ function Requests() {
   };
 
   useEffect(() => {
-    if (user && requests === null) {
+    if (user?.id && requests === null) {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       fetch(`${BACKEND_URL}/api/items/getRequestsOfUser`, {
-        method: "POST",
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id
-        }),
+          "x-auth-token": token
+        }
       })
       .then(req => req.json())
       .then(data => {

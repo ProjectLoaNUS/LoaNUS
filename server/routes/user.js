@@ -5,6 +5,7 @@ const sgMail = require("@sendgrid/mail");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const multer = require("multer");
+const auth = require("../utils/auth");
 
 sgMail.setApiKey(process.env.API_KEY);
 
@@ -208,50 +209,25 @@ router.post("/signUp", async (req, res) => {
   });
   return res.json({ status: "ok" });
 });
-// Get personal details of one user
-router.get("/getUserDetails", async (req, res) => {
-  const userId = req.query.userId;
-  const username = req.query.username;
-  try {
-    const user = userId
-      ? await UserModel.findById(userId)
-      : await UserModel.findOne({ name: username });
-    res.json({
-      user: {
-        displayName: user.name,
-        age: user.age,
-        email: user.email,
-        photodata: user.image.data,
-        photoformat: user.image.contentType,
-        id: user._id,
-        followers: user.followers,
-        following: user.following,
-      },
-    });
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-//get all users
-router.get("/getAllUsers", async (req, res) => {
-  try {
-    const filter = {};
-    const all = await UserModel.find(filter);
-    res.json(all);
-  } catch (err) {
-    console.log(err);
-  }
-});
 router.post("/getNamesOf", async (req, res) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({error: "JWT User ID is missing"});
+  }
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
+  if (!user) {
+    return res.status(401).json({error: "JWT User ID is invalid"});
+  }
+
   const users = req.body.users;
-  if (!users) {
-    return res.json({ status: "error" });
+  if (!users?.length) {
+    return res.status(400).json({ error: "No user IDs provided" });
   }
   const userDetails = await UserModel.find(
-    { _id: { $in: users.map((user) => user.userId) } },
+    { _id: { $in: users.map((someUser) => someUser.userId) } },
     ["_id", "name"]
   );
-  return res.json({ status: "ok", userDetails: userDetails });
+  return res.status(200).json({ userDetails: userDetails });
 });
 
 // Email verification route
@@ -271,16 +247,17 @@ router.get("/verifyEmail", async (req, res, next) => {
   }
 });
 
-router.post("/getProfilePic", async (req, res) => {
-  const userId = req.body.userId;
-  if (!userId) {
-    return res.json({ status: "error" });
+router.get("/getProfilePic", async (req, res) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({error: "JWT User ID is missing"});
   }
-  const user = await UserModel.findOne({ _id: userId }, ["image"]);
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
   if (!user) {
-    return res.json({ status: "error" });
+    return res.status(401).json({error: "JWT User ID is invalid"});
   }
-  return res.json({ status: "ok", image: user.image });
+
+  return res.status(200).json({ image: user.image });
 });
 
 //Upload profile picture
@@ -289,39 +266,54 @@ const upload = multer({
   storage: storage,
   limits: { fieldsize: 1024 * 1024 * 3 },
 });
-router.post("/setProfilePic", upload.single("image"), (request, response) => {
+router.post("/setProfilePic", upload.single("image"), async (request, response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({error: "JWT User ID is missing"});
+  }
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
+  if (!user) {
+    return res.status(401).json({error: "JWT User ID is invalid"});
+  }
+  
   try {
-    UserModel.findOne({ _id: request.body.userId }, function (err, User) {
-      if (!User) {
-        console.log("error", "User not found");
-      }
-      const imageprop = {
-        data: request.file.buffer,
-        contentType: request.file.mimetype,
-      };
-
-      User.image = imageprop;
-      User.save();
-    });
+    const imageprop = {
+      data: request.file.buffer,
+      contentType: request.file.mimetype,
+    };
+    user.image = imageprop;
+    user.save();
+    return res.status(200);
   } catch (error) {
     console.log(error);
+    return res.status(500).json({error: error});
   }
 });
 
-router.post("/getPoints", async (req, res) => {
-  const userId = req.body.userId;
-  if (!userId) {
-    return res.json({ status: "error" });
+router.get("/getPoints", async (req, res) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({error: "JWT User ID is missing"});
   }
-  const user = await UserModel.findOne({ _id: userId }, ["points"]);
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
   if (!user) {
-    return res.json({ status: "error" });
+    return res.status(401).json({error: "JWT User ID is invalid"});
   }
-  return res.json({ status: "ok", points: user.points });
+
+  return res.status(200).json({ points: user.points });
 });
 
 //UserSearch
 router.get("/search", async (request, response) => {
+  if (!request.user || !request.user.id) {
+    return response.status(401).json({error: "JWT User ID is missing"});
+  }
+  const userId = request.user.id;
+  const user = await auth.getUser(userId);
+  if (!user) {
+    return response.status(401).json({error: "JWT User ID is invalid"});
+  }
+
   try {
     const query = request.query;
     let results;
@@ -352,57 +344,64 @@ router.get("/search", async (request, response) => {
       },
     ]);
     if (results) {
-      return response.json({ status: "ok", results: results });
+      return response.status(200).json({ results: results });
     }
 
-    response.json({ status: "error" });
+    response.status(500).json({ error: "Error while performing autocomplete search in MongoDB" });
   } catch (error) {
     console.log(error);
-    response.json({ status: "error" });
+    response.status(500).json({ error: error });
   }
 });
-router.post("/getFollowersCount", async (req, res) => {
+router.get("/getFollowersCount", async (req, res) => {
   try {
-    const userId = req.body.userId;
-    if (!userId) {
-      return res.json({ status: "error" });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
     }
-    const user = await UserModel.findOne({ _id: userId }, ["followers"]);
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
-      return res.json({ status: "error" });
+      return res.status(401).json({error: "JWT User ID is invalid"});
     }
+
     const followersCount = user.followers?.length || 0;
-    return res.json({ status: "ok", followersCount: followersCount });
+    return res.status(200).json({ followersCount: followersCount });
   } catch (err) {
     console.log(err);
+    return res.status(500).json({ error: err });
   }
 });
-router.post("/getFollowingCount", async (req, res) => {
+router.get("/getFollowingCount", async (req, res) => {
   try {
-    const userId = req.body.userId;
-    if (!userId) {
-      return res.json({ status: "error" });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
     }
-    const user = await UserModel.findOne({ _id: userId }, ["following"]);
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
-      return res.json({ status: "error" });
+      return res.status(401).json({error: "JWT User ID is invalid"});
     }
     const followingCount = user.following?.length || 0;
-    return res.json({ status: "ok", followingCount: followingCount });
+    return res.status(200).json({ followingCount: followingCount });
   } catch (err) {
     console.log(err);
+    return res.status(500).json({ error: err });
   }
 });
 
 //update recommendation
 router.post("/updaterecommendation", async (req, res) => {
   try {
-    if (!req.body.userid) {
-      return res.json({ status: "error", message: "user not found" });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
     }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+  
     const category = req.body.itemcategory;
-    const userId = req.body.userid;
-    const user = await UserModel.findById(userId);
     if (user.recommendation.length < 10) {
       user.recommendation.unshift(category);
     } else {
@@ -410,15 +409,24 @@ router.post("/updaterecommendation", async (req, res) => {
       user.recommendation.unshift(category);
     }
     user.save();
-    res.json({ status: "recommendation updated" });
+    res.status(200);
   } catch (err) {
     console.log(err);
-    res.json({ status: "error", message: err });
+    res.status(500).json({ error: err });
   }
 });
 
 router.get("/getrecommendation", async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+
     function mostFrequent(arr, n) {
       if (n === 0) {
         return null;
@@ -440,20 +448,14 @@ router.get("/getrecommendation", async (req, res) => {
       return res;
     }
 
-    const userid = req.query.userid;
-    if (!userid) {
-      return res.json({ status: "error" });
-    }
-    const user = await UserModel.findById(userid);
-
     let recommended = mostFrequent(
       user.recommendation,
       user.recommendation.length
     );
-    res.json({ status: "success", recommended: recommended });
+    res.status(200).json({ recommended: recommended });
   } catch (err) {
     console.log(err);
-    res.json({ status: "error" });
+    res.status(500).json({ error: err });
   }
 });
 
@@ -462,7 +464,9 @@ router.post("/createotp", async (req, res) => {
   try {
     const email = req.body.email;
     const otp = req.body.otp;
-    const user = await UserModel.findOne({ email: email });
+    const user = await UserModel.findOne({
+      $and: [{ email: email }, { password: { $exists: true } }],
+    });
     user.otp = otp;
     await user.save();
     const msg = {
@@ -498,7 +502,9 @@ router.post("/createotp", async (req, res) => {
 router.get("/getotp", async (req, res) => {
   try {
     const email = req.query.email;
-    const user = await UserModel.findOne({ email: email });
+    const user = await UserModel.findOne({
+      $and: [{ email: email }, { password: { $exists: true } }],
+    });
     let otp = user.otp;
     res.json({ status: "success", otp: otp });
   } catch (error) {
@@ -512,7 +518,9 @@ router.post("/changepassword", async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.newpassword;
-    const user = await UserModel.findOne({ email: email });
+    const user = await UserModel.findOne({
+      $and: [{ email: email }, { password: { $exists: true } }],
+    });
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
 
@@ -528,9 +536,16 @@ router.post("/changepassword", async (req, res) => {
 
 router.post("/createreview", async (req, res) => {
   try {
-    const userId = req.body.userId;
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+  
     const otheruserId = req.body.otheruserId;
-    const user = await UserModel.findById(userId);
     const otheruser = await UserModel.findById(otheruserId);
     const reviewer = {
       reviewee: otheruserId,
@@ -540,7 +555,7 @@ router.post("/createreview", async (req, res) => {
     };
     const reviewee = {
       reviewer: userId,
-      reviewerName: req.body.userName,
+      reviewerName: user.name,
       rating: req.body.rating,
       comments: req.body.comments,
     };
@@ -548,39 +563,53 @@ router.post("/createreview", async (req, res) => {
     otheruser.reviews.unshift(reviewee);
     await user.save();
     await otheruser.save();
-    res.json({ status: "success" });
+    res.status(200);
   } catch (error) {
     console.log(error);
-    res.json({ status: "error" });
+    res.status(500).json({ error: error });
   }
 });
 
 //get rating
 router.get("/getrating", async (req, res) => {
   try {
-    const userId = req.query.userId;
-    const user = await UserModel.findById(userId);
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+
     const reviews = user.reviews;
     let array = [];
     reviews.forEach((element) => array.unshift(element["rating"]));
     const sum = array.reduce((a, b) => a + b, 0);
     const avg = sum / array.length || 0;
-    res.status(200).json({ status: "success", rating: avg });
+    res.status(200).json({ rating: avg });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ status: "error" });
+    res.status(500).json({ error: err });
   }
 });
 
 router.get("/getreviews", async (req, res) => {
   try {
-    const userId = req.query.userId;
-    const user = await UserModel.findById(userId);
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+
     const reviews = user.reviews;
-    res.status(200).json({ status: "success", reviews: reviews });
+    res.status(200).json({ reviews: reviews });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: "error" });
+    res.status(500).json({ error: error });
   }
 });
 

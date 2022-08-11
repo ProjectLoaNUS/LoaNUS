@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { BACKEND_URL } from "../../../database/const";
 import { useAuth } from "../../../database/auth";
 import UserDisplay from "./UserDisplay";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../../utils/jwt-config";
 
 const ContrastIconBtn = styled(IconButton)``;
 const MainContainer = styled.div`
@@ -69,26 +71,41 @@ export default function SearchUserField() {
       setSearchResults([]);
     } else {
       (async () => {
-        const url = `${BACKEND_URL}/api/user/search`;
-        axios
-          .get(url, {
-            params: {
-              name: queryText,
-            },
-          })
-          .then((res) => {
-            const results = res.data.results.filter(result => result._id !== user.id);
-            setSearchResults(results);
-            if (isFinalSearch) {
-              setFinalSearch(results);
-              setIsFinalSearch(false);
-            }
-            setLoading(false);
-          })
-          .catch((err) => console.log("Error occurred: " + err));
+        if (user?.id) {
+          const token = jwt.sign(
+            {id: user.id},
+            JWT_SECRET,
+            {expiresIn: JWT_EXPIRES_IN}
+          );
+          const url = `${BACKEND_URL}/api/user/search`;
+          axios
+            .get(url, {
+              headers: {
+                "x-auth-token": token
+              },
+              params: {
+                name: queryText,
+              }
+            })
+            .then((res) => {
+              if (res.status === 200) {
+                const results = res.data.results.filter(result => result._id !== user.id);
+                setSearchResults(results);
+                if (isFinalSearch) {
+                  setFinalSearch(results);
+                  setIsFinalSearch(false);
+                }
+                setLoading(false);
+              } else {
+                console.log(res.data.error);
+                setLoading(false);
+              }
+            })
+            .catch((err) => console.log("Error occurred: " + err));
+        }
       })();
     }
-  }, [queryText]);
+  }, [queryText, user]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

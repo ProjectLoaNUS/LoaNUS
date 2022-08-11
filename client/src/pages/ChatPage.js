@@ -4,6 +4,7 @@ import styled from "styled-components";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import { useAuth } from "../database/auth";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import ChatOnline from "../components/ChatComps/ChatOnline";
 import { BACKEND_URL } from "../database/const";
 import Conversation from "../components/ChatComps/Conversation";
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "./routes";
 import ChatBox from "../components/ChatComps/ChatBox";
 import { useSocket } from "../utils/socketContext";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../utils/jwt-config";
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -70,12 +72,25 @@ function ChatPage() {
 
   useEffect(() => {
     const getfollowing = async () => {
-      if (user) {
+      if (user?.id) {
         try {
-          const res = await axios.get(
-            `${BACKEND_URL}/api/follow/getfollowingid?userId=` + user.id
+          const token = jwt.sign(
+            {id: user.id},
+            JWT_SECRET,
+            {expiresIn: JWT_EXPIRES_IN}
           );
-          setFollowing(res.data);
+          const res = await axios.get(
+            `${BACKEND_URL}/api/follow/getfollowingid`, {
+              headers: {
+                "x-auth-token": token
+              }
+            }
+          );
+          if (res.status === 200) {
+            setFollowing(res.data);
+          } else {
+            console.log(res.data.error);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -85,12 +100,25 @@ function ChatPage() {
   }, [user]);
   useEffect(() => {
     const getfollowers = async () => {
-      if (user) {
+      if (user?.id) {
         try {
-          const res = await axios.get(
-            `${BACKEND_URL}/api/follow/getfollowersid?userId=` + user.id
+          const token = jwt.sign(
+            {id: user.id},
+            JWT_SECRET,
+            {expiresIn: JWT_EXPIRES_IN}
           );
-          setFollowers(res.data);
+          const res = await axios.get(
+            `${BACKEND_URL}/api/follow/getfollowersid`, {
+              headers: {
+                "x-auth-token": token
+              }
+            }
+          );
+          if (res.status === 200) {
+            setFollowers(res.data);
+          } else {
+            console.log(res.data.error);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -100,10 +128,23 @@ function ChatPage() {
   }, [user]);
 
   const getConversations = useCallback(async () => {
-    if (user) {
+    if (user?.id) {
       try {
-        axios.get(`${BACKEND_URL}/api/conversations/` + user.id).then((res) => {
-          setConversations(res.data);
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
+        axios.get(`${BACKEND_URL}/api/conversations/find`, {
+          headers: {
+            "x-auth-token": token
+          }
+        }).then((res) => {
+          if (res.status === 200) {
+            setConversations(res.data);
+          } else {
+            console.log(res.data.error);
+          }
         });
       } catch (err) {
         console.log(err);

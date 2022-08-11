@@ -1,21 +1,26 @@
 import { BACKEND_URL } from "../database/const";
 import { Buffer } from "buffer";
+import jwt from 'jsonwebtoken';
+import { JWT_EXPIRES_IN, JWT_SECRET } from "./jwt-config";
 
 export const getProfilePicUrl = async (userId) => {
     let url = "";
     if (userId) {
         try {
+            const token = jwt.sign(
+                {id: userId},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const res = await fetch(`${BACKEND_URL}/api/user/getProfilePic`, {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    userId: userId
-                })
+                    "x-auth-token": token
+                }
             });
             const data = await res.json();
-            if (data.status === "ok") {  
+            if (res.status === 200) {
                 const image = data.image;
                 if (image.data && image.contentType) {
                     const binary = Buffer.from(image.data);
@@ -26,6 +31,7 @@ export const getProfilePicUrl = async (userId) => {
                 }
             } else {
                 console.log(`Error occurred while loading profile picture of user with ID "${userId}"`);
+                console.log(data.error);
             }
         } catch (err) {
             console.log(err);

@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Avatar, Badge } from "@mui/material";
 import { BACKEND_URL } from "../../database/const";
-import { Buffer } from "buffer";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { getProfilePicUrl } from "../../utils/getProfilePic";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 const MainOnlineContainer = styled.div`
   flex: 3;
   overflow-y: auto;
@@ -33,7 +34,16 @@ function ChatOnline({ currentId, setCurrentChat, onlineUsers }) {
       receiverId: otherId,
     };
     try {
-      axios.post(`${BACKEND_URL}/api/conversations`, convoUsers).then((res) => {
+      const token = jwt.sign(
+        {id: currentId},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      axios.post(`${BACKEND_URL}/api/conversations`, convoUsers, {
+        headers: {
+          "x-auth-token": token
+        }
+      }).then((res) => {
         setCurrentChat(res.data);
       });
     } catch (err) {

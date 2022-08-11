@@ -4,6 +4,8 @@ import { Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../database/const";
 import { getProfilePicUrl } from "../../utils/getProfilePic";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const ConversationContainer = styled.div`
   display: flex;
@@ -30,20 +32,33 @@ function Conversation({ conversation, currentuser, search }) {
   const getUser = useCallback(async () => {
     try {
       const friendId = conversation.members.find((m) => m !== currentuser.id);
+      const token = jwt.sign(
+        {id: currentuser.id},
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+      )
       fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-auth-token": token
         },
         body: JSON.stringify({
           users: [{userId: friendId}]
         })
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'ok' && data.userDetails?.length) {
-          setUserName(data.userDetails[0].name);
-        }
+      .then(res => {
+        res.json().then(data => {
+            if (res.status === 200) {
+              if (data.userDetails?.length) {
+                setUserName(data.userDetails[0].name);
+              } else {
+                console.log("User details not returned by backend");
+              }
+            } else {
+              console.log(data.error);
+            }
+        });
       });
     } catch (err) {
       console.log(err);

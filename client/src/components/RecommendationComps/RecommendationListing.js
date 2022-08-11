@@ -2,9 +2,11 @@ import { Box, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import jwt from 'jsonwebtoken';
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
 import { useAuth } from "../../database/auth";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const ListingsGrid = styled.div`
   flex: 1 1 auto;
@@ -38,28 +40,69 @@ export default function RecommendationListings() {
   const { user } = useAuth();
 
   useEffect(() => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     const getcategory = async () => {
+      const userToken = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       await axios
-        .get(`${BACKEND_URL}/api/user/getrecommendation?userid=` + user?.id)
-        .then((res) => setRecommended(res.data.recommended));
+        .get(`${BACKEND_URL}/api/user/getrecommendation`, {
+          headers: {
+            "x-auth-token": userToken,
+            "Content-Type": "application/json"
+          }
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setRecommended(res.data.recommended);
+          } else {
+            console.log(res.data.error);
+          }
+        });
     };
     const getrecommendation = async () => {
       axios
         .get(
           `${BACKEND_URL}/api/items/getRecommendationImgs?category=` +
-            recommended
+            recommended,
+          {
+            headers: {
+              "x-auth-token": token,
+              "Content-Type": "application/json"
+            }
+          }
         )
         .then((res) => {
-          setListingImgs(res.data.images);
+          if (res.status === 200) {
+            setListingImgs(res.data.images);
+          } else {
+            console.log(res.data.error);
+          }
         })
         .catch((err) => console.log(err, "error occured"));
       axios
         .get(
           `${BACKEND_URL}/api/items/getRecommendationTexts?category=` +
-            recommended
+            recommended,
+          {
+            headers: {
+              "x-auth-token": token,
+              "Content-Type": "application/json"
+            }
+          }
         )
         .then((res) => {
-          setListingDetails(res.data.listings);
+          if (res.status === 200) {
+            setListingDetails(res.data.listings);
+          } else {
+            console.log(res.data.error);
+          }
           setIsLoading(false);
         })
         .catch((err) => console.log(err, "error occured"));

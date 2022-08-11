@@ -7,6 +7,8 @@ import { useAuth } from "../../database/auth";
 import { Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { CLAIM_REWARD } from "../../pages/routes";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const CoinsContainer = styled.div`
   align-self: center;
@@ -35,22 +37,25 @@ export default function Points() {
 
   useEffect(() => {
     if (user && points === "...") {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
-        method: "POST",
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id,
-        }),
+          "x-auth-token": token
+        }
       })
-        .then((req) => req.json())
-        .then((data) => {
-          if (data.status === "ok" && data.points !== undefined) {
-            setPoints(data.points);
-          } else {
-            console.log("Error fetching user's points from backend");
-          }
+        .then((req) => {
+          req.json().then(data => {
+            if (req.status === 200) {
+              setPoints(data.points);
+            } else {
+              console.log(data.error);
+            }
+          });
         });
     }
   }, [user]);

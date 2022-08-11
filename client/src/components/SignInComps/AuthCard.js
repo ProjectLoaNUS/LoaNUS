@@ -25,7 +25,9 @@ import SignUpComp, { signUpBtnText } from "./SignUpComp";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../../utils/FlexDiv";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../database/const";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 export const FlexCard = styled(Card)`
   display: flex;
@@ -192,7 +194,16 @@ export default function AuthCard() {
       email: givenEmail,
       otp: otp,
     };
-    axios.post(`${BACKEND_URL}/api/user/createotp`, data);
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
+    axios.post(`${BACKEND_URL}/api/user/createotp`, data, {
+      headers: {
+        "x-auth-token": token
+      }
+    });
   };
 
   useEffect(() => {

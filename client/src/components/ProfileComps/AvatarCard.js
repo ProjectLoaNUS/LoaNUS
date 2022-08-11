@@ -18,10 +18,12 @@ import { useAuth } from "../../database/auth";
 import { useState } from "react";
 import ButtonComponent from "../../utils/Button";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { Buffer } from "buffer";
 import { BACKEND_URL } from "../../database/const";
 import { format } from "timeago.js";
 import ReviewList from "../UserComps/ReviewList";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const MainContainer = styled.div`
   display: flex;
@@ -106,15 +108,17 @@ function AvatarCard(props) {
           return { ...prevUser, photoURL: URL.createObjectURL(blob) };
         });
       }
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       if (followersCount === "...") {
         fetch(`${BACKEND_URL}/api/user/getFollowersCount`, {
-          method: "POST",
+          method: "GET",
           headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user.id,
-          }),
+            "x-auth-token": token
+          }
         })
           .then((res) => res.json())
           .then((data) => {
@@ -125,13 +129,10 @@ function AvatarCard(props) {
       }
       if (followingCount === "...") {
         fetch(`${BACKEND_URL}/api/user/getFollowingCount`, {
-          method: "POST",
+          method: "GET",
           headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user.id,
-          }),
+            "x-auth-token": token
+          }
         })
           .then((res) => res.json())
           .then((data) => {
@@ -145,8 +146,17 @@ function AvatarCard(props) {
   useEffect(() => {
     if (user) {
       try {
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         axios
-          .get(`${BACKEND_URL}/api/user/getrating?userId=` + user.id)
+          .get(`${BACKEND_URL}/api/user/getrating`, {
+            headers: {
+              "x-auth-token": token
+            }
+          })
           .then((res) => setRating(res.data.rating));
       } catch (error) {
         console.log(error);
@@ -168,9 +178,7 @@ function AvatarCard(props) {
     } else {
       profileimage.arrayBuffer().then((rawBuffer) => {
         const buffer = Buffer.from(rawBuffer);
-        let newUser = structuredClone(user);
-        newUser.photodata = buffer;
-        newUser.photoformat = profileimage.type;
+        let newUser = {...user, photodata: buffer, photoformat: profileimage.type};
         delete newUser.photourl;
         localStorage.setItem("user", JSON.stringify(newUser));
         const blob = new Blob([buffer], { type: profileimage.type });
@@ -181,12 +189,21 @@ function AvatarCard(props) {
       let formData = new FormData();
       formData.append("userId", user.id);
       formData.append("image", profileimage);
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
         .post(`${BACKEND_URL}/api/user/setProfilePic`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data", "x-auth-token": token },
         })
         .then((res) => {
-          console.log(res);
+          if (res.status !== 200) {
+            res.json().then(data => {
+              console.log(data.error);
+            });
+          }
         })
         .catch((err) => {
           console.log(err);

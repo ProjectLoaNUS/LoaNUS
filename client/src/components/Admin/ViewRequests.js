@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import React from "react";
 import axios from "axios";
-import { Box, Card, Slide, Typography } from "@mui/material";
+import jwt from "jsonwebtoken";
+import { Card, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../database/const";
 import ItemList from "../ItemList/ItemList";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const CreateCard = styled(Card)`
   display: flex;
@@ -77,10 +79,22 @@ function ViewRequests() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/items/getRequests`).then((req) => {
-      if (req.data.status === "ok") {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
+    axios.get(`${BACKEND_URL}/api/items/getRequests`, {
+      headers: {
+        "x-auth-token": token
+      }
+    }).then((req) => {
+      if (req.status === 200) {
         setRequests(req.data.requests);
         setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        console.log(req.data.error);
       }
     });
   }, []);

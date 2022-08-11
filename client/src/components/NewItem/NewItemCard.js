@@ -14,6 +14,8 @@ import { useAuth } from "../../database/auth";
 import CategoryField from "./CategoryField";
 import { HOME } from "../../pages/routes";
 import { useNavigate } from "react-router-dom";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const FormDiv = styled(CentredDiv)`
   flex-direction: column;
@@ -102,8 +104,13 @@ export default function NewItemCard() {
     let object = {
       method: "POST",
     };
+    const token = jwt.sign(
+      {id: user.id},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     if (isRequest) {
-      object["headers"] = { "Content-Type": "application/json" };
+      object["headers"] = { "Content-Type": "application/json", "x-auth-token": token };
       object["body"] = JSON.stringify({
         category: category,
         title: title,
@@ -122,6 +129,7 @@ export default function NewItemCard() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "x-auth-token": token
           },
           body: JSON.stringify(data),
         })
@@ -137,6 +145,7 @@ export default function NewItemCard() {
         console.log(err);
       }
     } else {
+      object["headers"] = { "x-auth-token": token };
       const itemData = new FormData();
       images.forEach((image) => {
         itemData.append("images", image);

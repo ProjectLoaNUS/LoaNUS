@@ -1,4 +1,6 @@
 import { BACKEND_URL } from "../../database/const";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
@@ -11,15 +13,20 @@ export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
             "Cannot identify item's owner"
         ];
     
-        if (user) {
+        if (itemId && user?.id) {
+            const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const url = `${BACKEND_URL}/api/items/requestBorrowItem`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
-                    userId: user.id,
                     itemId: itemId
                 })
             });
@@ -54,15 +61,20 @@ export const approveBorrowAction = (setError, setOpen, onActionDone, itemId, use
             "Cannot authenticate you"
         ];
     
-        if (user) {
+        if (itemId && user?.id) {
+            const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const url = `${BACKEND_URL}/api/items/approveBorrowItem`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
-                    userId: user.id,
                     itemId: itemId
                 })
             });
@@ -94,15 +106,20 @@ export const denyBorrowAction = (setError, setOpen, onActionDone, itemId, user) 
             "Cannot find this item in database"
         ];
     
-        if (user) {
+        if (itemId && user?.id) {
+            const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const url = `${BACKEND_URL}/api/items/denyBorrowItem`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
-                    userId: user.id,
                     itemId: itemId
                 })
             });
@@ -135,12 +152,18 @@ export const isUserListingRelated = (user, listing) => {
 
 export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
-        if (itemId) {    
+        if (itemId && user.id) {
+            const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const url = `${BACKEND_URL}/api/items/rmListing`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
                     itemId: itemId
@@ -169,12 +192,18 @@ export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onAct
 
 export const deleteRequestAction = (setError, setIsButtonEnabled, setOpen, onActionDone, itemId, user) => {
     return async () => {
-        if (itemId) {    
+        if (itemId && user.id) {
+            const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const url = `${BACKEND_URL}/api/items/rmRequest`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
                     itemId: itemId
@@ -213,16 +242,21 @@ export const returnItemAction = (setError, setIsButtonEnabled, setOpen, onAction
             "Error identifying item owner"
         ];
 
-        if (itemId && user.id) {    
+        if (itemId && user.id) {
+            const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const url = `${BACKEND_URL}/api/items/returnItem`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
-                    itemId: itemId,
-                    userId: user.id
+                    itemId: itemId
                 })
             });
             const data = await req.json();

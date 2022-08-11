@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import NavigationBar from "../components/NavBar/NavigationBar";
 import RewardCard from "../components/RewardComps/RewardCard";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../database/const";
 import { useAuth } from "../database/auth";
 import { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
-import { theme } from "../utils/Theme";
-import LoadingRewardCards from "../components/RewardComps/LoadingRewardCards";
 import LoadingRewardCard from "../components/RewardComps/LoadingRewardCard";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../utils/jwt-config";
 
 const MainContainer = styled.div`
   background-color: #fafdf3;
@@ -68,26 +68,65 @@ function ClaimRewardPage() {
   const [userPoints, setUserPoints] = useState(null);
 
   const fetchVouchers = useCallback(async () => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     axios
-      .get(`${BACKEND_URL}/api/reward/getrewards?category=Vouchers`)
+      .get(`${BACKEND_URL}/api/reward/getrewards?category=Vouchers`, {
+        headers: {
+          "x-auth-token": token
+        }
+      })
       .then((res) => {
-        setVouchers(res.data);
+        if (res.status === 200) {
+          setVouchers(res.data);
+        } else {
+          console.log(res.data.error);
+        }
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
   const fetchBeverages = useCallback(async () => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     axios
-      .get(`${BACKEND_URL}/api/reward/getrewards?category=Beverages`)
+      .get(`${BACKEND_URL}/api/reward/getrewards?category=Beverages`, {
+        headers: {
+          "x-auth-token": token
+        }
+      })
       .then((res) => {
-        setBeverages(res.data);
+        if (res.status === 200) {
+          setBeverages(res.data);
+        } else {
+          console.log(res.data.error);
+        }
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
   const fetchOthers = useCallback(async () => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     axios
-      .get(`${BACKEND_URL}/api/reward/getrewards?category=Others`)
+      .get(`${BACKEND_URL}/api/reward/getrewards?category=Others`, {
+        headers: {
+          "x-auth-token": token
+        }
+      })
       .then((res) => {
-        setOtherrewards(res.data);
+        if (res.status === 200) {
+          setOtherrewards(res.data);
+        } else {
+          console.log(res.data.error);
+        }
       })
       .catch((err) => console.log(err, "error occured"));
   }, []);
@@ -98,24 +137,23 @@ function ClaimRewardPage() {
   }, []);
 
   const getUserPoints = useCallback(async () => {
-    if (user) {
-      fetch(`${BACKEND_URL}/api/user/getPoints`, {
-        method: "POST",
+    if (user?.id) {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      axios.get(`${BACKEND_URL}/api/user/getPoints`, {
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id,
-        }),
-      })
-        .then((req) => req.json())
-        .then((data) => {
-          if (data.status === "ok" && data.points !== undefined) {
-            setUserPoints(data.points);
-          } else {
-            console.log("Error fetching user's points from backend");
-          }
-        });
+          "x-auth-token": token
+        }
+      }).then(res => {
+        if (res.status === 200) {
+          setUserPoints(res.data.points);
+        } else {
+          console.log(res.data.error);
+        }
+      });
     }
   }, [user]);
   useEffect(() => {

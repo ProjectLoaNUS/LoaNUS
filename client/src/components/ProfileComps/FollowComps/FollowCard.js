@@ -8,9 +8,11 @@ import ButtonComponent from "../../../utils/Button";
 import { useState } from "react";
 import { useAuth } from "../../../database/auth";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../../database/const";
 import { Button, Skeleton, Stack } from "@mui/material";
 import { getProfilePicUrl } from "../../../utils/getProfilePic";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../../utils/jwt-config";
 
 const FollowItem = styled(ListItem)`
   margin-bottom: 10px;
@@ -32,8 +34,17 @@ function FollowCard(props) {
       followed: otherid,
     };
     try {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .post(`${BACKEND_URL}/api/follow/followuser`, friends)
+        .post(`${BACKEND_URL}/api/follow/followuser`, friends, {
+          headers: {
+            "x-auth-token": token
+          }
+        })
         .then((res) => {
           setFollowed(true);
         });
@@ -47,8 +58,17 @@ function FollowCard(props) {
       unfollowed: otherid,
     };
     try {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .post(`${BACKEND_URL}/api/follow/unfollowuser`, friends)
+        .post(`${BACKEND_URL}/api/follow/unfollowuser`, friends, {
+          headers: {
+            "x-auth-token": token
+          }
+        })
         .then((res) => {
           setFollowed(false);
         });

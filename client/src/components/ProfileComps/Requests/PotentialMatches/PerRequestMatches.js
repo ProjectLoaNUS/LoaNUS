@@ -6,6 +6,8 @@ import styled from "styled-components";
 import ItemList from "../../../ItemList/ItemList";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../../../utils/jwt-config";
 
 const MatchesGrid = styled.div`
   flex: 1 1 auto;
@@ -45,10 +47,16 @@ export default function PerRequestMatches(props) {
 
     const fetchMatches = useCallback(async () => {
         if (request) {
+            const token = jwt.sign(
+                {},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+            );
             const res = await fetch(`${BACKEND_URL}/api/items/getMatchingListingsOf`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-auth-token": token
                 },
                 body: JSON.stringify({
                     requestId: request._id
@@ -59,7 +67,8 @@ export default function PerRequestMatches(props) {
                 fetch(`${BACKEND_URL}/api/items/getTheseListingsTexts`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "x-auth-token": token
                     },
                     body: JSON.stringify({
                         listingIds: data.matchingListings
@@ -77,7 +86,8 @@ export default function PerRequestMatches(props) {
                 fetch(`${BACKEND_URL}/api/items/getTheseListingsImgs`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "x-auth-token": token
                     },
                     body: JSON.stringify({
                         listingIds: data.matchingListings

@@ -3,6 +3,7 @@ const itemRequests = (socketUtils) => {
   const router = express.Router();
   const ItemRequestsModel = require("../../models/ItemRequests");
   const UserModel = require("../../models/Users");
+  const auth = require("../../utils/auth");
 
   const findMatchingListings = async (request) => {
     const requestId = "" + request._id;
@@ -60,8 +61,17 @@ const itemRequests = (socketUtils) => {
     }
   };
   router.post("/addRequest", async (req, res) => {
+      if (!req.user || !req.user.id) {
+        return res.json({status: "error"});
+      }
+      const userId = req.user.id;
+      const user = await auth.getUser(userId);
+      if (!user) {
+        return res.json({status: "error"});
+      }
+
       const creator = req.body.listedBy;
-      if(!creator) {
+      if (!creator) {
         return res.json({status: 'error'});
       }
       const obj = {
@@ -78,26 +88,18 @@ const itemRequests = (socketUtils) => {
           return res.json({status: 'error'});
         } else {
           request.save().then(savedRequest => {
-            UserModel.findOne({
-              _id: creator.id
-            }, (err, user) => {
-              if (err) {
-                console.log(err);
-              } else if (user) {
-                findMatchingListings(savedRequest);
-                let itemsRequested = user.itemsRequested;
-                const requestId = "" + savedRequest._id;
-                if (!itemsRequested) {
-                  itemsRequested = [requestId];
-                  user.itemsRequested = itemsRequested;
-                  user.save();
-                } else if (!itemsRequested.includes(requestId)) {
-                  itemsRequested.push(requestId);
-                  user.itemsRequested = itemsRequested;
-                  user.save();
-                }
-              }
-            });
+            findMatchingListings(savedRequest);
+            let itemsRequested = user.itemsRequested;
+            const requestId = "" + savedRequest._id;
+            if (!itemsRequested) {
+              itemsRequested = [requestId];
+              user.itemsRequested = itemsRequested;
+              user.save();
+            } else if (!itemsRequested.includes(requestId)) {
+              itemsRequested.push(requestId);
+              user.itemsRequested = itemsRequested;
+              user.save();
+            }
           });
           return res.json({status: 'ok'});
         }
@@ -107,20 +109,22 @@ const itemRequests = (socketUtils) => {
   router.get("/getRequests", (req, res) => {
       ItemRequestsModel.find({}, ['_id', 'category', 'title', 'description', 'location', 'date', 'listedBy'], null, (err, requests) => {
           if (err) {
-            res.status(500).send("An error occurred", err);
+            res.status(500).json({error: err});
           } else {
-            res.json({status: 'ok', requests: requests});
+            res.status(200).json({requests: requests});
           }
       });
   });
-  router.post("/getRequestsOfUser", async (req, res) => {
-    const userId = req.body.userId;
-    const user = await UserModel.findOne({
-      _id: userId
-    });
-    if (!user) {
-      return res.json({status: 'error'});
+  router.get("/getRequestsOfUser", async (req, res) => {
+    if (!req.user || !req.user.id) {
+      return res.json({status: "error"});
     }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.json({status: "error"});
+    }
+
     const requestIds = user.itemsRequested;
     let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'date', 'listedBy', 'matchingListings']);
     return res.json({status: 'ok', requests: requests});
@@ -139,6 +143,15 @@ const itemRequests = (socketUtils) => {
   })
 
   router.post("/rmRequest", async (request, response) => {
+    if (!request.user || !request.user.id) {
+      return response.json({status: "error"});
+    }
+    const userId = request.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return response.json({status: "error"});
+    }
+  
     const itemId = request.body.itemId;
     if (itemId) {
       await ItemRequestsModel.deleteOne({ _id: itemId });

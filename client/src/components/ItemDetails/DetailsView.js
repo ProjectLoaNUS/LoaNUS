@@ -154,6 +154,7 @@ export default function DetailsView(props) {
           {location}
         </Typography>
         <BorrowRequestUsers
+          userId={user?.id}
           isOwner={isOwner}
           itemId={itemId}
           setHelperText={setButtonHelperText}

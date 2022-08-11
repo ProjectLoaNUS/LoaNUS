@@ -4,6 +4,7 @@ const itemListings = (socketUtils) => {
   const multer = require("multer");
   const ItemListingsModel = require("../../models/ItemListings");
   const UserModel = require("../../models/Users");
+  const auth = require("../../utils/auth");
   const POINTS_SYSTEM = {
     LENT_ITEM: 5,
     ITEM_OVERDUE: -10,
@@ -88,7 +89,15 @@ const itemListings = (socketUtils) => {
   router.post(
     "/addListing",
     upload.array("images", 4),
-    (request, response, next) => {
+    async (request, response) => {
+      if (!request.user || !request.user.id) {
+        return response.json({ status: "error" });
+      }
+      const userId = request.user.id;
+      const user = await auth.getUser(userId);
+      if (!user) {
+        return response.json({ status: "error" });
+      }
       if (!request.body.listedBy) {
         return response.json({ status: "error" });
       }
@@ -108,28 +117,17 @@ const itemListings = (socketUtils) => {
           console.log(err);
         } else {
           listing.save().then((savedListing) => {
-            UserModel.findOne(
-              {
-                _id: owner.id,
-              },
-              (err, user) => {
-                if (err) {
-                  console.log(err);
-                } else if (user) {
-                  let itemsListed = user.itemsListed;
-                  const listingId = "" + savedListing._id;
-                  findMatchingRequests(savedListing);
-                  if (!itemsListed) {
-                    user.itemsListed = [listingId];
-                    user.save();
-                  } else if (!itemsListed.includes(listingId)) {
-                    itemsListed.push(listingId);
-                    user.itemsListed = itemsListed;
-                    user.save();
-                  }
-                }
-              }
-            );
+            let itemsListed = user.itemsListed;
+            const listingId = "" + savedListing._id;
+            findMatchingRequests(savedListing);
+            if (!itemsListed) {
+              user.itemsListed = [listingId];
+              user.save();
+            } else if (!itemsListed.includes(listingId)) {
+              itemsListed.push(listingId);
+              user.itemsListed = itemsListed;
+              user.save();
+            }
           });
         }
       });
@@ -137,6 +135,14 @@ const itemListings = (socketUtils) => {
     }
   );
   router.post("/rmListing", async (request, response) => {
+    if (!request.user || !request.user.id) {
+      return response.json({ status: "error" });
+    }
+    const userId = request.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return response.json({ status: "error" });
+    }
     const itemId = request.body.itemId;
     if (itemId) {
       await ItemListingsModel.deleteOne({ _id: itemId });
@@ -164,9 +170,9 @@ const itemListings = (socketUtils) => {
       null,
       (err, listings) => {
         if (err) {
-          res.status(500).send("An error occurred", err);
+          res.status(500).json({ error: err });
         } else {
-          res.json({ status: "ok", listings: listings });
+          res.status(200).json({ listings: listings });
         }
       }
     );
@@ -174,9 +180,9 @@ const itemListings = (socketUtils) => {
   router.get("/getListingsImgs", (req, res) => {
     ItemListingsModel.find({}, ["images"], null, (err, images) => {
       if (err) {
-        res.status(500).send("An error occurred", err);
+        res.status(500).json({ error: err });
       } else {
-        res.json({ status: "ok", images: images });
+        res.status(200).json({ images: images });
       }
     });
   });
@@ -198,13 +204,11 @@ const itemListings = (socketUtils) => {
     );
     return listingsTexts;
   };
-  router.post("/getListingsTextsOfUser", async (req, res) => {
-    if (!req.body.userId) {
+  router.get("/getListingsTextsOfUser", async (req, res) => {
+    if (!req.user.id) {
       return res.json({ status: "error" });
     }
-    const user = await UserModel.findOne({
-      _id: req.body.userId,
-    });
+    const user = await auth.getUser(req.user.id);
     if (!user) {
       return res.json({ status: "error" });
     }
@@ -219,13 +223,11 @@ const itemListings = (socketUtils) => {
     );
     return listingsImgs;
   };
-  router.post("/getListingsImgsOfUser", async (req, res) => {
-    if (!req.body.userId) {
+  router.get("/getListingsImgsOfUser", async (req, res) => {
+    if (!req.user.id) {
       return res.json({ status: "error" });
     }
-    const user = await UserModel.findOne({
-      _id: req.body.userId,
-    });
+    const user = await auth.getUser(req.user.id);
     if (!user) {
       return res.json({ status: "error" });
     }
@@ -262,16 +264,25 @@ const itemListings = (socketUtils) => {
   });
 
   router.post("/getBorrowRequestUsers", async (req, res) => {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
+
     const itemId = req.body.itemId;
     if (!itemId) {
-      return res.json({status: 'error'});
+      return res.status(400).json({error: "Item ID not provided"});
     }
-    const item = await ItemListingsModel.findOne({ _id: itemId });
+    const item = await ItemListingsModel.findById(itemId);
     if (!item) {
-      return res.json({status: 'error'});
+      return res.status(500).json({error: "Unable to find item in database"});
     }
     const userIds = item.borrowRequests;
-    return res.json({status: 'ok', userIds: userIds});
+    return res.status(200).json({ userIds: userIds});
   });
 
   router.post("/requestBorrowItem", async (req, res) => {
@@ -283,21 +294,20 @@ const itemListings = (socketUtils) => {
       NO_SUCH_USER: 4,
       NO_SUCH_OWNER: 5
     };
-    const userId = req.body.userId;
-    const itemId = req.body.itemId;
-    if (!userId) {
+    if (!req.user || !req.user.id) {
       return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.NO_SUCH_USER });
     }
-    if (!itemId) {
-      return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.NO_SUCH_ITEM });
-    }
-    const user = await UserModel.findOne({
-      _id: userId,
-    });
-    const item = await ItemListingsModel.findOne({ _id: itemId });
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
       return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.NO_SUCH_USER });
     }
+
+    const itemId = req.body.itemId;
+    if (!itemId) {
+      return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.NO_SUCH_ITEM });
+    }
+    const item = await ItemListingsModel.findById(itemId);
     if (!item) {
       return res.json({ status: "error", statusCode: REQ_BORROW_RES_CODES.NO_SUCH_ITEM });
     }
@@ -351,21 +361,20 @@ const itemListings = (socketUtils) => {
       NO_SUCH_ITEM: 3,
       NO_SUCH_USER: 4
     };
-    const userId = req.body.userId;
-    const itemId = req.body.itemId;
-    if (!userId) {
+    if (!req.user || !req.user.id) {
       return res.json({ status: "error", statusCode: BORROW_RES_CODES.NO_SUCH_USER });
     }
-    if (!itemId) {
-      return res.json({ status: "error", statusCode: BORROW_RES_CODES.NO_SUCH_ITEM });
-    }
-    const user = await UserModel.findOne({
-      _id: userId,
-    });
-    const item = await ItemListingsModel.findOne({ _id: itemId });
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
       return res.json({ status: "error", statusCode: BORROW_RES_CODES.NO_SUCH_USER });
     }
+    
+    const itemId = req.body.itemId;
+    if (!itemId) {
+      return res.json({ status: "error", statusCode: BORROW_RES_CODES.NO_SUCH_ITEM });
+    }
+    const item = await ItemListingsModel.findById(itemId);
     if (!item) {
       return res.json({ status: "error", statusCode: BORROW_RES_CODES.NO_SUCH_ITEM });
     }
@@ -402,34 +411,36 @@ const itemListings = (socketUtils) => {
       NO_SUCH_USER: 1,
       NO_SUCH_ITEM: 2
     }
-    const userId = req.body.userId;
-    const itemId = req.body.itemId;
-    if (!userId) {
+    if (!req.user || !req.user.id) {
       return res.json({status: 'error', statusCode: DENY_BORROW_RES_CODES.NO_SUCH_USER});
     }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.json({status: 'error', statusCode: DENY_BORROW_RES_CODES.NO_SUCH_USER});
+    }
+    const itemId = req.body.itemId;
     if (!itemId) {
       return res.json({status: 'error', statusCode: DENY_BORROW_RES_CODES.NO_SUCH_ITEM});
     }
     rmBorrowRequests([userId], itemId);
-    const item = await ItemListingsModel.findOne({ _id: itemId });
+    const item = await ItemListingsModel.findById(itemId);
     if (!item) {
       return res.json({status: 'error', statusCode: DENY_BORROW_RES_CODES.NO_SUCH_ITEM});
     }
     item.borrowRequests = item.borrowRequests.filter(requestId => requestId !== userId);
-    UserModel.findOne({ _id: userId })
-      .then(user => {
-        socketUtils.notify(null, "" + user._id,
-            `Borrow request for item "${item.title}" rejected`, "");
-      });
+    socketUtils.notify(null, "" + userId,
+        `Borrow request for item "${item.title}" rejected`, "");
     await item.save();
     return res.json({status: 'ok', statusCode: DENY_BORROW_RES_CODES.SUCCESS});
   });
 
-  router.post("/getBorrowedTextsOfUser", async (req, res) => {
-    const userId = req.body.userId;
-    const user = await UserModel.findOne({
-      _id: userId,
-    });
+  router.get("/getBorrowedTextsOfUser", async (req, res) => {
+    if (!req.user || !req.user.id) {
+      return res.json({ status: "error" });
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
       return res.json({ status: "error" });
     }
@@ -449,11 +460,12 @@ const itemListings = (socketUtils) => {
     );
     return res.json({ status: "ok", borrowedTexts: borrowedTexts });
   });
-  router.post("/getBorrowedImgsOfUser", async (req, res) => {
-    const userId = req.body.userId;
-    const user = await UserModel.findOne({
-      _id: userId,
-    });
+  router.get("/getBorrowedImgsOfUser", async (req, res) => {
+    if (!req.user || !req.user.id) {
+      return res.json({ status: "error" });
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
       return res.json({ status: "error" });
     }
@@ -476,31 +488,29 @@ const itemListings = (socketUtils) => {
       UNKNOWN_OWNER: 6,
     };
 
-    const userId = req.body.userId;
-    const itemId = req.body.itemId;
-    if (!userId) {
+    if (!req.user || !req.user.id) {
       return res.json({
         status: "error",
         statusCode: RETURN_STATUS_CODES.NO_SUCH_USER,
       });
     }
-    if (!itemId) {
-      return res.json({
-        status: "error",
-        statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM,
-      });
-    }
-
-    const user = await UserModel.findOne({
-      _id: userId,
-    });
-    const item = await ItemListingsModel.findOne({ _id: itemId });
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
     if (!user) {
       return res.json({
         status: "error",
         statusCode: RETURN_STATUS_CODES.NO_SUCH_USER,
       });
     }
+
+    const itemId = req.body.itemId;
+    if (!itemId) {
+      return res.json({
+        status: "error",
+        statusCode: RETURN_STATUS_CODES.NO_SUCH_ITEM,
+      });
+    }
+    const item = await ItemListingsModel.findById(itemId);
     if (!item) {
       return res.json({
         status: "error",
@@ -508,7 +518,7 @@ const itemListings = (socketUtils) => {
       });
     }
 
-    const owner = await UserModel.findOne({ _id: item.listedBy.id });
+    const owner = await UserModel.findById(item.listedBy.id);
     if (!owner) {
       return res.json({
         status: "error",
@@ -577,9 +587,9 @@ const itemListings = (socketUtils) => {
       null,
       (err, listings) => {
         if (err) {
-          res.status(500).send("An error occurred", err);
+          res.status(500).json({ error: err });
         } else {
-          res.json({ status: "ok", listings: listings });
+          res.status(200).json({ listings: listings });
         }
       }
     );
@@ -592,9 +602,9 @@ const itemListings = (socketUtils) => {
       null,
       (err, images) => {
         if (err) {
-          res.status(500).send("An error occurred", err);
+          res.status(500).json({ error: err });
         } else {
-          res.json({ status: "ok", images: images });
+          res.status(200).json({ images: images });
         }
       }
     );
@@ -619,9 +629,9 @@ const itemListings = (socketUtils) => {
       null,
       (err, listings) => {
         if (err) {
-          res.json({ status: "error occured" });
+          res.status(500).json({ error: err });
         } else {
-          res.json({ status: "ok", listings: listings });
+          res.status(200).json({ listings: listings });
         }
       }
     );
@@ -634,9 +644,9 @@ const itemListings = (socketUtils) => {
       null,
       (err, images) => {
         if (err) {
-          res.json({ status: "error occured" });
+          res.status(500).json({ error: err });
         } else {
-          res.json({ status: "ok", images: images });
+          res.status(200).json({ images: images });
         }
       }
     );

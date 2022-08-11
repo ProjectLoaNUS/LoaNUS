@@ -1,27 +1,34 @@
 const following = (socketUtils) => {
   const router = require("express").Router();
   const UserModel = require("../models/Users");
+  const auth = require("../utils/auth");
 
   //follow a user
   router.post("/followuser", async (req, res) => {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
     const followeduser = req.body.followed;
-    const user = req.body.follower;
-    let usermodel = await UserModel.findById(user);
     let otherusermodel = await UserModel.findById(followeduser);
 
-    if (!usermodel.following.includes(followeduser)) {
-      usermodel.following.push(followeduser);
+    if (!user.following.includes(followeduser)) {
+      user.following.push(followeduser);
     }
-    if (!otherusermodel.followers.includes(user)) {
-      otherusermodel.followers.push(user);
+    if (!otherusermodel.followers.includes(userId)) {
+      otherusermodel.followers.push(userId);
     }
 
     socketUtils.notify(null, followeduser,
-        `New follower "${usermodel.name}"`, "/profile/follow");
+        `New follower "${user.name}"`, "/profile/follow");
 
     try {
       let checkotheruser = await otherusermodel.save();
-      let checkuser = await usermodel.save();
+      let checkuser = await user.save();
       res.status(200).json(checkuser);
     } catch (err) {
       res.status(500).json(err);
@@ -29,25 +36,31 @@ const following = (socketUtils) => {
   });
   //unfollow a user
   router.post("/unfollowuser", async (req, res) => {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(401).json({error: "JWT User ID is invalid"});
+    }
     const followeduser = req.body.unfollowed;
-    const user = req.body.follower;
-    let usermodel = await UserModel.findById(user);
     let otherusermodel = await UserModel.findById(followeduser);
-    if (usermodel.following.includes(followeduser)) {
+    if (user.following.includes(followeduser)) {
 
-      usermodel.following = usermodel.following.filter(function (item) {
+      user.following = user.following.filter(function (item) {
         return item !== followeduser;
       });
     }
-    if (otherusermodel.followers.includes(user)) {
+    if (otherusermodel.followers.includes(userId)) {
 
       otherusermodel.followers = otherusermodel.followers.filter(function (item) {
-        return item !== user;
+        return item !== userId;
       });
     }
 
     try {
-      let checkuser = await usermodel.save();
+      let checkuser = await user.save();
       let othercheckuser = await otherusermodel.save();
       res.status(200).json(checkuser);
     } catch (err) {
@@ -59,7 +72,15 @@ const following = (socketUtils) => {
 
   router.get("/getfollowing", async (req, res) => {
     try {
-      const user = await UserModel.findById(req.query.userId);
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({error: "JWT User ID is missing"});
+      }
+      const userId = req.user.id;
+      const user = await auth.getUser(userId);
+      if (!user) {
+        return res.status(401).json({error: "JWT User ID is invalid"});
+      }
+
       let followingarray = user.following;
 
       const array = await UserModel.find({ _id: { $in: followingarray } }, [
@@ -67,7 +88,7 @@ const following = (socketUtils) => {
         "name"
       ]);
 
-      res.status(200).send(array);
+      res.status(200).json({followings: array});
     } catch (err) {
       res.status(500).json(err);
     }
@@ -75,7 +96,15 @@ const following = (socketUtils) => {
   //get followers
   router.get("/getfollowers", async (req, res) => {
     try {
-      const user = await UserModel.findById(req.query.userId);
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({error: "JWT User ID is missing"});
+      }
+      const userId = req.user.id;
+      const user = await auth.getUser(userId);
+      if (!user) {
+        return res.status(401).json({error: "JWT User ID is invalid"});
+      }
+
       let followersarray = user.followers;
 
       const array = await UserModel.find({ _id: { $in: followersarray } }, [
@@ -93,10 +122,18 @@ const following = (socketUtils) => {
 
   router.get("/getfollowingid", async (req, res) => {
     try {
-      const user = await UserModel.findById(req.query.userId);
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({error: "JWT User ID is missing"});
+      }
+      const userId = req.user.id;
+      const user = await auth.getUser(userId);
+      if (!user) {
+        return res.status(401).json({error: "JWT User ID is invalid"});
+      }
+
       let followingarray = user.following;
 
-      res.status(200).json(followingarray);
+      res.status(200).json({followings: followingarray});
     } catch (err) {
       res.status(500).json(err);
     }
@@ -104,7 +141,15 @@ const following = (socketUtils) => {
   //get followers id
   router.get("/getfollowersid", async (req, res) => {
     try {
-      const user = await UserModel.findById(req.query.userId);
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({error: "JWT User ID is missing"});
+      }
+      const userId = req.user.id;
+      const user = await auth.getUser(userId);
+      if (!user) {
+        return res.status(401).json({error: "JWT User ID is invalid"});
+      }
+
       let followersarray = user.followers;
 
       res.status(200).send(followersarray);

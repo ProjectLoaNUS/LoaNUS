@@ -3,13 +3,20 @@ const router = express.Router();
 const multer = require("multer");
 const ItemListingsModel = require("../../models/ItemListings");
 const UserModel = require("../../models/Users");
+const auth = require("../../utils/auth");
 
 //add like item
 router.post("/likeitem", async (req, res) => {
-  const itemId = req.body.itemId;
-  const userId = req.body.userId;
-  let user = await UserModel.findById(userId);
+  if (!req.user || !req.user.id) {
+    return res.status(500).json({error: "JWT User ID is missing"});
+  }
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
+  if (!user) {
+    return res.status(500).json({error: "JWT User ID is invalid"});
+  }
 
+  const itemId = req.body.itemId;
   if (!user.itemsLiked.includes(itemId)) {
     user.itemsLiked.push(itemId);
   }
@@ -22,10 +29,16 @@ router.post("/likeitem", async (req, res) => {
 });
 //remove like item
 router.post("/unlikeitem", async (req, res) => {
-  const itemId = req.body.itemId;
-  const userId = req.body.userId;
-  let user = await UserModel.findById(userId);
+  if (!req.user || !req.user.id) {
+    return res.status(500).json({error: "JWT User ID is missing"});
+  }
+  const userId = req.user.id;
+  const user = await auth.getUser(userId);
+  if (!user) {
+    return res.status(500).json({error: "JWT User ID is invalid"});
+  }
 
+  const itemId = req.body.itemId;
   if (user.itemsLiked.includes(itemId)) {
     user.itemsLiked = user.itemsLiked.filter(function (item) {
       return item !== itemId;
@@ -43,8 +56,15 @@ router.post("/unlikeitem", async (req, res) => {
 
 router.get("/getlikeditems", async (req, res) => {
   try {
-    const userId = req.query.userId;
-    const user = await UserModel.findById(userId);
+    if (!req.user || !req.user.id) {
+      return res.status(500).json({error: "JWT User ID is missing"});
+    }
+    const userId = req.user.id;
+    const user = await auth.getUser(userId);
+    if (!user) {
+      return res.status(500).json({error: "JWT User ID is invalid"});
+    }
+
     let items = user.itemsLiked;
     res.status(200).json({ status: "success", items: items });
   } catch (err) {

@@ -2,6 +2,8 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { createContext, useContext, useState } from "react";
 import { auth } from "./setup";
 import { BACKEND_URL } from "./const";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../utils/jwt-config";
 
 const authCtx = createContext({
   hasUser: null,
@@ -25,10 +27,16 @@ function useAuthProvider() {
   const signInWithGoogle = () => {
     if (auth) {
       return signInWithPopup(auth, googleAuthProvider).then(async (result) => {
+        const token = jwt.sign(
+          {},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         fetch(`${BACKEND_URL}/api/user/postAltLogin`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "x-auth-token": token
           },
           body: JSON.stringify({
             name: result.user.displayName,
@@ -70,10 +78,16 @@ function useAuthProvider() {
   };
 
   const signInUserPass = async (givenEmail, givenPassword) => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     const res = await fetch(`${BACKEND_URL}/api/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-auth-token": token
       },
       body: JSON.stringify({
         email: givenEmail,
@@ -93,10 +107,16 @@ function useAuthProvider() {
   const signUpUser = async (givenName, givenAge, givenEmail, givenPassword) => {
     const userStatus = await hasUser(givenEmail);
     if (userStatus === hasUserResultCodes.NO_SUCH_USER) {
+      const token = jwt.sign(
+        {},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       const req = await fetch(`${BACKEND_URL}/api/user/signUp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-auth-token": token
         },
         body: JSON.stringify({
           name: givenName,
@@ -115,10 +135,16 @@ function useAuthProvider() {
   };
 
   const hasUser = async (givenEmail) => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     const req = await fetch(`${BACKEND_URL}/api/user/hasUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-auth-token": token
       },
       body: JSON.stringify({
         email: givenEmail,

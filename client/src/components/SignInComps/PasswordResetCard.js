@@ -4,9 +4,11 @@ import { Card, TextField } from "@mui/material";
 import ButtonComponent from "../../utils/Button";
 import SignInComp from "./SignInComp";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../database/const";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCountdown } from "../../utils/useCountdown";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const Title = styled.h1`
   align-items: center;
@@ -74,7 +76,16 @@ function PasswordResetCard() {
         email: email,
         newpassword: givenPassword1,
       };
-      axios.post(`${BACKEND_URL}/api/user/changepassword`, data);
+      const token = jwt.sign(
+        {},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      axios.post(`${BACKEND_URL}/api/user/changepassword`, data, {
+        headers: {
+          "x-auth-token": token
+        }
+      });
       navigate("/signin");
     }
   };
@@ -92,8 +103,17 @@ function PasswordResetCard() {
         email: email,
         otp: otp,
       };
+      const token = jwt.sign(
+        {},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .post(`${BACKEND_URL}/api/user/createotp`, data)
+        .post(`${BACKEND_URL}/api/user/createotp`, data, {
+          headers: {
+            "x-auth-token": token
+          }
+        })
         .then(() => startTimer());
     } else {
       console.log(
@@ -103,8 +123,17 @@ function PasswordResetCard() {
   };
 
   useEffect(() => {
+    const token = jwt.sign(
+      {},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     axios
-      .get(`${BACKEND_URL}/api/user/getotp?email=` + email)
+      .get(`${BACKEND_URL}/api/user/getotp?email=` + email, {
+        headers: {
+          "x-auth-token": token
+        }
+      })
       .then((res) => setStoredOtp(res.data.otp));
     startTimer();
   }, [email, startTimer]);

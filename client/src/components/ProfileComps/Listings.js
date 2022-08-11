@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../database/auth";
 import { BACKEND_URL } from "../../database/const";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
+import jwt from 'jsonwebtoken';
 import AllListings from "./AllListings";
 import LikedListings from "./LikedListings";
 import ListingsToApprove from "./ListingsToApprove";
@@ -38,15 +40,17 @@ export default function Listings() {
 
     useEffect(() => {
       if (user) {
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         if (listingImgs === null) {
           fetch(`${BACKEND_URL}/api/items/getListingsImgsOfUser`, {
-            method: "POST",
+            method: "GET",
             headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: user?.id,
-            }),
+              "x-auth-token": token
+            }
           })
           .then((req) => req.json())
           .then((data) => {
@@ -57,13 +61,10 @@ export default function Listings() {
         }
         if (listingTexts === null) {
           fetch(`${BACKEND_URL}/api/items/getListingsTextsOfUser`, {
-            method: "POST",
+            method: "GET",
             headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: user?.id,
-            }),
+              "x-auth-token": token
+            }
           })
           .then((req) => req.json())
           .then((data) => {

@@ -15,12 +15,14 @@ import ImageList from "../ItemDetails/ImageList";
 import { TransitionGroup } from "react-transition-group";
 import { CentredDiv } from "../../utils/FlexDiv";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../database/const";
 import { Buffer } from "buffer";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useCallback } from "react";
 import { useAuth } from "../../database/auth";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const DialogContainer = styled(DialogContent)`
   display: flex;
@@ -94,15 +96,25 @@ export default function RewardsView(props) {
   const { user } = useAuth();
 
   const handleClick = async () => {
-    if (!user) {
+    if (!user?.id) {
       return;
     }
     try {
-      let data = {
-        item: itemId,
-        user: user.id,
+      const data = {
+        item: itemId
       };
-      axios.post(`${BACKEND_URL}/api/reward/claimreward`, data).then((res) => {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      const headers = {
+        "x-auth-token": token
+      };
+      axios.post(`${BACKEND_URL}/api/reward/claimreward`,
+          data, 
+          { headers: headers })
+      .then((res) => {
         if (res.status === 200) {
           setButtonHelperText("Reward claimed! Find it in the 'Profile' page");
           setTimeout(() => {
@@ -147,31 +159,36 @@ export default function RewardsView(props) {
 
   const onClickRmReward = async () => {
     setShowRmUi(false);
-    fetch(`${BACKEND_URL}/api/reward/rmreward`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        rewardId: itemId,
-      }),
-    }).then((res) => {
-      res.json().then((data) => {
-        if (res.status === 200) {
-          setShowQrCode(false);
-          setButtonHelperText("Enjoy your reward :)");
-          setTimeout(() => {
-            setOpen(false);
-          }, 2000);
-          setTimeout(() => {
-            onActionDone();
-          }, 3000);
-        } else {
-          setButtonHelperText(
-            "Something went wrong... Don't worry, your reward is still here"
-          );
+    if (!user?.id) {
+      return;
+    }
+    const token = jwt.sign(
+      {id: user.id},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
+    axios.post(`${BACKEND_URL}/api/reward/rmreward`, {
+        rewardId: itemId
+      }, {
+        headers: {
+          "x-auth-token": token
         }
-      });
+      }
+    ).then((res) => {
+      if (res.status === 200) {
+        setShowQrCode(false);
+        setButtonHelperText("Enjoy your reward :)");
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
+        setTimeout(() => {
+          onActionDone();
+        }, 3000);
+      } else {
+        setButtonHelperText(
+          "Something went wrong... Don't worry, your reward is still here"
+        );
+      }
     });
   };
 
@@ -195,23 +212,26 @@ export default function RewardsView(props) {
   }, [howToRedeem]);
 
   const getUserPoints = useCallback(async () => {
-    if (user) {
+    if (user?.id) {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       fetch(`${BACKEND_URL}/api/user/getPoints`, {
-        method: "POST",
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id,
-        }),
+          "x-auth-token": token
+        }
       })
-        .then((req) => req.json())
-        .then((data) => {
-          if (data.status === "ok" && data.points !== undefined) {
-            setUserPoints(data.points);
-          } else {
-            console.log("Error fetching user's points from backend");
-          }
+        .then((req) => {
+          req.json().then(data => {
+            if (req.status === 200) {
+              setUserPoints(data.points);
+            } else {
+              console.log(data.error);
+            }
+          })
         });
     }
   }, [user]);

@@ -5,8 +5,10 @@ import { useAuth } from "../../../database/auth";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { Typography } from "@mui/material";
 import { LoadingFollowCards } from "./FollowCard";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../../utils/jwt-config";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -32,8 +34,17 @@ function FollowingDisplay() {
   useEffect(() => {
     const getFollowing = async () => {
       try {
+        const token = jwt.sign(
+          {id: user.id},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         const res = await axios.get(
-          `${BACKEND_URL}/api/follow/getfollowing?userId=` + user.id
+          `${BACKEND_URL}/api/follow/getfollowing`, {
+            headers: {
+              "x-auth-token": token
+            }
+          }
         );
         setIsLoading(false);
         setFollowing(res.data);

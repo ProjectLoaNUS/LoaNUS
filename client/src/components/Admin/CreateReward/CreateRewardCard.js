@@ -8,9 +8,12 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import AddIcon from "@mui/icons-material/Add";
 import { BACKEND_URL } from "../../../database/const";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { TransitionGroup } from "react-transition-group";
 import RedemptionMethod from "./RedemptionMethod";
 import CategoryField from "./CategoryField";
+import { useAuth } from "../../../database/auth";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../../utils/jwt-config";
 
 const CreateCard = styled(Card)`
   display: flex;
@@ -27,6 +30,7 @@ const SubmitButton = styled(LoadingButton)`
 `;
 
 export default function CreateRewardCard() {
+  const {user} = useAuth();
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -64,6 +68,17 @@ export default function CreateRewardCard() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!user?.id) {
+      setIsSubmitError(true);
+      setIsFormError(true);
+      setResultText("Not signed in");
+      setTimeout(() => {
+        setIsSubmitError(false);
+        setIsFormError(false);
+        setResultText("");
+      }, 6000);
+      return;
+    }
     if (!image) {
       // No reward image is selected
       setIsSubmitError(true);
@@ -91,6 +106,11 @@ export default function CreateRewardCard() {
       return;
     }
     // All fields are filled in
+    const token = jwt.sign(
+      {id: user.id},
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
+    );
     setIsAdding(true);
     let formData = new FormData();
     formData.append("deadline", date);
@@ -111,7 +131,10 @@ export default function CreateRewardCard() {
         `${BACKEND_URL}/api/reward/createreward`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-auth-token": token
+          }
         }
       );
       setIsAdding(false);

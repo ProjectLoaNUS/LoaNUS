@@ -5,7 +5,9 @@ import { useAuth } from "../../database/auth";
 import DetailsView from "./DetailsView";
 import ChatView from "./ChatView";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { BACKEND_URL } from "../../database/const";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const GrowUp = styled(Grow)`
   transform-origin: bottom center;
@@ -59,9 +61,18 @@ export default function DetailsDialog(props) {
               receiverId: owner.id,
           };
           try {
+              const token = jwt.sign(
+                {id: user.id},
+                JWT_SECRET,
+                {expiresIn: JWT_EXPIRES_IN}
+              );
               axios.post(
                   `${BACKEND_URL}/api/conversations`,
-                  convoUsers
+                  convoUsers, {
+                    headers: {
+                      "x-auth-token": token
+                    }
+                  }
               )
               .then(res => {
                   setChat(res.data);

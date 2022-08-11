@@ -3,6 +3,7 @@ import { useAuth } from "../../database/auth";
 import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../../database/const";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import RewardCard from "../RewardComps/RewardCard";
 import LoadingRewardCards from "../RewardComps/LoadingRewardCards";
 import { Link, Typography } from "@mui/material";
@@ -10,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { CLAIM_REWARD } from "../../pages/routes";
 import ButtonComponent from "../../utils/Button";
 import { useCallback } from "react";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const RewardsContainer = styled.div`
   display: flex;
@@ -51,17 +53,23 @@ export default function Rewards() {
   const navigate = useNavigate();
 
   const fetchRewards = useCallback(async () => {
-    if (user) {
-      const data = {
-        userId: user.id,
-      };
+    if (user?.id) {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
-        .post(`${BACKEND_URL}/api/reward/getRewardsOfUser`, data)
+        .get(`${BACKEND_URL}/api/reward/getRewardsOfUser`, {
+          headers: {
+            "x-auth-token": token
+          }
+        })
         .then((res) => {
-          if (res.data.status === "ok") {
+          if (res.status === 200) {
             setRewards(res.data.rewards);
           } else {
-            console.log("Error occurred while fetching rewards claimed");
+            console.log(res.data.error);
           }
         })
         .catch((err) => console.log(err, "error occured"));
@@ -72,23 +80,33 @@ export default function Rewards() {
   }, [fetchRewards]);
 
   const fetchPoints = useCallback(async () => {
-    fetch(`${BACKEND_URL}/api/user/getPoints`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: user.id,
-      }),
-    })
-      .then((req) => req.json())
-      .then((data) => {
-        if (data.status === "ok" && data.points !== undefined) {
-          setUserPoints(data.points);
-        } else {
-          console.log("Error fetching user's points from backend");
+    if (user?.id) {
+      const token = jwt.sign(
+        {id: user.id},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
+      fetch(`${BACKEND_URL}/api/user/getPoints`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token
         }
-      });
+      })
+        .then((req) => {
+          if (req.status === 200) {
+            req.json().then(data => {
+              if (data.points !== undefined) {
+                setUserPoints(data.points);
+              } else {
+                console.log("Backend returned invalid points");
+              }
+            });
+          } else {
+            console.log("Error fetching user's points from backend");
+          }
+        });
+    }
   }, [user]);
   useEffect(() => {
     fetchPoints();

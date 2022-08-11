@@ -4,6 +4,7 @@ import match from "autosuggest-highlight/match";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import styled from "styled-components";
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,6 +22,7 @@ import {
   isUserListingRelated,
 } from "../ItemDetails/detailsDialogActions";
 import { useAuth } from "../../database/auth";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 
 const ContrastIconBtn = styled(IconButton)`
   color: ${theme.palette.primary.contrastText};
@@ -93,18 +95,31 @@ export default function SearchTextField() {
     } else {
       (async () => {
         const url = `${BACKEND_URL}/api/items/search`;
+        const token = jwt.sign(
+          {},
+          JWT_SECRET,
+          {expiresIn: JWT_EXPIRES_IN}
+        );
         axios
           .get(url, {
+            headers: {
+              "x-auth-token": token
+            },
             params: {
               name: queryText,
               isFullSearch: false,
-            },
+            }
           })
-          .then((res) => {
-            setSearchResults(
-              res.data.results.filter((item) => !item.borrowedBy)
-            );
-            setLoading(false);
+          .then(res => {
+            if (res.data.status === "ok") {
+              setSearchResults(
+                res.data.results.filter((item) => !item.borrowedBy)
+              );
+              setLoading(false);
+            } else {
+              console.log(`Error fetching item details after performing search in backend with query text ${queryText}`);
+              setLoading(false);
+            }
           })
           .catch((err) => console.log(err, "error occured"));
       })();
@@ -156,16 +171,27 @@ export default function SearchTextField() {
 
     if (reason === "selectOption") {
       event.defaultMuiPrevented = true;
-
+      const token = jwt.sign(
+        {},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       axios
         .get(`${BACKEND_URL}/api/items/search-exact`, {
+          headers: {
+            "x-auth-token": token
+          },
           params: {
             id: newValue._id,
-          },
+          }
         })
-        .then((res) => {
-          imgsToUrls(res.data.result.images);
-          processResult(res.data.result);
+        .then(res => {
+          if (res.data.status === "ok") {
+            imgsToUrls(res.data.result.images);
+            processResult(res.data.result);
+          } else {
+            console.log(`Error obtaining item images after performing search in backend using query text ${queryText}`);
+          }
         })
         .catch((err) => console.log(err, "error occured"));
       setOpen(true);

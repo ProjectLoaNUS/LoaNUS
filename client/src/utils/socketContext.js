@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { BACKEND_URL } from "../database/const";
+import jwt from "jsonwebtoken";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "./jwt-config";
 
 const socketContext = createContext({
     socket: null,
@@ -22,25 +24,37 @@ function useSocketProvider() {
     }
 
     const updateOnlineUsers = async (mySocket, user) => {
-        if (user) {    
+        if (user) {
             mySocket.on("getUsers", (users) => {
-                fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        users: users.filter(otherUser => otherUser.userId !== user.id)
+                const otherUsers = users.filter(otherUser => otherUser.userId !== user.id);
+                if (otherUsers.length) {
+                    const token = jwt.sign(
+                        {id: user.id},
+                        JWT_SECRET,
+                        {expiresIn: JWT_EXPIRES_IN}
+                    );
+                    fetch(`${BACKEND_URL}/api/user/getNamesOf`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-auth-token": token
+                        },
+                        body: JSON.stringify({
+                            users: otherUsers
+                        })
                     })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'ok') {
-                        setOnlineUsers(data.userDetails);
-                    } else {
-                        console.log("socketContext: Error fetching names of online users from backend");
-                    }
-                });
+                    .then(res => {
+                        res.json().then(data => {
+                            if (res.status === 200) {
+                                setOnlineUsers(data.userDetails);
+                            } else {
+                                console.log(data.error);
+                            }
+                        });
+                    });
+                } else {
+                    setOnlineUsers([]);
+                }
             });
         } else {
             console.log("socketContext: Invalid user object");

@@ -1,6 +1,8 @@
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../../database/const";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../../utils/jwt-config";
 import ItemList from "../ItemList/ItemList";
 
 const SearchResults = (props) => {
@@ -10,33 +12,52 @@ const SearchResults = (props) => {
   const [ isLoading, setIsLoading ] = useState(true);
 
   useEffect(() => {
-    const url = `${BACKEND_URL}/api/items/search`;
     if (queryText) {
+      const url = `${BACKEND_URL}/api/items/search`;
+      const token = jwt.sign(
+        {},
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
+      );
       // Images of search result items
       axios
         .get(url, {
+          headers: {
+            "x-auth-token": token
+          },
           params: {
             name: queryText,
             isFullSearch: true,
             isImageOnly: true
-          },
+          }
         })
-        .then((res) => {
-          setSearchResultsImages(res.data.results);
+        .then(res => {
+          if (res.data.status === "ok") {
+            setSearchResultsImages(res.data.results);
+          } else {
+            console.log(`Error fetching item images after performing search in backend using query text ${queryText}`);
+          }
         })
         .catch((err) => console.log(err, "error occured"));
       // Text details(title, description, etc) of search result items
       axios
         .get(url, {
+          headers: {
+            "x-auth-token": token
+          },
           params: {
             name: queryText,
             isFullSearch: true,
             isTextOnly: true
-          },
+          }
         })
-        .then((res) => {
-          setSearchResultsDetails(res.data.results);
-          setIsLoading(false);
+        .then(res => {
+          if (res.data.status === "ok") {
+            setSearchResultsDetails(res.data.results);
+            setIsLoading(false);
+          } else {
+            console.log(`Error fetching item details after performing search in backend using query text ${queryText}`);
+          }
         })
         .catch((err) => console.log(err, "error occured"));
     }
