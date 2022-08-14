@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  const JWT_SECRET = auth.JWT_SECRET;
+  const JWT_SECRET = process.env.JWT_SECRET;
   const IS_EXCLUDED = req.originalUrl.includes("/verifyEmail");
   if (!IS_EXCLUDED && JWT_SECRET) {
     try {

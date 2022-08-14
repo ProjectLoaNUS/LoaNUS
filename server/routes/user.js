@@ -57,6 +57,8 @@ router.post("/login", async (req, res) => {
     UNKNOWN: 3,
     EMAIL_NOT_VERIFIED: 4,
     ALTERNATE_SIGN_IN: 5,
+    INVALID_JWT: 6,
+    SERVER_ERROR: 7
   };
   const givenUser = await UserModel.findOne({
     $and: [{ email: req.body.email }, { password: { $exists: true } }],
@@ -86,11 +88,13 @@ router.post("/login", async (req, res) => {
         error: err,
       });
     }
-    if (result) {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+    if (result && JWT_SECRET && JWT_EXPIRES_IN) {
       const token = jwt.sign(
         {id: "" + givenUser._id},
-        auth.JWT_SECRET,
-        {expiresIn: auth.JWT_EXPIRES_IN}
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
       );
       return res.status(200).json({
         user: {
@@ -107,6 +111,11 @@ router.post("/login", async (req, res) => {
         },
       });
     }
+    if (!JWT_EXPIRES_IN || !JWT_SECRET) {
+      return res.status(500).json({
+        errorCode: signInResultCodes.SERVER_ERROR
+      });
+    }
     return res.status(400).json({
       errorCode: signInResultCodes.INVALID_PASSWORD,
       error: `Invalid password for {givenUser.name}`,
@@ -118,12 +127,17 @@ router.post("/postAltLogin", async (req, res) => {
   let user;
   user = await getThirdPartyUser(email);
   if (user) {
+    const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_EXPIRES_IN || !JWT_SECRET) {
+      return res.status(500).json({ error: "Server not setup for JWT usage properly" });
+    }
     try {
       const userId = "" + user._id;
       const token = jwt.sign(
         {id: userId},
-        auth.JWT_SECRET,
-        {expiresIn: auth.JWT_EXPIRES_IN}
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
       );
       let trimmedUser = {
         token: token,
@@ -160,11 +174,16 @@ router.post("/postAltLogin", async (req, res) => {
         return res.status(500).json({ error: err });
       }
     });
+    const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_EXPIRES_IN || !JWT_SECRET) {
+      return res.status(500).json({ error: "Server not setup for JWT usage properly" });
+    }
     try {
       const token = jwt.sign(
         {id: "" + user._id},
-        auth.JWT_SECRET,
-        {expiresIn: auth.JWT_EXPIRES_IN}
+        JWT_SECRET,
+        {expiresIn: JWT_EXPIRES_IN}
       );
       let trimmedUser = {
         token: token,
@@ -225,10 +244,15 @@ router.post("/signUp", async (req, res) => {
       return res.status(500).json({ error: err });
     }
   });
+  const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_EXPIRES_IN || !JWT_SECRET) {
+    return res.status(500).json({ error: "Server not setup for JWT usage properly" });
+  }
   const token = jwt.sign(
     {id: "" + newUser._id},
-    auth.JWT_SECRET,
-    {expiresIn: auth.JWT_EXPIRES_IN}
+    JWT_SECRET,
+    {expiresIn: JWT_EXPIRES_IN}
   );
   return res.status(200).json({ token: token });
 });
@@ -530,10 +554,15 @@ router.get("/getotp", async (req, res) => {
       $and: [{ email: email }, { password: { $exists: true } }],
     });
     let otp = user.otp;
+    const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_EXPIRES_IN || !JWT_SECRET) {
+      return res.status(500).json({ error: "Server not setup for JWT usage properly" });
+    }
     const token = jwt.sign(
       {id: "" + user._id},
-      auth.JWT_SECRET,
-      {expiresIn: auth.JWT_EXPIRES_IN}
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
     );
     res.status(200).json({ otp: otp, token: token });
   } catch (error) {
@@ -554,10 +583,15 @@ router.post("/changepassword", async (req, res) => {
     user.password = hashedPassword;
 
     await user.save();
+    const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_EXPIRES_IN || !JWT_SECRET) {
+      return res.status(500).json({ error: "Server not setup for JWT usage properly" });
+    }
     const token = jwt.sign(
       {id: "" + user._id},
-      auth.JWT_SECRET,
-      {expiresIn: auth.JWT_EXPIRES_IN}
+      JWT_SECRET,
+      {expiresIn: JWT_EXPIRES_IN}
     );
     res.status(200).json({ token: token });
   } catch (error) {

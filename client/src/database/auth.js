@@ -230,7 +230,9 @@ export const signInResultCodes = {
   NO_SUCH_USER: 2,
   UNKNOWN: 3,
   EMAIL_NOT_VERIFIED: 4,
-  INVALID_JWT: 5
+  ALTERNATE_SIGN_IN: 5,
+  INVALID_JWT: 6,
+  SERVER_ERROR: 7
 };
 
 export const signInResultTexts = [
@@ -239,7 +241,9 @@ export const signInResultTexts = [
   "No such user", // Return code 2
   "Unknown error occurred", // Return code 3
   "Email not verified", //Return code 4
-  "Server error, please try again"
+  "Sign in with Google instead?", //Return code 5
+  "Server error, please try again", //Return code 6
+  "Server error, please contact an admin" //Return code 7
 ];
 
 export const hasUserResultCodes = {
