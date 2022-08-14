@@ -63,7 +63,7 @@ export default function PerRequestMatches(props) {
                 })
             });
             const data = await res.json();
-            if (data.status === "ok") {
+            if (res.status === 200) {
                 fetch(`${BACKEND_URL}/api/items/getTheseListingsTexts`, {
                     method: "POST",
                     headers: {
@@ -74,14 +74,15 @@ export default function PerRequestMatches(props) {
                         listingIds: data.matchingListings
                     })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "ok") {
-                        setMatchingListingsData(data.listingsData);
-                        setIsLoading(false);
-                    } else {
-                        console.log(`Error fetching matching listings' data for request "${request.title}"`);
-                    }
+                .then(res => {
+                    res.json().then(data => {
+                        if (res.status === 200) {
+                            setMatchingListingsData(data.listingsData);
+                            setIsLoading(false);
+                        } else {
+                            console.log(data.error);
+                        }
+                    });
                 });
                 fetch(`${BACKEND_URL}/api/items/getTheseListingsImgs`, {
                     method: "POST",
@@ -93,13 +94,14 @@ export default function PerRequestMatches(props) {
                         listingIds: data.matchingListings
                     })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "ok") {
-                        setMatchingListingsImgs(data.listingsImgs);
-                    } else {
-                        console.log(`Error fetching matching listings' images for request "${request.title}"`);
-                    }
+                .then(res => {
+                    res.json().then(data => {
+                        if (res.status === 200) {
+                            setMatchingListingsImgs(data.listingsImgs);
+                        } else {
+                            console.log(data.error);
+                        }
+                    });
                 });
             } else {
                 console.log(`Error fetching matching listings for request "${request.title}"`);

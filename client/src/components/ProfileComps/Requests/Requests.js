@@ -82,12 +82,15 @@ function Requests() {
           "x-auth-token": token
         }
       })
-      .then(req => req.json())
-      .then(data => {
-        if (data.status === "ok") {
-          setRequests(data.requests);
-          setIsLoading(false);
-        }
+      .then(req => {
+        req.json().then(data => {
+          if (req.status === 200) {
+            setRequests(data.requests);
+            setIsLoading(false);
+          } else {
+            console.log(data.error);
+          }
+        });
       });
     }
   }, [user]);

@@ -45,16 +45,29 @@ function useAuthProvider() {
             photoURL: result.user.photoURL
           }),
         })
-        .then(req => req.json())
-        .then(data => {
-          if (data.status === "error") {
-            console.log("Error occurred while adding 3rd party account user to database");
-          } else {
-            let user = data.user;
-            user.photoURL = result.user.photoURL;
-            setUser(user);
-            localStorage.setItem('user', JSON.stringify(user));
-          }
+        .then(req => {
+          req.json().then(data => {
+            if (req.status === 200) {
+              try {
+                let user = {...data.user};
+                const token = user.token;
+                if (!token) {
+                  console.log("Google sign in security error: Missing JWT token from server response");
+                } else {
+                  const jwtResult = jwt.verify(token, JWT_SECRET);
+                  user.id = jwtResult.id;
+                  user.photoURL = result.user.photoURL;
+                  delete user.token;
+                  setUser(user);
+                  localStorage.setItem('user', JSON.stringify(user));
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            } else {
+              console.log(data.error);
+            }
+          });
         });
         setIsGoogleSignIn(true);
       });
@@ -95,11 +108,23 @@ function useAuthProvider() {
       }),
     });
     const data = await res.json();
-    if (data.status === "ok") {
-      setUser(data.user);
-      setIsGoogleSignIn(false);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      return signInResultCodes.SUCCESS;
+    if (res.status === 200) {
+      const token = data.user.token;
+      if (!token) {
+        return signInResultCodes.INVALID_JWT;
+      }
+      try {
+        const jwtResult = jwt.verify(token, JWT_SECRET);
+        let thisUser = {...data.user, id: jwtResult.id};
+        delete thisUser.token;
+        setUser(thisUser);
+        setIsGoogleSignIn(false);
+        localStorage.setItem("user", JSON.stringify(thisUser));
+        return signInResultCodes.SUCCESS;
+      } catch (error) {
+        console.log(error);
+        return signInResultCodes.INVALID_JWT;
+      }
     }
     return data.errorCode;
   };
@@ -126,9 +151,25 @@ function useAuthProvider() {
         }),
       });
       const data = await req.json();
-      if (data.status === "ok") {
-        return true;
+      if (req.status === 200) {
+        const token = data.token;
+        if (!token) {
+          console.log("LoaNUS sign up security issue: Missing JWT token in backend response");
+          return false;
+        }
+        try {
+          const jwtResult = jwt.verify(token, JWT_SECRET);
+          if (jwtResult.id) {
+            return true;
+          }
+          console.log("LoaNUS sign up security issue: Invalid Jwt token in backend response");
+          return false;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
       }
+      console.log(data.error);
       return false;
     }
     return false;
@@ -152,7 +193,7 @@ function useAuthProvider() {
     });
 
     const data = await req.json();
-    if (data.status === "ok") {
+    if (req.status === 200) {
       if (data.hasUser) {
         if (data.isVerified) {
           return hasUserResultCodes.HAS_USER;
@@ -161,8 +202,8 @@ function useAuthProvider() {
       }
       return hasUserResultCodes.NO_SUCH_USER;
     }
-    if (data.status === "error") {
-      if (data.statusCode === hasUserResultCodes.ALTERNATE_SIGN_IN) {
+    if (req.status === 400) {
+      if (data.errorCode === hasUserResultCodes.ALTERNATE_SIGN_IN) {
         return hasUserResultCodes.ALTERNATE_SIGN_IN;
       }
     }
@@ -189,6 +230,7 @@ export const signInResultCodes = {
   NO_SUCH_USER: 2,
   UNKNOWN: 3,
   EMAIL_NOT_VERIFIED: 4,
+  INVALID_JWT: 5
 };
 
 export const signInResultTexts = [
@@ -197,6 +239,7 @@ export const signInResultTexts = [
   "No such user", // Return code 2
   "Unknown error occurred", // Return code 3
   "Email not verified", //Return code 4
+  "Server error, please try again"
 ];
 
 export const hasUserResultCodes = {

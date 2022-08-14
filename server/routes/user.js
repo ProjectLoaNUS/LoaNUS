@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const multer = require("multer");
 const auth = require("../utils/auth");
+const jwt = require("jsonwebtoken");
 
 sgMail.setApiKey(process.env.API_KEY);
 
@@ -34,18 +35,15 @@ router.post("/hasUser", async (req, res) => {
   if (!user) {
     const isUserThirdParty = await isThirdPartyUser(givenEmail);
     if (isUserThirdParty) {
-      return res.json({
-        status: "error",
-        statusCode: hasUserResultCodes.ALTERNATE_SIGN_IN,
+      return res.status(400).json({
+        errorCode: hasUserResultCodes.ALTERNATE_SIGN_IN,
       });
     }
-    return res.json({
-      status: "ok",
+    return res.status(200).json({
       hasUser: false,
     });
   }
-  return res.json({
-    status: "ok",
+  return res.status(200).json({
     hasUser: true,
     isVerified: user.isVerified,
   });
@@ -64,39 +62,39 @@ router.post("/login", async (req, res) => {
     $and: [{ email: req.body.email }, { password: { $exists: true } }],
   });
   if (!givenUser) {
-    return res.json({
-      status: "error",
+    return res.status(400).json({
       errorCode: signInResultCodes.NO_SUCH_USER,
       error: `User doesn't exist`,
     });
   }
   if (!givenUser.password) {
-    return res.json({
-      status: "error",
+    return res.status(400).json({
       errorCode: signInResultCodes.ALTERNATE_SIGN_IN,
       error: `User account uses 3rd party log in method`,
     });
   }
   if (!givenUser.isVerified) {
-    return res.json({
-      status: "error",
+    return res.status(400).json({
       errorCode: signInResultCodes.EMAIL_NOT_VERIFIED,
       error: `User yet to verify account`,
     });
   }
   await bcrypt.compare(req.body.password, givenUser.password, (err, result) => {
     if (err) {
-      return res.json({
-        status: "error",
+      return res.status(500).json({
         errorCode: signInResultCodes.UNKNOWN,
         error: err,
       });
     }
     if (result) {
-      return res.json({
-        status: "ok",
+      const token = jwt.sign(
+        {id: "" + givenUser._id},
+        auth.JWT_SECRET,
+        {expiresIn: auth.JWT_EXPIRES_IN}
+      );
+      return res.status(200).json({
         user: {
-          id: "" + givenUser._id,
+          token: token,
           displayName: givenUser.name,
           age: givenUser.age,
           email: givenUser.email,
@@ -109,8 +107,7 @@ router.post("/login", async (req, res) => {
         },
       });
     }
-    return res.json({
-      status: "error",
+    return res.status(400).json({
       errorCode: signInResultCodes.INVALID_PASSWORD,
       error: `Invalid password for {givenUser.name}`,
     });
@@ -121,20 +118,30 @@ router.post("/postAltLogin", async (req, res) => {
   let user;
   user = await getThirdPartyUser(email);
   if (user) {
-    const userId = "" + user._id;
-    let trimmedUser = {
-      id: userId,
-      displayName: user.name,
-      age: user.age,
-      email: user.email,
-    };
-    if ((!user.image || !user.image.url) && req.body.photoURL) {
-      const image = {
-        url: req.body.photoURL,
+    try {
+      const userId = "" + user._id;
+      const token = jwt.sign(
+        {id: userId},
+        auth.JWT_SECRET,
+        {expiresIn: auth.JWT_EXPIRES_IN}
+      );
+      let trimmedUser = {
+        token: token,
+        displayName: user.name,
+        age: user.age,
+        email: user.email,
       };
-      UserModel.findByIdAndUpdate({ _id: userId }, { image: image });
+      if ((!user.image || !user.image.url) && req.body.photoURL) {
+        const image = {
+          url: req.body.photoURL,
+        };
+        UserModel.findByIdAndUpdate({ _id: userId }, { image: image });
+      }
+      return res.status(200).json({ user: trimmedUser });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error });
     }
-    return res.json({ status: "ok", user: trimmedUser });
   } else {
     user = await UserModel.create({
       name: req.body.name,
@@ -150,16 +157,26 @@ router.post("/postAltLogin", async (req, res) => {
     });
     await user.save({}, (err) => {
       if (err) {
-        return res.json({ status: "error", error: err });
+        return res.status(500).json({ error: err });
       }
     });
-    let trimmedUser = {
-      id: "" + user._id,
-      displayName: user.name,
-      age: user.age,
-      email: user.email,
-    };
-    return res.json({ status: "ok", user: trimmedUser });
+    try {
+      const token = jwt.sign(
+        {id: "" + user._id},
+        auth.JWT_SECRET,
+        {expiresIn: auth.JWT_EXPIRES_IN}
+      );
+      let trimmedUser = {
+        token: token,
+        displayName: user.name,
+        age: user.age,
+        email: user.email,
+      };
+      return res.status(200).json({ user: trimmedUser });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error });
+    }
   }
 });
 
@@ -167,7 +184,7 @@ router.post("/signUp", async (req, res) => {
   const password = req.body.password;
   const email = req.body.email;
   if (!password) {
-    return res.json({ status: "error" });
+    return res.status(400).json({ error: "Password not provided(required field)" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await UserModel.create({
@@ -183,7 +200,7 @@ router.post("/signUp", async (req, res) => {
   });
   await newUser.save({}, (err) => {
     if (err) {
-      return res.json({ status: "error", error: err });
+      return res.status(500).json({ error: err });
     }
   });
 
@@ -205,9 +222,15 @@ router.post("/signUp", async (req, res) => {
   sgMail.send(msg, function (err, info) {
     if (err) {
       console.log("Email Not Sent");
+      return res.status(500).json({ error: err });
     }
   });
-  return res.json({ status: "ok" });
+  const token = jwt.sign(
+    {id: "" + newUser._id},
+    auth.JWT_SECRET,
+    {expiresIn: auth.JWT_EXPIRES_IN}
+  );
+  return res.status(200).json({ token: token });
 });
 router.post("/getNamesOf", async (req, res) => {
   if (!req.user || !req.user.id) {
@@ -231,7 +254,7 @@ router.post("/getNamesOf", async (req, res) => {
 });
 
 // Email verification route
-router.get("/verifyEmail", async (req, res, next) => {
+router.get("/verifyEmail", async (req, res) => {
   try {
     const user = await UserModel.findOne({ emailToken: req.query.token });
     if (!user) {
@@ -489,34 +512,40 @@ router.post("/createotp", async (req, res) => {
     sgMail.send(msg, function (err, info) {
       if (err) {
         console.log("Email Not Sent");
+        return res.status(500).json({ error: err });
       }
     });
-    res.json({ status: "success" });
+    res.status(200);
   } catch (error) {
-    console.log(err);
-    res.json({ status: "error" });
+    console.log(error);
+    res.status(500).json({ error: error });
   }
 });
 
 // get otp
 router.get("/getotp", async (req, res) => {
   try {
-    const email = req.query.email;
+    const email = req.user.email;
     const user = await UserModel.findOne({
       $and: [{ email: email }, { password: { $exists: true } }],
     });
     let otp = user.otp;
-    res.json({ status: "success", otp: otp });
+    const token = jwt.sign(
+      {id: "" + user._id},
+      auth.JWT_SECRET,
+      {expiresIn: auth.JWT_EXPIRES_IN}
+    );
+    res.status(200).json({ otp: otp, token: token });
   } catch (error) {
     console.log(error);
-    res.json({ status: "error" });
+    res.status(500).json({ error: error });
   }
 });
 
 // change password
 router.post("/changepassword", async (req, res) => {
   try {
-    const email = req.body.email;
+    const email = req.user.email;
     const password = req.body.newpassword;
     const user = await UserModel.findOne({
       $and: [{ email: email }, { password: { $exists: true } }],
@@ -525,10 +554,15 @@ router.post("/changepassword", async (req, res) => {
     user.password = hashedPassword;
 
     await user.save();
-    res.json({ status: "success" });
+    const token = jwt.sign(
+      {id: "" + user._id},
+      auth.JWT_SECRET,
+      {expiresIn: auth.JWT_EXPIRES_IN}
+    );
+    res.status(200).json({ token: token });
   } catch (error) {
     console.log(error);
-    res.json({ status: "error" });
+    res.status(500).json({ error: error });
   }
 });
 

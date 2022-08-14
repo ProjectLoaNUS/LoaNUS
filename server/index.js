@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const path = require('path');
+const auth = require("./utils/auth");
 
 const PORT = process.env.PORT || 3001;
 
@@ -32,13 +33,14 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  const JWT_SECRET = process.env.JWT_SECRET;
-  if (JWT_SECRET) {
+  const JWT_SECRET = auth.JWT_SECRET;
+  const IS_EXCLUDED = req.originalUrl.includes("/verifyEmail");
+  if (!IS_EXCLUDED && JWT_SECRET) {
     try {
       const token = req.header("x-auth-token");
       if (!token) return res.status(403).send("Access denied");
   
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, JWT_SECRET);
       req.user = decoded;
       next();
     } catch (error) {

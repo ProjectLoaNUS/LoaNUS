@@ -203,6 +203,10 @@ export default function AuthCard() {
       headers: {
         "x-auth-token": token
       }
+    }).then(res => {
+      if (res.status !== 200) {
+        console.log(res.data.error);
+      }
     });
   };
 

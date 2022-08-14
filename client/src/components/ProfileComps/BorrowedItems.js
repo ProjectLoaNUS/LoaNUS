@@ -26,11 +26,14 @@ export default function BorrowedItems() {
               "x-auth-token": token
             }
           })
-          .then(req => req.json())
-          .then(data => {
-            if (data.status === "ok") {
-              setBorrowedImgs(data.borrowedImgs);
-            }
+          .then(req => {
+            req.json().then(data => {
+              if (req.status === 200) {
+                setBorrowedImgs(data.borrowedImgs);
+              } else {
+                console.log(data.error);
+              }
+            });
           });
         }
         if (borrowedTexts === null) {
@@ -40,12 +43,15 @@ export default function BorrowedItems() {
               "x-auth-token": token
             }
           })
-          .then(req => req.json())
-          .then(data => {
-            if (data.status === "ok") {
-              setBorrowedTexts(data.borrowedTexts);
-              setIsLoading(false);
-            }
+          .then(req => {
+            req.json().then(data => {
+              if (req.status === 200) {
+                setBorrowedTexts(data.borrowedTexts);
+                setIsLoading(false);
+              } else {
+                console.log(data.error);
+              }
+            });
           });
         }
       }

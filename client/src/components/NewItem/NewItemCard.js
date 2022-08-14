@@ -164,7 +164,7 @@ export default function NewItemCard() {
       : `${BACKEND_URL}/api/items/addListing`;
     const req = await fetch(apiEndpoint, object);
     const data = await req.json();
-    if (data.status === "ok") {
+    if (req.status === 200) {
       setIsSubmitError(false);
       setSubmitResultText("Item " + (isRequest ? "requested" : "listed"));
       clearForm();
@@ -177,6 +177,7 @@ export default function NewItemCard() {
         "Error occurred when creating item " +
           (isRequest ? "request" : "listing")
       );
+      console.log(data.error);
     }
   };
 

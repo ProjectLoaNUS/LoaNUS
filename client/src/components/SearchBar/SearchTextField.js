@@ -111,13 +111,13 @@ export default function SearchTextField() {
             }
           })
           .then(res => {
-            if (res.data.status === "ok") {
+            if (res.status === 200) {
               setSearchResults(
                 res.data.results.filter((item) => !item.borrowedBy)
               );
               setLoading(false);
             } else {
-              console.log(`Error fetching item details after performing search in backend with query text ${queryText}`);
+              console.log(res.data.error);
               setLoading(false);
             }
           })
@@ -186,11 +186,11 @@ export default function SearchTextField() {
           }
         })
         .then(res => {
-          if (res.data.status === "ok") {
+          if (res.status === 200) {
             imgsToUrls(res.data.result.images);
             processResult(res.data.result);
           } else {
-            console.log(`Error obtaining item images after performing search in backend using query text ${queryText}`);
+            console.log(res.data.error);
           }
         })
         .catch((err) => console.log(err, "error occured"));

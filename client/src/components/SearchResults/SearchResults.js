@@ -32,10 +32,10 @@ const SearchResults = (props) => {
           }
         })
         .then(res => {
-          if (res.data.status === "ok") {
+          if (res.status === 200) {
             setSearchResultsImages(res.data.results);
           } else {
-            console.log(`Error fetching item images after performing search in backend using query text ${queryText}`);
+            console.log(res.data.error);
           }
         })
         .catch((err) => console.log(err, "error occured"));
@@ -52,11 +52,11 @@ const SearchResults = (props) => {
           }
         })
         .then(res => {
-          if (res.data.status === "ok") {
+          if (res.status === 200) {
             setSearchResultsDetails(res.data.results);
             setIsLoading(false);
           } else {
-            console.log(`Error fetching item details after performing search in backend using query text ${queryText}`);
+            console.log(res.data.error);
           }
         })
         .catch((err) => console.log(err, "error occured"));

@@ -73,11 +73,10 @@ function PasswordResetCard() {
   const handlesavepassword = () => {
     if (!isPwError) {
       const data = {
-        email: email,
         newpassword: givenPassword1,
       };
       const token = jwt.sign(
-        {},
+        {email: email},
         JWT_SECRET,
         {expiresIn: JWT_EXPIRES_IN}
       );
@@ -85,8 +84,19 @@ function PasswordResetCard() {
         headers: {
           "x-auth-token": token
         }
+      }).then(res => {
+        if (res.status === 200) {
+          const token = res.data.token;
+          try {
+            jwt.verify(token, JWT_SECRET);
+            navigate("/signin");
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log(res.data.error);
+        }
       });
-      navigate("/signin");
     }
   };
 
@@ -114,7 +124,13 @@ function PasswordResetCard() {
             "x-auth-token": token
           }
         })
-        .then(() => startTimer());
+        .then((res) => {
+          if (res.status === 200) {
+            startTimer();
+          } else {
+            console.log(res.data.error);
+          }
+        });
     } else {
       console.log(
         `Countdown is not over, please wait another ${time}s before requesting another OTP`
@@ -124,18 +140,30 @@ function PasswordResetCard() {
 
   useEffect(() => {
     const token = jwt.sign(
-      {},
+      {email: email},
       JWT_SECRET,
       {expiresIn: JWT_EXPIRES_IN}
     );
     axios
-      .get(`${BACKEND_URL}/api/user/getotp?email=` + email, {
+      .get(`${BACKEND_URL}/api/user/getotp`, {
         headers: {
           "x-auth-token": token
         }
       })
-      .then((res) => setStoredOtp(res.data.otp));
-    startTimer();
+      .then((res) => {
+        if (res.status === 200) {
+          const token = res.data.token;
+          try {
+            jwt.verify(token, JWT_SECRET);
+            setStoredOtp(res.data.otp);
+            startTimer();
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log(res.data.error);
+        }
+      });
   }, [email, startTimer]);
 
   return (

@@ -107,13 +107,13 @@ router.get("/search", async (request, response) => {
           ]);
         }
         if (results) {
-          return response.json({ status: "ok", results: results });
+          return response.status(200).json({ results: results });
         }
       }
-      response.json({ status: "error" });
+      response.status(400).json({ error: "Missing search query" });
     } catch (error) {
       console.log(error);
-      response.json({ status: "error" });
+      response.status(500).json({ error: error });
     }
 });
 // Finds a specific item listing by its MongoDB _id
@@ -121,18 +121,18 @@ router.get("/search-exact", async (request, response) => {
     try {
       const query = request.query;
       if (!query.id) {
-        return response.json({ status: "error" });
+        return response.status(400).json({ error: "Missing item listing ID" });
       }
       const result = await ItemListingsModel.findOne({
         _id: query.id,
       });
       if (result) {
-        return response.json({ status: "ok", result: result });
+        return response.status(200).json({ result: result });
       }
-      response.json({ status: "error" });
+      response.status(400).json({ error: "Invalid item listing ID provided" });
     } catch (error) {
       console.log(error);
-      response.json({ status: "error" });
+      response.status(500).json({ error: error });
     }
 });
 

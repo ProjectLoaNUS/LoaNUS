@@ -62,17 +62,17 @@ const itemRequests = (socketUtils) => {
   };
   router.post("/addRequest", async (req, res) => {
       if (!req.user || !req.user.id) {
-        return res.json({status: "error"});
+        return res.status(401).json({error: "JWT User ID is missing"});
       }
       const userId = req.user.id;
       const user = await auth.getUser(userId);
       if (!user) {
-        return res.json({status: "error"});
+        return res.status(403).json({error: "JWT User ID is invalid"});
       }
 
       const creator = req.body.listedBy;
       if (!creator) {
-        return res.json({status: 'error'});
+        return res.status(400).json({error: "Missing item request creator details"});
       }
       const obj = {
         category: req.body.category,
@@ -85,7 +85,7 @@ const itemRequests = (socketUtils) => {
       ItemRequestsModel.create(obj, (err, request) => {
         if (err) {
           console.log(err);
-          return res.json({status: 'error'});
+          return res.status(500).json({error: err});
         } else {
           request.save().then(savedRequest => {
             findMatchingListings(savedRequest);
@@ -101,7 +101,7 @@ const itemRequests = (socketUtils) => {
               user.save();
             }
           });
-          return res.json({status: 'ok'});
+          return res.status(200);
         }
       });
   });
@@ -117,47 +117,47 @@ const itemRequests = (socketUtils) => {
   });
   router.get("/getRequestsOfUser", async (req, res) => {
     if (!req.user || !req.user.id) {
-      return res.json({status: "error"});
+      return res.status(401).json({error: "JWT User ID is missing"});
     }
     const userId = req.user.id;
     const user = await auth.getUser(userId);
     if (!user) {
-      return res.json({status: "error"});
+      return res.status(403).json({error: "JWT User ID is invalid"});
     }
 
     const requestIds = user.itemsRequested;
     let requests = await ItemRequestsModel.find({'_id': { $in: requestIds} }, ['category', 'title', 'description', 'location', 'date', 'listedBy', 'matchingListings']);
-    return res.json({status: 'ok', requests: requests});
+    return res.status(200).json({requests: requests});
   });
   router.post("/getMatchingListingsOf", async (req, res) => {
     const requestId = req.body.requestId;
     if (!requestId) {
-      return res.json({status: "error", message: "Invalid request ID provided"});
+      return res.status(400).json({error: "Invalid request ID provided"});
     }
     const request = await ItemRequestsModel.findOne({ _id: requestId }, ['matchingListings']);
     if (!request) {
-      return res.json({status: "error", message: `Unable to find request with ID ${requestId}`});
+      return res.status(400).json({error: `Unable to find request with ID ${requestId}`});
     }
     const matchingListings = request.matchingListings;
-    return res.json({status: "ok", matchingListings: matchingListings});
-  })
+    return res.status(200).json({matchingListings: matchingListings});
+  });
 
   router.post("/rmRequest", async (request, response) => {
     if (!request.user || !request.user.id) {
-      return response.json({status: "error"});
+      return response.status(401).json({error: "JWT User ID is missing"});
     }
     const userId = request.user.id;
     const user = await auth.getUser(userId);
     if (!user) {
-      return response.json({status: "error"});
+      return response.status(403).json({error: "JWT User ID is invalid"});
     }
   
     const itemId = request.body.itemId;
     if (itemId) {
       await ItemRequestsModel.deleteOne({ _id: itemId });
-      response.json({status: "ok"});
+      response.status(200);
     } else {
-      response.json({status: "error"});
+      response.status(400).json({error: "Item request ID not provided, cannot remove corresponding item request"});
     }
   });
 

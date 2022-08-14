@@ -52,11 +52,14 @@ export default function Listings() {
               "x-auth-token": token
             }
           })
-          .then((req) => req.json())
-          .then((data) => {
-            if (data.status === "ok") {
-              setListingImgs(data.listingsImgs);
-            }
+          .then((req) => {
+            req.json().then(data => {
+              if (req.status === 200) {
+                setListingImgs(data.listingsImgs);
+              } else {
+                console.log(data.error);
+              }
+            });
           });
         }
         if (listingTexts === null) {
@@ -66,12 +69,15 @@ export default function Listings() {
               "x-auth-token": token
             }
           })
-          .then((req) => req.json())
-          .then((data) => {
-            if (data.status === "ok") {
-              setListingTexts(data.listingsTexts);
-              setIsLoading(false);
-            }
+          .then((req) => {
+            req.json().then(data => {
+              if (req.status === 200) {
+                setListingTexts(data.listingsTexts);
+                setIsLoading(false);
+              } else {
+                console.log(data.error);
+              }
+            });
           });
         }
       }

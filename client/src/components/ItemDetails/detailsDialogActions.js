@@ -31,10 +31,10 @@ export const requestBorrowAction = (setError, setIsButtonEnabled, setOpen, onAct
                 })
             });
             const data = await req.json();
-            if (data.status !== "ok") {
-                setError(true, REQ_RES_TEXT[data.statusCode]);
+            if (req.status !== 200) {
+                setError(true, REQ_RES_TEXT[data.errorCode]);
             } else {
-                setError(false, REQ_RES_TEXT[data.statusCode]);
+                setError(false, REQ_RES_TEXT[0]);
                 setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);
@@ -79,10 +79,10 @@ export const approveBorrowAction = (setError, setOpen, onActionDone, itemId, use
                 })
             });
             const data = await req.json();
-            if (data.status !== "ok") {
-                setError(true, APPROVE_RES_TEXT[data.statusCode]);
+            if (req.status !== 200) {
+                setError(true, APPROVE_RES_TEXT[data.errorCode]);
             } else {
-                setError(false, APPROVE_RES_TEXT[data.statusCode]);
+                setError(false, APPROVE_RES_TEXT[0]);
                 setTimeout(() => {
                     setOpen(false);
                 }, 5000);
@@ -124,10 +124,10 @@ export const denyBorrowAction = (setError, setOpen, onActionDone, itemId, user) 
                 })
             });
             const data = await req.json();
-            if (data.status !== "ok") {
-                setError(true, DENY_RES_TEXT[data.statusCode]);
+            if (req.status !== 200) {
+                setError(true, DENY_RES_TEXT[data.errorCode]);
             } else {
-                setError(false, DENY_RES_TEXT[data.statusCode]);
+                setError(false, DENY_RES_TEXT[0]);
                 setTimeout(() => {
                     setOpen(false);
                 }, 5000);
@@ -170,8 +170,9 @@ export const deleteListingAction = (setError, setIsButtonEnabled, setOpen, onAct
                 })
             });
             const data = await req.json();
-            if (!data.status === "ok") {
+            if (req.status !== 200) {
                 setError(true, "Error while deleting item listing");
+                console.log(data.error);
             } else {
                 setError(false, "Item listing deleted");
                 setIsButtonEnabled(false);
@@ -210,8 +211,8 @@ export const deleteRequestAction = (setError, setIsButtonEnabled, setOpen, onAct
                 })
             });
             const data = await req.json();
-            if (!data.status === "ok") {
-                setError(true, "Error while deleting item request");
+            if (req.status !== 200) {
+                setError(true, data.error);
             } else {
                 setError(false, "Item request deleted");
                 setIsButtonEnabled(false);
@@ -260,10 +261,10 @@ export const returnItemAction = (setError, setIsButtonEnabled, setOpen, onAction
                 })
             });
             const data = await req.json();
-            if (!data.status === "ok") {
-                setError(true, RETURN_STATUS_TEXTS[data.statusCode]);
+            if (req.status !== 200) {
+                setError(true, RETURN_STATUS_TEXTS[data.errorCode]);
             } else {
-                setError(false, RETURN_STATUS_TEXTS[data.statusCode]);
+                setError(false, RETURN_STATUS_TEXTS[0]);
                 setIsButtonEnabled(false);
                 setTimeout(() => {
                     setOpen(false);

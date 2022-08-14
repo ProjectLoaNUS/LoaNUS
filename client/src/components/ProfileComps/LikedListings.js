@@ -36,10 +36,15 @@ export default function LikedListings() {
                         listingIds: data.items
                     })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    setListingsTexts(data.listingsData);
-                    setIsLoading(false);
+                .then(res => {
+                    res.json().then(data => {
+                        if (res.status === 200) {
+                            setListingsTexts(data.listingsData);
+                            setIsLoading(false);
+                        } else {
+                            console.log(data.error);
+                        }
+                    });
                 });
                 fetch(`${BACKEND_URL}/api/items/getTheseListingsImgs`, {
                     method: "POST",
@@ -51,9 +56,14 @@ export default function LikedListings() {
                         listingIds: data.items
                     })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    setListingsImgs(data.listingsImgs);
+                .then(res => {
+                    res.json().then(data => {
+                        if (res.status === 200) {
+                            setListingsImgs(data.listingsImgs);
+                        } else {
+                            console.log(data.error);
+                        }
+                    });
                 });
             } else {
                 console.log("LikedListings: Error while fetching liked listings data from backend");
