@@ -1,5 +1,6 @@
 # LoaNUS
 Fully functional MERN stack application with over 20 features. Kindly view the following for more information.
+
 Documentation: https://docs.google.com/document/d/1f9pDsU1NcJqfwtevdBnRh8frDIcXuOGjxAItzdxrTeQ/edit
 
 Poster: https://nusskylab-dev.comp.nus.edu.sg/posters/2022_large/5165.png
