@@ -5,6 +5,7 @@ Documentation: https://docs.google.com/document/d/1f9pDsU1NcJqfwtevdBnRh8frDIcXu
 Poster: https://nusskylab-dev.comp.nus.edu.sg/posters/2022_large/5165.png
 
 Video: https://www.youtube.com/watch?v=id4iwMdJKYY&ab_channel=NUSOrbital
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts
